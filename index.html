@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-black text-white">
+<html lang="en" class="bg-[#0d0d0d] text-white">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,342 +7,1110 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Rubik', sans-serif; }
-    .peg { width: 10px; height: 10px; background: #a78bfa; border-radius: 50%; }
+    :root {
+      --bg-primary: #0d0d0d;
+      --bg-secondary: #131313;
+      --bg-card: #1a1a1a;
+      --bg-elevated: #222;
+      --border: #2a2a2a;
+      --accent: #00c853;
+      --accent-hover: #00e676;
+      --text-primary: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-primary); }
+    .stake-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+    .stake-card:hover { border-color: #333; background: #1f1f1f; }
+    .btn-primary { background: var(--accent); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    /* Plinko pegs */
+    .peg {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(145deg, #3f3f46 0%, #27272a 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+    #plinkoPegs .flex { min-height: 0; flex: 1 1 0; gap: 2px; }
+    input[type="number"]::-webkit-inner-spin-button { opacity: 0.5; }
+    html.theme-light body { background: #f4f4f5; color: #18181b; }
+    html.theme-light .stake-card { background: #fff; border-color: #e4e4e7; }
+    html.theme-light .text-white { color: #18181b !important; }
+    html.theme-light .text-\[#a1a1aa\] { color: #52525b !important; }
+    html.theme-light .text-\[#71717a\] { color: #71717a !important; }
+    html.theme-light header { background: #fff; border-color: #e4e4e7; }
+    html.theme-light .bg-\[\#0d0d0d\] { background: #fff !important; }
+    html.theme-light .bg-\[\#1a1a1a\] { background: #f4f4f5 !important; }
+    html.theme-light .bg-\[\#131313\] { background: #e4e4e7 !important; }
+    html.theme-light .border-\[\#2a2a2a\] { border-color: #e4e4e7 !important; }
+    
+    /* Game Animations */
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(0, 200, 83, 0); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes card-flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+    @keyframes dice-roll {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(90deg); }
+      50% { transform: rotate(180deg); }
+      75% { transform: rotate(270deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes glow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+    @keyframes slide-up {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-pulse-green { animation: pulse-green 1s infinite; }
+    .animate-shake { animation: shake 0.3s ease-in-out; }
+    .animate-card-flip { animation: card-flip 0.5s ease-in-out; }
+    .animate-dice-roll { animation: dice-roll 0.5s ease-in-out; }
+    .animate-float { animation: float 2s ease-in-out infinite; }
+    .animate-glow { animation: glow 1.5s ease-in-out infinite; }
+    .animate-slide-up { animation: slide-up 0.3s ease-out; }
+    
+    /* Crash multiplier animation */
+    .crash-multiplier {
+      animation: pulse-green 1s infinite;
+    }
+    
+    /* Card animations */
+    .card-deal {
+      animation: slide-up 0.2s ease-out;
+    }
+    
+    /* Game win/lose effects */
+    .win-effect {
+      animation: glow 0.5s ease-in-out 3;
+    }
+    .lose-effect {
+      animation: shake 0.3s ease-in-out;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-zinc-950 to-black">
+<body class="min-h-screen bg-[#0d0d0d] text-white antialiased">
 
-  <!-- Header -->
-  <header class="fixed top-0 w-full bg-black/80 backdrop-blur-md border-b border-zinc-800 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <!-- Header - Stake style -->
+  <header class="fixed top-0 w-full bg-[#0d0d0d]/95 backdrop-blur-sm border-b border-[#2a2a2a] z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
       <div class="flex items-center gap-8">
-        <h1 class="text-3xl font-bold tracking-tight text-purple-500">VANTABET</h1>
-        <div id="authArea"></div>
+        <h1 onclick="showTab('originals')" class="text-2xl font-bold tracking-tight text-white cursor-pointer hover:opacity-90 transition">VANTABET</h1>
+        <nav class="hidden sm:flex items-center gap-1">
+          <button data-tab="home" onclick="showTab('home')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Home</button>
+          <button data-tab="originals" onclick="showTab('originals')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Originals</button>
+          <button data-tab="settings" onclick="showTab('settings')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Settings</button>
+        </nav>
+        <div id="authArea" class="flex items-center gap-2"></div>
       </div>
-      <div class="flex gap-6 items-center">
-        <button class="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition">Balance: $<span id="balance">500.00</span></button>
-        <button class="px-6 py-2 bg-purple-600 rounded-lg font-semibold hover:bg-purple-500 transition">Deposit</button>
+      <div class="flex items-center gap-3">
+        <div class="px-4 py-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-sm font-medium">
+          <span class="text-[#71717a]">Balance </span><span class="text-[#00c853] font-semibold">$<span id="balance">500.00</span></span>
+        </div>
+        <button class="px-5 py-2 bg-[#00c853] text-black rounded-lg font-semibold text-sm hover:bg-[#00e676] transition">Deposit</button>
       </div>
     </div>
   </header>
 
-  <!-- Admin Panel - only for Vantaadmin / 12345 -->
-  <div id="adminPanel" class="fixed bottom-4 right-4 bg-zinc-900 border border-purple-700 rounded-lg p-4 shadow-2xl hidden z-50 w-80">
-    <h3 class="text-lg font-bold text-purple-400 mb-3">Admin Panel</h3>
-    <div class="mb-4">
-      <label class="block text-sm text-zinc-400 mb-1">Set Balance</label>
-      <div class="flex gap-2">
-        <input type="number" id="adminSetBalance" class="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white" placeholder="New amount"/>
-        <button onclick="setAdminBalance()" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 rounded-lg text-sm font-medium">Apply</button>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <input type="checkbox" id="showMinesToggle" class="w-5 h-5 accent-purple-600"/>
-      <label for="showMinesToggle" class="text-sm text-zinc-300">Reveal all mines after bet (debug)</label>
-    </div>
-  </div>
-
-  <!-- Navigation -->
-  <nav class="pt-24 pb-8">
-    <div class="max-w-6xl mx-auto flex justify-center gap-10 border-b border-zinc-800">
-      <button onclick="showTab('home')" class="tab-btn px-6 py-4 text-lg font-semibold text-zinc-400 hover:text-white border-b-4 border-transparent hover:border-purple-600 transition">Home</button>
-      <button onclick="showTab('originals')" class="tab-btn px-6 py-4 text-lg font-semibold text-zinc-400 hover:text-white border-b-4 border-transparent hover:border-purple-600 transition">Originals</button>
-      <button onclick="showTab('games')" class="tab-btn px-6 py-4 text-lg font-semibold text-zinc-400 hover:text-white border-b-4 border-transparent hover:border-purple-600 transition">Games</button>
+  <!-- Mobile nav / Spacer -->
+  <nav class="pt-16 sm:pt-14 pb-6">
+    <div class="max-w-6xl mx-auto flex sm:justify-center justify-start gap-1 overflow-x-auto px-4 sm:px-6 border-b border-[#2a2a2a] sm:border-none">
+      <button data-tab="home" onclick="showTab('home')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Home</button>
+      <button data-tab="originals" onclick="showTab('originals')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Originals</button>
+      <button data-tab="settings" onclick="showTab('settings')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Settings</button>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <main class="max-w-6xl mx-auto px-6 pb-20">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
 
     <!-- Home -->
-    <section id="home" class="tab-content">
+    <section id="home" class="tab-content hidden">
       <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-purple-400 mb-4">Welcome to Vantabet</h2>
-        <p class="text-xl text-zinc-400">Play originals, slots, and more. Provably fair gaming.</p>
+        <h2 class="text-4xl sm:text-5xl font-bold text-white mb-3">Welcome to Vantabet</h2>
+        <p class="text-lg text-[#a1a1aa]">Play originals, slots, and more. Provably fair gaming.</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-zinc-900 rounded-xl p-6 text-center border border-zinc-800"><h3 class="text-2xl font-bold mb-2">Casino</h3></div>
-        <div class="bg-zinc-900 rounded-xl p-6 text-center border border-zinc-800"><h3 class="text-2xl font-bold mb-2">Originals</h3></div>
-        <div class="bg-zinc-900 rounded-xl p-6 text-center border border-zinc-800"><h3 class="text-2xl font-bold mb-2">Promotions</h3></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <button onclick="showTab('originals')" class="stake-card p-8 text-center hover:border-[#333] transition cursor-pointer">
+          <h3 class="text-xl font-semibold text-white mb-1">Casino</h3>
+          <p class="text-sm text-[#71717a]">Slots & table games</p>
+        </button>
+        <button onclick="showTab('originals')" class="stake-card p-8 text-center hover:border-[#333] transition cursor-pointer">
+          <h3 class="text-xl font-semibold text-white mb-1">Originals</h3>
+          <p class="text-sm text-[#71717a]">Crash, Dice, Mines & more</p>
+        </button>
+        <button class="stake-card p-8 text-center hover:border-[#333] transition cursor-pointer">
+          <h3 class="text-xl font-semibold text-white mb-1">Promotions</h3>
+          <p class="text-sm text-[#71717a]">Bonuses & rewards</p>
+        </button>
       </div>
     </section>
 
     <!-- Originals -->
-    <section id="originals" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-purple-400 mb-4">Originals</h2>
-        <p class="text-lg text-zinc-400">Provably fair instant games</p>
+    <section id="originals" class="tab-content">
+      <div class="my-10">
+        <h2 class="text-3xl font-bold text-white mb-1">Originals</h2>
+        <p class="text-[#a1a1aa]">Provably fair instant games</p>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        <button onclick="showTab('crash')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-green-900 to-green-600 flex items-center justify-center"><span class="text-3xl font-bold">CRASH</span></div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <button onclick="showTab('crash')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#064e3b] via-[#059669] to-[#10b981] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoMTAwdjEwMEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMGgxMDB2MTAwSDBWMHptMjUgMjVoNTB2NTBIMTI1VjI1eiIgZmlsbD0iIzA5Y2ZmMCIvPjwvZz48L3N2Zz4=')] opacity-30"></div>
+            <div class="absolute top-2 right-2 w-8 h-8 bg-green-400/20 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-3 left-3 text-5xl font-black text-white/20 rotate-12">↑</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">CRASH</span>
+          </div>
         </button>
-        <button onclick="showTab('dice')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center"><span class="text-3xl font-bold">DICE</span></div>
+        <button onclick="showTab('dice')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#0c4a6e] via-[#0284c7] to-[#38bdf8] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%)]"></div>
+            <div class="absolute -right-2 -bottom-2 text-7xl font-bold text-white/10 rotate-12">❔</div>
+            <div class="absolute top-3 left-3 w-4 h-4 bg-white/30 rounded-full"></div>
+            <div class="absolute bottom-4 right-4 w-3 h-3 bg-white/20 rounded-full"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">DICE</span>
+          </div>
         </button>
-        <button onclick="showTab('mines')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-emerald-900 to-emerald-600 flex items-center justify-center"><span class="text-3xl font-bold">MINES</span></div>
+        <button onclick="showTab('mines')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#111827] via-[#065f46] to-[#10b981] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-50">
+              <div class="absolute top-2 left-2 text-amber-400/60">💎</div>
+              <div class="absolute top-4 right-6 text-purple-400/60">💎</div>
+              <div class="absolute bottom-3 left-6 text-pink-400/60">💎</div>
+              <div class="absolute bottom-2 right-3 text-cyan-400/60">💎</div>
+            </div>
+            <div class="absolute top-3 right-3 w-5 h-5 bg-red-500/40 rounded-full flex items-center justify-center text-xs">💣</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">MINES</span>
+          </div>
         </button>
-        <button onclick="showTab('plinko')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-purple-900 to-purple-600 flex items-center justify-center"><span class="text-3xl font-bold">PLINKO</span></div>
+        <button onclick="showTab('plinko')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#1e1b4b] via-[#4c1d95] to-[#a855f7] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex flex-col justify-around py-4 px-6 opacity-40">
+              <div class="flex justify-between"><div class="w-1.5 h-1.5 bg-white rounded-full"></div><div class="w-1.5 h-1.5 bg-white rounded-full"></div><div class="w-1.5 h-1.5 bg-white rounded-full"></div></div>
+              <div class="flex justify-evenly"><div class="w-1.5 h-1.5 bg-white rounded-full"></div><div class="w-1.5 h-1.5 bg-white rounded-full"></div></div>
+              <div class="flex justify-between"><div class="w-1.5 h-1.5 bg-white rounded-full"></div><div class="w-1.5 h-1.5 bg-white rounded-full"></div><div class="w-1.5 h-1.5 bg-white rounded-full"></div></div>
+            </div>
+            <div class="absolute top-3 right-4 w-3 h-3 bg-yellow-400 rounded-full shadow-lg shadow-yellow-400/50"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">PLINKO</span>
+          </div>
         </button>
-        <button onclick="showTab('limbo')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-yellow-900 to-yellow-600 flex items-center justify-center"><span class="text-3xl font-bold">LIMBO</span></div>
+        <button onclick="showTab('limbo')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#451a03] via-[#d97706] to-[#fbbf24] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.1)_50%,transparent_60%)]"></div>
+            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-4xl font-black text-white/20">▼</div>
+            <div class="absolute bottom-2 left-2 w-6 h-6 bg-white/20 rounded-full"></div>
+            <div class="absolute top-4 right-4 w-2 h-2 bg-white/30 rounded-full"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">LIMBO</span>
+          </div>
         </button>
-        <button onclick="showTab('blackjack')" class="bg-zinc-900 rounded-xl overflow-hidden hover:scale-105 transition border border-zinc-800">
-          <div class="h-32 bg-gradient-to-br from-red-900 to-red-600 flex items-center justify-center"><span class="text-3xl font-bold">BLACKJACK</span></div>
+        <button onclick="showTab('blackjack')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#450a0a] via-[#991b1b] to-[#f87171] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center gap-1 opacity-30">
+              <span class="text-5xl text-white">♠</span>
+              <span class="text-5xl text-red-500">♥</span>
+              <span class="text-5xl text-white">♣</span>
+            </div>
+            <div class="absolute top-2 right-2 w-6 h-6 bg-white/20 rounded flex items-center justify-center text-sm">21</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">BLACKJACK</span>
+          </div>
+        </button>
+        <button onclick="showTab('mines1000')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#1e1b4b] via-[#7c3aed] to-[#ec4899] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-50">
+              <div class="absolute top-2 left-3 text-amber-400/60">💎</div>
+              <div class="absolute top-5 right-4 text-purple-400/60">💎</div>
+              <div class="absolute bottom-3 left-5 text-pink-400/60">💎</div>
+            </div>
+            <div class="absolute top-2 right-2 w-8 h-8 bg-red-500/50 rounded flex items-center justify-center text-xs font-bold">7+</div>
+            <div class="absolute -bottom-1 -right-1 text-4xl font-black text-yellow-400/30">1K</div>
+            <span class="relative z-10 text-xl font-black text-white tracking-wider drop-shadow-lg">MINES 1000×</span>
+          </div>
+        </button>
+        <button onclick="showTab('roulette')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#450a0a] via-[#dc2626] to-[#ef4444] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-20 h-20 border-4 border-white/30 rounded-full flex items-center justify-center">
+                <div class="w-16 h-16 border-2 border-white/50 rounded-full animate-spin" style="animation-duration: 8s;"></div>
+              </div>
+            </div>
+            <div class="absolute top-3 left-3 w-3 h-3 bg-red-500 rounded-full"></div>
+            <div class="absolute bottom-4 right-4 w-4 h-4 bg-black rounded-full border border-white/30"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">ROULETTE</span>
+          </div>
+        </button>
+        <button onclick="showTab('keno')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#1e3a5f] via-[#2563eb] to-[#60a5fa] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 grid grid-cols-5 grid-rows-3 gap-1 p-3 opacity-30">
+              <div class="bg-white/50 rounded"></div>
+              <div class="bg-white/30 rounded"></div>
+              <div class="bg-white/50 rounded"></div>
+              <div class="bg-white/20 rounded"></div>
+              <div class="bg-white/50 rounded"></div>
+            </div>
+            <div class="absolute top-2 right-2 w-5 h-5 bg-yellow-400/60 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-3 left-3 text-3xl font-bold text-white/20">🎱</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">KENO</span>
+          </div>
+        </button>
+        <button onclick="showTab('coinflip')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#374151] via-[#6b7280] to-[#9ca3af] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="relative">
+                <div class="w-16 h-16 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-full shadow-xl flex items-center justify-center text-3xl font-bold text-yellow-700 animate-bounce" style="animation-duration: 1.5s;">$</div>
+                <div class="absolute -top-1 -right-1 w-6 h-6 bg-white/30 rounded-full"></div>
+              </div>
+            </div>
+            <div class="absolute top-2 left-2 w-4 h-4 bg-white/20 rounded-full"></div>
+            <div class="absolute bottom-2 right-2 w-3 h-3 bg-white/10 rounded-full"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">COIN FLIP</span>
+          </div>
+        </button>
+        <button onclick="showTab('tower')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#134e4a] via-[#0d9488] to-[#2dd4bf] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex flex-col justify-end items-center pb-2 opacity-40">
+              <div class="w-16 h-3 bg-white/50 rounded-sm mb-1"></div>
+              <div class="w-12 h-3 bg-white/40 rounded-sm mb-1"></div>
+              <div class="w-8 h-3 bg-white/30 rounded-sm"></div>
+            </div>
+            <div class="absolute top-3 right-3 w-4 h-4 bg-red-500/60 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-2 left-2 text-2xl">🏗️</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">TOWER</span>
+          </div>
+        </button>
+        <button onclick="showTab('rps')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#4a1d1d] via-[#dc2626] to-[#f87171] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center gap-2">
+              <span class="text-4xl transform -rotate-12">✊</span>
+              <span class="text-4xl">✋</span>
+              <span class="text-4xl transform rotate-12">✌️</span>
+            </div>
+            <div class="absolute top-2 right-2 w-5 h-5 bg-yellow-400/60 rounded-full animate-pulse"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">RPS</span>
+          </div>
+        </button>
+        <button onclick="showTab('racing')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#1f2937] via-[#4b5563] to-[#9ca3af] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex flex-col justify-center items-center gap-1 opacity-40">
+              <div class="w-20 h-2 bg-white/50 rounded-full"></div>
+              <div class="w-20 h-2 bg-white/30 rounded-full"></div>
+              <div class="w-20 h-2 bg-white/20 rounded-full"></div>
+            </div>
+            <div class="absolute left-2 top-1/2 -translate-y-1/2 text-3xl">🏎️</div>
+            <div class="absolute left-8 top-1/3 text-2xl">🚗</div>
+            <div class="absolute left-6 bottom-8 text-2xl">🏎️</div>
+            <div class="absolute top-2 right-2 w-5 h-5 bg-green-500/60 rounded-full"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">RACING</span>
+          </div>
+        </button>
+        <button onclick="showTab('fishing')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#164e63] via-[#0891b2] to-[#22d3ee] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-40">
+              <div class="absolute top-4 left-4 text-3xl animate-pulse">🐠</div>
+              <div class="absolute top-8 right-8 text-2xl">🐟</div>
+              <div class="absolute bottom-6 left-8 text-2xl">🦀</div>
+              <div class="absolute bottom-4 right-4 text-3xl">🐡</div>
+            </div>
+            <div class="absolute top-2 right-2 w-5 h-5 bg-yellow-400/60 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-3 left-3 text-4xl">🎣</div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">FISHING</span>
+          </div>
+        </button>
+        <button onclick="showTab('goal')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#14532d] via-[#22c55e] to-[#4ade80] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="relative">
+                <div class="w-16 h-12 border-4 border-white/50 rounded-lg"></div>
+                <div class="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white/80 rounded-full"></div>
+              </div>
+            </div>
+            <div class="absolute top-2 left-8 w-3 h-3 bg-white/30 rounded-full"></div>
+            <div class="absolute bottom-4 right-6 text-3xl">⚽</div>
+            <div class="absolute top-3 right-3 w-4 h-4 bg-yellow-400/60 rounded-full"></div>
+            <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">GOAL</span>
+          </div>
         </button>
       </div>
     </section>
 
-    <!-- Games -->
-    <section id="games" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-purple-400 mb-4">Trending Games</h2>
-        <p class="text-lg text-zinc-400">Popular slots and casino games</p>
+    <!-- Settings -->
+    <section id="settings" class="tab-content hidden">
+      <div class="my-10">
+        <h2 class="text-3xl font-bold text-white mb-1">Settings</h2>
+        <p class="text-[#a1a1aa]">Customize your experience</p>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:scale-105 transition">
-          <div class="h-32 bg-gradient-to-br from-orange-900 to-orange-600 flex items-center justify-center"><span class="text-3xl font-bold text-white">SWEET BONANZA</span></div>
-          <p class="p-3 text-sm text-center text-zinc-400">Pragmatic Play</p>
-        </div>
-        <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:scale-105 transition">
-          <div class="h-32 bg-gradient-to-br from-pink-900 to-pink-600 flex items-center justify-center"><span class="text-3xl font-bold text-white">GATES OF OLYMPUS</span></div>
-          <p class="p-3 text-sm text-center text-zinc-400">Pragmatic Play</p>
+      <div class="stake-card p-8 max-w-lg mx-auto">
+        <h3 class="text-xl font-semibold text-white mb-6">Theme</h3>
+        <div class="flex gap-4">
+          <button onclick="setTheme('dark')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-medium text-white transition">Dark</button>
+          <button onclick="setTheme('light')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-medium text-white transition">Light</button>
         </div>
       </div>
     </section>
 
     <!-- CRASH -->
     <section id="crash" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-green-400 mb-4">CRASH</h2>
-        <p class="text-2xl text-zinc-300">Multiplier: <span id="crashMultiplier">1.00</span>x</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">CRASH</h2>
+          <p class="text-xl text-[#00c853] font-mono font-semibold">Multiplier: <span id="crashMultiplier">1.00</span>x</p>
+        </div>
+        <div class="w-16"></div>
       </div>
-      <div class="h-64 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 relative">
-        <canvas id="crashChart" class="w-full h-full"></canvas>
+      <div class="h-64 stake-card rounded-xl overflow-hidden relative">
+        <canvas id="crashChart" class="w-full h-full rounded-xl"></canvas>
       </div>
-      <div class="flex justify-center gap-8 mt-12 flex-wrap">
-        <input type="number" id="crashBet" placeholder="Bet amount ($)" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-        <button id="crashBetBtn" onclick="startCrash()" class="px-12 py-4 bg-green-600 hover:bg-green-500 rounded-lg text-xl font-bold">BET</button>
-        <button id="crashCashoutBtn" onclick="cashoutCrash()" class="px-12 py-4 bg-red-600 hover:bg-red-700 rounded-lg text-xl font-bold hidden">CASH OUT</button>
+      <div class="flex justify-center gap-4 mt-8 flex-wrap">
+        <input type="number" id="crashBet" placeholder="Bet amount ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+        <button id="crashBetBtn" onclick="startCrash()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">BET</button>
+        <button id="crashCashoutBtn" onclick="cashoutCrash()" class="px-10 py-3 bg-red-600 hover:bg-red-500 rounded-lg font-bold hidden">CASH OUT</button>
       </div>
     </section>
 
     <!-- DICE -->
     <section id="dice" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-blue-400 mb-4">DICE</h2>
-        <p class="text-lg text-zinc-400">Roll under/over your target</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">DICE</h2>
+          <p class="text-[#a1a1aa]">Roll under/over 50</p>
+        </div>
+        <div class="w-16"></div>
       </div>
       <div class="flex flex-col items-center gap-8">
-        <div class="w-48 h-48 bg-zinc-900 rounded-full flex items-center justify-center border-4 border-blue-700 shadow-xl">
-          <span id="diceResult" class="text-8xl font-bold">?</span>
+        <div class="w-40 h-40 stake-card rounded-full flex items-center justify-center border-2 border-[#2a2a2a]">
+          <span id="diceResult" class="text-7xl font-bold text-white">?</span>
         </div>
-        <div class="flex gap-6 flex-wrap justify-center">
-          <select id="diceMode" class="px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-lg">
+        <div class="flex gap-4 flex-wrap justify-center">
+          <select id="diceMode" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
             <option value="under">Under 50</option>
             <option value="over">Over 50</option>
           </select>
-          <input type="number" id="diceBet" placeholder="Bet amount ($)" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-          <button onclick="rollDice()" class="px-12 py-4 bg-blue-600 hover:bg-blue-500 rounded-lg text-xl font-bold">ROLL</button>
+          <input type="number" id="diceBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button onclick="rollDice()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">ROLL</button>
         </div>
       </div>
     </section>
 
     <!-- MINES -->
     <section id="mines" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-emerald-400 mb-4">MINES</h2>
-        <p class="text-lg text-zinc-400">Reveal gems, avoid mines. Cash out anytime.</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">MINES</h2>
+          <p class="text-[#a1a1aa]">Reveal gems, avoid mines. Cash out anytime.</p>
+        </div>
+        <div class="w-16"></div>
       </div>
-      <div class="flex flex-col lg:flex-row gap-12 justify-center items-start">
-        <div class="w-full lg:w-80 bg-zinc-900 p-6 rounded-xl border border-zinc-800">
-          <div class="mb-6">
-            <label class="block text-sm text-zinc-400 mb-2">Bet Amount ($)</label>
-            <input type="number" id="minesBet" value="1" step="0.1" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
+      <div class="flex flex-col lg:flex-row gap-8 justify-center items-start">
+        <div class="w-full lg:w-72 stake-card p-6">
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
+            <input type="number" id="minesBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
           </div>
-          <div class="mb-6">
-            <label class="block text-sm text-zinc-400 mb-2">Number of Mines (1-24)</label>
-            <input type="range" id="minesCount" min="1" max="24" value="3" class="w-full accent-emerald-500"/>
-            <p class="text-center mt-2"><span id="minesValue">3</span> mines</p>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Mines (1–24)</label>
+            <input type="range" id="minesCount" min="1" max="24" value="3" class="w-full accent-[#00c853]"/>
+            <p class="text-center mt-2 text-[#71717a]"><span id="minesValue">3</span> mines</p>
           </div>
-          <div class="mb-6">
-            <label class="block text-sm text-zinc-400 mb-2">Gems Revealed</label>
-            <p class="text-2xl font-bold text-center text-emerald-400" id="gemsRevealed">0</p>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Gems Revealed</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="gemsRevealed">0</p>
           </div>
-          <div class="mb-6">
-            <label class="block text-sm text-zinc-400 mb-2">Current Multiplier</label>
-            <p class="text-2xl font-bold text-center text-emerald-400" id="minesMultiplier">1.00x</p>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Multiplier</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="minesMultiplier">1.00x</p>
           </div>
-          <button id="minesBetBtn" onclick="startMines()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xl font-bold mb-4">BET</button>
-          <button id="cashoutBtn" onclick="cashoutMines()" class="w-full py-4 bg-purple-600 hover:bg-purple-500 rounded-lg text-xl font-bold hidden">CASH OUT</button>
+          <button id="minesBetBtn" onclick="startMines()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="cashoutBtn" onclick="cashoutMines()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">CASH OUT</button>
         </div>
 
-        <div class="grid grid-cols-5 gap-2 max-w-[340px] mx-auto">
-          <div id="minesGrid" class="col-span-5 grid grid-cols-5 gap-2"></div>
+        <div class="max-w-[340px] mx-auto">
+          <div id="minesGrid" class="grid grid-cols-5 gap-2"></div>
         </div>
       </div>
-      <p class="text-center mt-8 text-zinc-500">Multiplier increases with each gem. Hit a mine and lose the bet.</p>
+      <p class="text-center mt-6 text-[#71717a] text-sm">Multiplier increases with each gem. Hit a mine and lose the bet.</p>
     </section>
 
     <!-- PLINKO -->
     <section id="plinko" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-purple-400 mb-4">PLINKO</h2>
-        <p class="text-lg text-zinc-400">Drop the ball and win multipliers</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">PLINKO</h2>
+          <p class="text-[#a1a1aa]">Drop the ball and win multipliers</p>
+        </div>
+        <div class="w-16"></div>
       </div>
-      <div class="flex flex-col items-center gap-8">
-        <div class="relative w-[520px] h-[420px] bg-zinc-900 rounded-xl border border-zinc-700 overflow-hidden">
-          <!-- Pegs -->
-          <div class="absolute inset-0 flex flex-col justify-between py-10 px-8">
-            ${Array(11).fill().map((_, row) => `
-              <div class="flex justify-${row % 2 === 0 ? 'between' : 'evenly'}">
-                ${Array(row % 2 === 0 ? 9 : 8).fill().map(() => `<div class="peg"></div>`).join('')}
-              </div>
-            `).join('')}
-          </div>
 
-          <!-- Ball -->
-          <div id="plinkoBall" class="absolute w-8 h-8 bg-yellow-400 rounded-full shadow-xl hidden transition-all duration-75 ease-linear"></div>
-
-          <!-- Bins -->
-          <div class="absolute bottom-0 left-0 right-0 h-20 flex justify-between px-6 items-end pb-4 bg-gradient-to-t from-black to-transparent">
-            <span class="text-sm font-bold text-red-400 w-[11%] text-center">0.2x</span>
-            <span class="text-sm font-bold text-orange-400 w-[11%] text-center">0.5x</span>
-            <span class="text-sm font-bold text-yellow-400 w-[11%] text-center">1x</span>
-            <span class="text-sm font-bold text-green-400 w-[11%] text-center">2x</span>
-            <span class="text-sm font-bold text-emerald-400 w-[11%] text-center">5x</span>
-            <span class="text-sm font-bold text-teal-400 w-[11%] text-center">10x</span>
-            <span class="text-sm font-bold text-cyan-400 w-[11%] text-center">25x</span>
-            <span class="text-sm font-bold text-purple-400 w-[11%] text-center">50x</span>
-            <span class="text-sm font-bold text-pink-400 w-[11%] text-center">100x</span>
+      <div class="flex flex-col items-center gap-6">
+        <div class="relative w-full max-w-[540px] h-[800px] bg-gradient-to-b from-[#131313] to-[#0d0d0d] rounded-2xl border border-[#2a2a2a] overflow-hidden">
+          <div id="plinkoPegs" class="absolute inset-0 flex flex-col justify-between py-16 px-16 pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 right-0 h-32 flex justify-between px-10 items-end pb-10 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/90 to-transparent">
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-pink-500">10×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-purple-400">5×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-cyan-400">2×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-teal-400">1×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-yellow-400">0.2×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-teal-400">1×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-cyan-400">2×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-purple-400">5×</div></div>
+            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-pink-500">10×</div></div>
           </div>
         </div>
 
-        <div class="flex gap-6 flex-wrap justify-center">
-          <input type="number" id="plinkoBet" placeholder="Bet amount ($)" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-          <button onclick="playPlinko()" class="px-12 py-4 bg-purple-600 hover:bg-purple-500 rounded-lg text-xl font-bold">DROP BALL</button>
+        <div class="flex flex-col sm:flex-row gap-4 items-center">
+          <input type="number" id="plinkoBet" placeholder="Bet ($)" min="0.1" step="0.1" class="w-48 px-5 py-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button onclick="playPlinko()" class="px-12 py-4 bg-[#00c853] hover:bg-[#00e676] text-black rounded-xl font-bold">DROP BALL</button>
         </div>
       </div>
     </section>
 
     <!-- LIMBO -->
     <section id="limbo" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-yellow-400 mb-4">LIMBO</h2>
-        <p class="text-lg text-zinc-400">Set target, roll multiplier</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">LIMBO</h2>
+          <p class="text-[#a1a1aa]">Set target, roll multiplier</p>
+        </div>
+        <div class="w-16"></div>
       </div>
       <div class="flex flex-col items-center gap-8">
-        <p class="text-6xl font-bold text-yellow-300" id="limboResult">1.00x</p>
-        <div class="flex gap-6 flex-wrap justify-center">
-          <input type="number" id="limboTarget" step="0.01" placeholder="Target e.g. 2.00" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-          <input type="number" id="limboBet" placeholder="Bet amount ($)" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-          <button onclick="playLimbo()" class="px-12 py-4 bg-yellow-600 hover:bg-yellow-500 rounded-lg text-xl font-bold">ROLL</button>
+        <p class="text-6xl font-bold text-[#00c853] font-mono" id="limboResult">1.00x</p>
+        <div class="flex gap-4 flex-wrap justify-center">
+          <input type="number" id="limboTarget" step="0.01" placeholder="Target (e.g. 2.00)" class="w-44 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <input type="number" id="limboBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button onclick="playLimbo()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">ROLL</button>
         </div>
       </div>
     </section>
 
     <!-- BLACKJACK -->
     <section id="blackjack" class="tab-content hidden">
-      <div class="text-center my-12">
-        <h2 class="text-5xl font-bold text-red-400 mb-4">BLACKJACK</h2>
-        <p class="text-lg text-zinc-400">Beat the dealer without busting</p>
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">BLACKJACK</h2>
+          <p class="text-[#a1a1aa]">Beat the dealer without busting</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="max-w-4xl mx-auto">
+        <div class="rounded-2xl overflow-hidden" style="background: linear-gradient(180deg, #166534 0%, #14532d 50%, #166534 100%); border: 3px solid #15803d;">
+          <div class="p-8">
+            <div class="flex flex-col items-center gap-8">
+              <div class="w-full">
+                <div class="flex justify-between items-center mb-3 px-4">
+                  <span class="text-white/70 font-medium">DEALER</span>
+                  <span id="dealerScore" class="text-white font-bold text-lg"></span>
+                </div>
+                <div id="dealerHand" class="flex gap-3 justify-center flex-wrap min-h-[120px] items-center"></div>
+              </div>
+              
+              <div class="w-full h-px bg-white/20"></div>
+              
+              <div class="w-full">
+                <div class="flex justify-between items-center mb-3 px-4">
+                  <span class="text-white/70 font-medium">YOU</span>
+                  <span id="playerScore" class="text-white font-bold text-lg"></span>
+                </div>
+                <div id="playerHand" class="flex gap-3 justify-center flex-wrap min-h-[120px] items-center"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-black/30 p-4">
+            <div class="flex gap-4 flex-wrap justify-center items-center">
+              <input type="number" id="blackjackBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a]/80 border border-white/20 rounded-lg text-center text-white placeholder-white/50 focus:outline-none focus:border-[#00c853]"/>
+              <button id="bjDeal" onclick="dealBlackjack()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">DEAL</button>
+              <button id="bjHit" onclick="hitBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#00c853] rounded-lg font-bold text-white hidden">HIT</button>
+              <button id="bjStand" onclick="standBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#00c853] rounded-lg font-bold text-white hidden">STAND</button>
+              <button id="bjDouble" onclick="doubleBlackjack()" class="px-8 py-3 bg-blue-600/80 border border-blue-400/50 hover:border-blue-400 rounded-lg font-bold text-white hidden">DOUBLE</button>
+              <button id="bjSplit" onclick="splitBlackjack()" class="px-8 py-3 bg-purple-600/80 border border-purple-400/50 hover:border-purple-400 rounded-lg font-bold text-white hidden">SPLIT</button>
+              <button id="bjInsurance" onclick="insuranceBlackjack()" class="px-8 py-3 bg-yellow-600/80 border border-yellow-400/50 hover:border-yellow-400 rounded-lg font-bold text-white hidden">INSURANCE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MINES 1000x -->
+    <section id="mines1000" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">MINES 1000×</h2>
+          <p class="text-[#a1a1aa]">Reveal gems, avoid mines. Each gem = 1000×!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-8 justify-center items-start">
+        <div class="w-full lg:w-72 stake-card p-6">
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($) - Min: 1,000,000</label>
+            <input type="number" id="mines1000Bet" value="1000000" step="100000" min="1000000" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Mines (7–24)</label>
+            <input type="range" id="mines1000Count" min="7" max="24" value="7" class="w-full accent-[#00c853]"/>
+            <p class="text-center mt-2 text-[#71717a]"><span id="mines1000Value">7</span> mines</p>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Gems Revealed</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="mines1000Gems">0</p>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Multiplier</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="mines1000Multiplier">0×</p>
+          </div>
+          <button id="mines1000BetBtn" onclick="startMines1000()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="mines1000CashoutBtn" onclick="cashoutMines1000()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">CASH OUT</button>
+        </div>
+
+        <div class="max-w-[340px] mx-auto">
+          <div id="mines1000Grid" class="grid grid-cols-5 gap-2"></div>
+        </div>
+      </div>
+      <p class="text-center mt-6 text-[#71717a] text-sm">Each gem reveals adds 1000×! Hit a mine and lose everything.</p>
+    </section>
+
+    <!-- ROULETTE -->
+    <section id="roulette" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">ROULETTE</h2>
+          <p class="text-[#a1a1aa]">Red/Black, Odd/Even, 1-18/19-36</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col items-center gap-8">
+        <div class="relative">
+          <div id="rouletteWheel" class="w-64 h-64 rounded-full border-8 border-[#1a1a1a] relative overflow-hidden shadow-2xl" style="background: conic-gradient(from 0deg, #dc2626 0deg 17deg, #1a1a1a 17deg 34deg, #dc2626 34deg 51deg, #1a1a1a 51deg 68deg, #dc2626 68deg 85deg, #1a1a1a 85deg 102deg, #dc2626 102deg 119deg, #1a1a1a 119deg 136deg, #dc2626 136deg 153deg, #1a1a1a 153deg 170deg, #dc2626 170deg 187deg, #1a1a1a 187deg 204deg, #dc2626 204deg 221deg, #1a1a1a 221deg 238deg, #dc2626 238deg 255deg, #1a1a1a 255deg 272deg, #dc2626 272deg 289deg, #1a1a1a 289deg 306deg, #dc2626 306deg 323deg, #1a1a1a 323deg 340deg, #dc2626 340deg 357deg, #1a1a1a 357deg 360deg);">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-20 h-20 bg-[#1a1a1a] rounded-full border-4 border-white/20 flex items-center justify-center">
+                <span id="rouletteNumber" class="text-4xl font-bold text-white">?</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[20px] border-t-white"></div>
+        </div>
+        <div class="flex gap-4 flex-wrap justify-center">
+          <select id="rouletteBet" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+            <option value="red">Red (2x)</option>
+            <option value="black">Black (2x)</option>
+            <option value="odd">Odd (2x)</option>
+            <option value="even">Even (2x)</option>
+            <option value="1-18">1-18 (2x)</option>
+            <option value="19-36">19-36 (2x)</option>
+            <option value="1st12">1st 12 (3x)</option>
+            <option value="2nd12">2nd 12 (3x)</option>
+            <option value="3rd12">3rd 12 (3x)</option>
+          </select>
+          <input type="number" id="rouletteBetAmount" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button id="rouletteSpinBtn" onclick="spinRoulette()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">SPIN</button>
+        </div>
+        <p class="text-[#71717a] text-sm">Bet on red/black, odd/even, ranges, or dozens!</p>
+      </div>
+    </section>
+
+    <!-- KENO -->
+    <section id="keno" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">KENO</h2>
+          <p class="text-[#a1a1aa]">Pick 1-10 numbers, match to win!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-8 justify-center items-start">
+        <div class="w-full lg:w-72 stake-card p-6">
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
+            <input type="number" id="kenoBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Picks: <span id="kenoPicksCount">1</span></label>
+            <input type="range" id="kenoPicks" min="1" max="10" value="1" class="w-full accent-[#00c853]"/>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Matches</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="kenoMatches">0</p>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Payout</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="kenoPayout">0×</p>
+          </div>
+          <button id="kenoBetBtn" onclick="playKeno()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">PLAY</button>
+          <button id="kenoClearBtn" onclick="clearKeno()" class="w-full py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-bold">CLEAR</button>
+        </div>
+
+        <div class="max-w-[500px] mx-auto">
+          <div id="kenoGrid" class="grid grid-cols-10 gap-1"></div>
+        </div>
+      </div>
+      <p class="text-center mt-6 text-[#71717a] text-sm">Pick 1-10 numbers. 20 will be drawn. Match more to win bigger!</p>
+    </section>
+
+    <!-- COIN FLIP -->
+    <section id="coinflip" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">COIN FLIP</h2>
+          <p class="text-[#a1a1aa]">Double or nothing!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col items-center gap-8">
+        <div class="perspective-500">
+          <div id="coin" class="w-40 h-40 relative transform-style-preserve-3d transition-transform duration-700" style="transform-style: preserve-3d;">
+            <div class="absolute inset-0 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-full shadow-2xl flex items-center justify-center" style="backface-visibility: hidden;">
+              <span class="text-5xl font-bold text-yellow-600">H</span>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-300 to-gray-500 rounded-full shadow-2xl flex items-center justify-center rotate-y-180" style="backface-visibility: hidden;">
+              <span class="text-5xl font-bold text-gray-700">T</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-4 flex-wrap justify-center">
+          <select id="coinChoice" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+            <option value="heads">HEADS</option>
+            <option value="tails">TAILS</option>
+          </select>
+          <input type="number" id="coinBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button id="coinFlipBtn" onclick="flipCoin()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">FLIP</button>
+        </div>
+        <p class="text-[#71717a] text-sm">Choose heads or tails, win 2x your bet!</p>
+      </div>
+    </section>
+
+    <!-- TOWER -->
+    <section id="tower" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">TOWER</h2>
+          <p class="text-[#a1a1aa]">Climb the tower, avoid bombs!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-8 justify-center items-start">
+        <div class="w-full lg:w-72 stake-card p-6">
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
+            <input type="number" id="towerBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bombs per row</label>
+            <input type="range" id="towerBombs" min="1" max="3" value="1" class="w-full accent-[#00c853]"/>
+            <p class="text-center mt-2 text-[#71717a]"><span id="towerBombsValue">1</span> bomb<span id="towerBombsPlural"></span></p>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Current Step</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="towerStep">0</p>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Total Won</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="towerWon">$0.00</p>
+          </div>
+          <button id="towerBetBtn" onclick="startTower()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="towerCashoutBtn" onclick="cashoutTower()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">CASH OUT</button>
+        </div>
+
+        <div class="max-w-[300px] mx-auto">
+          <div id="towerGrid" class="flex flex-col-reverse gap-2"></div>
+        </div>
+      </div>
+      <p class="text-center mt-6 text-[#71717a] text-sm">Select safe blocks to climb. Each step doubles your winnings!</p>
+    </section>
+
+    <!-- AVIA MASTERS -->
+    <!-- ROCK PAPER SCISSORS -->
+    <section id="rps" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">ROCK PAPER SCISSORS</h2>
+          <p class="text-[#a1a1aa]">Best of 3 rounds!</p>
+        </div>
+        <div class="w-16"></div>
       </div>
       <div class="flex flex-col items-center gap-8">
         <div class="flex gap-12 flex-wrap justify-center">
-          <div>
-            <h3 class="text-xl mb-2">Dealer</h3>
-            <div id="dealerHand" class="flex gap-2"></div>
-            <p id="dealerScore" class="mt-2 text-center"></p>
+          <div class="stake-card p-6 min-w-[150px] text-center">
+            <h3 class="text-sm font-medium text-[#71717a] mb-2">YOU</h3>
+            <p class="text-4xl font-bold" id="rpsPlayerEmoji">❔</p>
+            <p class="text-xl font-bold text-white mt-2" id="rpsPlayerScore">0</p>
           </div>
-          <div>
-            <h3 class="text-xl mb-2">You</h3>
-            <div id="playerHand" class="flex gap-2"></div>
-            <p id="playerScore" class="mt-2 text-center"></p>
+          <div class="stake-card p-6 min-w-[150px] text-center">
+            <h3 class="text-sm font-medium text-[#71717a] mb-2">CPU</h3>
+            <p class="text-4xl font-bold" id="rpsCpuEmoji">❔</p>
+            <p class="text-xl font-bold text-white mt-2" id="rpsCpuScore">0</p>
           </div>
         </div>
-        <div class="flex gap-6 flex-wrap justify-center">
-          <input type="number" id="blackjackBet" placeholder="Bet amount ($)" class="w-48 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-center"/>
-          <button id="bjDeal" onclick="dealBlackjack()" class="px-12 py-4 bg-red-600 hover:bg-red-500 rounded-lg text-xl font-bold">DEAL</button>
-          <button id="bjHit" onclick="hitBlackjack()" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-lg font-bold hidden">HIT</button>
-          <button id="bjStand" onclick="standBlackjack()" class="px-8 py-3 bg-green-600 hover:bg-green-500 rounded-lg text-lg font-bold hidden">STAND</button>
+        
+        <div id="rpsChoices" class="flex gap-4">
+          <button onclick="playRps('rock')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✊</button>
+          <button onclick="playRps('paper')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✋</button>
+          <button onclick="playRps('scissors')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✌️</button>
         </div>
+        
+        <div id="rpsResult" class="text-2xl font-bold text-white h-8"></div>
+        
+        <div class="flex gap-4 flex-wrap justify-center">
+          <input type="number" id="rpsBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button id="rpsPlayBtn" onclick="startRps()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">PLAY</button>
+        </div>
+        <p class="text-[#71717a] text-sm">Best of 3 rounds. Win 2 out of 3 to double your bet!</p>
+      </div>
+    </section>
+
+    <!-- RACING -->
+    <section id="racing" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">RACING</h2>
+          <p class="text-[#a1a1aa]">Pick the winner!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col items-center gap-8">
+        <div class="stake-card p-6 w-full max-w-2xl">
+          <div id="racingTrack" class="relative h-64 bg-[#1a1a1a] rounded-lg overflow-hidden">
+            <div class="absolute inset-0 border-b-4 border-dashed border-white/20"></div>
+            <div class="absolute inset-0 grid grid-rows-4 gap-0">
+              <div class="border-b border-white/10 flex items-center px-4">
+                <div id="car0" class="flex items-center gap-2 transition-all duration-100">
+                  <span class="text-2xl">🏎️</span>
+                  <span class="font-bold">Car 1</span>
+                </div>
+              </div>
+              <div class="border-b border-white/10 flex items-center px-4">
+                <div id="car1" class="flex items-center gap-2 transition-all duration-100">
+                  <span class="text-2xl">🚗</span>
+                  <span class="font-bold">Car 2</span>
+                </div>
+              </div>
+              <div class="border-b border-white/10 flex items-center px-4">
+                <div id="car2" class="flex items-center gap-2 transition-all duration-100">
+                  <span class="text-2xl">🚙</span>
+                  <span class="font-bold">Car 3</span>
+                </div>
+              </div>
+              <div class="flex items-center px-4">
+                <div id="car3" class="flex items-center gap-2 transition-all duration-100">
+                  <span class="text-2xl">�越野</span>
+                  <span class="font-bold">Car 4</span>
+                </div>
+              </div>
+            </div>
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-4xl">🏁</div>
+          </div>
+        </div>
+        <div class="flex gap-4 flex-wrap justify-center">
+          <select id="racingPick" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+            <option value="0">Car 1 (🏎️)</option>
+            <option value="1">Car 2 (🚗)</option>
+            <option value="2">Car 3 (🚙)</option>
+            <option value="3">Car 4 (🚕)</option>
+          </select>
+          <input type="number" id="racingBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button id="racingBetBtn" onclick="startRacing()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">RACE</button>
+        </div>
+        <p class="text-[#71717a] text-sm">Pick a winner! All cars have equal odds.</p>
+      </div>
+    </section>
+
+    <!-- FISHING -->
+    <section id="fishing" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">FISHING</h2>
+          <p class="text-[#a1a1aa]">Shoot fish to win!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-8 justify-center items-start">
+        <div class="w-full lg:w-72 stake-card p-6">
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
+            <input type="number" id="fishingBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Total Won</label>
+            <p class="text-2xl font-bold text-center text-[#00c853]" id="fishingWon">$0.00</p>
+          </div>
+          <button id="fishingBetBtn" onclick="startFishing()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">START</button>
+          <button id="fishingCollectBtn" onclick="collectFishing()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">COLLECT</button>
+        </div>
+
+        <div class="relative w-full max-w-[600px] h-[400px] bg-gradient-to-b from-cyan-900 to-blue-950 rounded-2xl overflow-hidden border border-[#2a2a2a]">
+          <div id="fishingArea" class="absolute inset-0"></div>
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+            <div id="fishingHook" class="text-4xl transition-transform">🎣</div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center mt-6 text-[#71717a] text-sm">Fish swim across the screen with different multipliers. Click to shoot!</p>
+    </section>
+
+    <!-- GOAL -->
+    <section id="goal" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">GOAL</h2>
+          <p class="text-[#a1a1aa]">Score from 5 penalty kicks!</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+      <div class="flex flex-col items-center gap-8">
+        <div class="relative w-full max-w-[500px] h-[300px] bg-gradient-to-b from-green-800 to-green-900 rounded-xl overflow-hidden border border-[#2a2a2a]">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-48 h-32 border-4 border-white rounded-lg relative">
+              <div class="absolute inset-0 grid grid-cols-3 grid-rows-2">
+                <button onclick="kickGoal(0)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+                <button onclick="kickGoal(1)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+                <button onclick="kickGoal(2)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+                <button onclick="kickGoal(3)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+                <button onclick="kickGoal(4)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+                <button onclick="kickGoal(5)" class="goal-zone hover:bg-white/20 transition flex items-center justify-center text-2xl">🟨</button>
+              </div>
+              <div id="goalBall" class="absolute bottom-2 left-1/2 -translate-x-1/2 text-3xl transition-all duration-500">⚽</div>
+              <div id="goalKeeper" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl transition-all duration-300">🧤</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stake-card p-6 w-full max-w-md">
+          <div class="flex justify-between mb-4">
+            <div class="text-center">
+              <p class="text-sm text-[#71717a]">Goals</p>
+              <p class="text-2xl font-bold text-green-500" id="goalScore">0</p>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-[#71717a]">Kicks Left</p>
+              <p class="text-2xl font-bold text-white" id="goalKicks">5</p>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-[#71717a]">Payout</p>
+              <p class="text-2xl font-bold text-[#00c853]" id="goalPayout">0×</p>
+            </div>
+          </div>
+          
+          <div class="flex gap-4 flex-wrap justify-center">
+            <input type="number" id="goalBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+            <button id="goalKickBtn" onclick="startGoal()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">KICK</button>
+          </div>
+        </div>
+        <p class="text-[#71717a] text-sm">Pick a spot to kick. Score more goals for higher multipliers!</p>
       </div>
     </section>
   </main>
 
   <!-- Result Modal -->
-  <div id="resultModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50">
-    <div class="bg-zinc-900 p-8 rounded-xl text-center max-w-md w-11/12">
-      <h3 id="resultTitle" class="text-3xl font-bold mb-4 text-white"></h3>
-      <p id="resultMessage" class="text-xl mb-6 text-zinc-300"></p>
-      <button onclick="closeResultModal()" class="px-8 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-lg font-bold">OK</button>
+  <div id="resultModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-[#1a1a1a] p-10 rounded-2xl text-center max-w-md w-full border border-[#2a2a2a] shadow-2xl">
+      <h3 id="resultTitle" class="text-2xl font-bold mb-4 text-white"></h3>
+      <p id="resultMessage" class="text-lg mb-8 text-[#a1a1aa]"></p>
+      <button onclick="closeResultModal()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-xl font-bold">OK</button>
     </div>
   </div>
 
   <!-- Auth Modal -->
-  <div id="authModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50">
-    <div class="bg-zinc-900 p-8 rounded-xl max-w-md w-11/12">
+  <div id="authModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-[#1a1a1a] p-8 rounded-2xl max-w-md w-full border border-[#2a2a2a]">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-white">Account</h3>
-        <button onclick="closeAuthModal()" class="text-zinc-400 hover:text-white text-xl">×</button>
+        <h3 class="text-xl font-bold text-white">Account</h3>
+        <button onclick="closeAuthModal()" class="text-[#71717a] hover:text-white text-2xl leading-none">×</button>
       </div>
-      <div class="flex mb-6 border-b border-zinc-700">
-        <button onclick="showAuthTab('login')" class="flex-1 py-3 font-medium auth-tab active text-white border-b-2 border-purple-600">Login</button>
-        <button onclick="showAuthTab('register')" class="flex-1 py-3 font-medium auth-tab text-zinc-400">Register</button>
+      <div class="flex mb-6 border-b border-[#2a2a2a]">
+        <button onclick="showAuthTab('login')" class="flex-1 py-3 font-medium auth-tab active text-white border-b-2 border-[#00c853] -mb-px">Login</button>
+        <button onclick="showAuthTab('register')" class="flex-1 py-3 font-medium auth-tab text-[#a1a1aa] border-b-2 border-transparent -mb-px">Register</button>
       </div>
+
       <div id="loginForm">
         <div class="mb-4">
-          <label class="block text-sm text-zinc-400 mb-2">Username</label>
-          <input type="text" id="loginUsername" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-purple-500"/>
+          <label class="block text-sm text-[#a1a1aa] mb-2">Username</label>
+          <input type="text" id="loginUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
         </div>
         <div class="mb-6">
-          <label class="block text-sm text-zinc-400 mb-2">Password</label>
-          <input type="password" id="loginPassword" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-purple-500"/>
+          <label class="block text-sm text-[#a1a1aa] mb-2">Password</label>
+          <input type="password" id="loginPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
         </div>
-        <button onclick="fakeLogin()" class="w-full py-4 bg-purple-600 hover:bg-purple-500 rounded-lg text-xl font-bold">Login</button>
+        <button onclick="fakeLogin()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Login</button>
       </div>
+
       <div id="registerForm" class="hidden">
         <div class="mb-4">
-          <label class="block text-sm text-zinc-400 mb-2">Username</label>
-          <input type="text" id="regUsername" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-purple-500"/>
+          <label class="block text-sm text-[#a1a1aa] mb-2">Username</label>
+          <input type="text" id="regUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
         </div>
         <div class="mb-4">
-          <label class="block text-sm text-zinc-400 mb-2">Password</label>
-          <input type="password" id="regPassword" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-purple-500"/>
+          <label class="block text-sm text-[#a1a1aa] mb-2">Password</label>
+          <input type="password" id="regPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
         </div>
         <div class="mb-6">
-          <label class="block text-sm text-zinc-400 mb-2">Confirm Password</label>
-          <input type="password" id="regConfirm" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:border-purple-500"/>
+          <label class="block text-sm text-[#a1a1aa] mb-2">Confirm Password</label>
+          <input type="password" id="regConfirm" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
         </div>
-        <button onclick="fakeRegister()" class="w-full py-4 bg-purple-600 hover:bg-purple-500 rounded-lg text-xl font-bold">Register</button>
+        <button onclick="fakeRegister()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Register</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Auth + Admin
-    let currentUser = localStorage.getItem('vantabet_username') || null;
+    // Global Sound Effects
+    function playSfx(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        switch(type) {
+          case 'click':
+            osc.frequency.setValueAtTime(600, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+            break;
+          case 'win':
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+            break;
+          case 'lose':
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+            break;
+          case 'bet':
+            osc.frequency.setValueAtTime(500, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+            break;
+          case 'cashout':
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.setValueAtTime(500, ctx.currentTime + 0.08);
+            osc.frequency.setValueAtTime(700, ctx.currentTime + 0.16);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+            break;
+          case 'hit':
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+            break;
+          case 'reveal':
+            osc.frequency.setValueAtTime(600, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.08);
+            break;
+          case 'spin':
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(200, ctx.currentTime);
+            for(let i = 0; i < 10; i++) {
+              osc.frequency.setValueAtTime(200 + (i * 30), ctx.currentTime + i * 0.05);
+            }
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+            break;
+          case 'flip':
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.6);
+            break;
+        }
+      } catch(e) {}
+    }
+
+    // Auth + Balance
+    let currentUser = localStorage.getItem('vantabet_current_user') || null;
+    let balance = 500.00;
+    const balanceEl = document.getElementById('balance');
+
+    function loadBalance() {
+      if (currentUser) {
+        const saved = localStorage.getItem(`vantabet_balance_${currentUser}`);
+        balance = saved ? parseFloat(saved) : 500.00;
+      } else {
+        balance = 500.00;
+      }
+      updateBalance();
+    }
+
+    function saveBalance() {
+      if (currentUser) {
+        localStorage.setItem(`vantabet_balance_${currentUser}`, balance);
+      }
+    }
+
+    function updateBalance() {
+      balanceEl.textContent = balance.toFixed(2);
+    }
 
     function updateAuthUI() {
       const area = document.getElementById('authArea');
       if (currentUser) {
         area.innerHTML = `
-          <span class="text-lg font-medium text-purple-300 mr-4">Welcome, ${currentUser}</span>
-          <button onclick="logout()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">Logout</button>
+          <span class="text-sm font-medium text-[#a1a1aa]">${currentUser}</span>
+          <button onclick="logout()" class="px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] hover:border-[#333] rounded-lg text-sm">Logout</button>
         `;
-        document.getElementById('adminPanel').classList.toggle('hidden', currentUser !== 'Vantaadmin');
       } else {
         area.innerHTML = `
-          <button onclick="openAuthModal('login')" class="px-4 py-2 text-purple-300 hover:text-purple-100">Login</button>
-          <span class="text-zinc-500 mx-2">/</span>
-          <button onclick="openAuthModal('register')" class="px-4 py-2 text-purple-300 hover:text-purple-100">Register</button>
+          <button onclick="openAuthModal('login')" class="px-3 py-1.5 text-sm text-[#a1a1aa] hover:text-white">Login</button>
+          <span class="text-[#52525b]">/</span>
+          <button onclick="openAuthModal('register')" class="px-3 py-1.5 text-sm text-[#a1a1aa] hover:text-white">Register</button>
         `;
-        document.getElementById('adminPanel').classList.add('hidden');
       }
     }
 
@@ -359,87 +1127,90 @@
       document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
       document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
       document.querySelectorAll('.auth-tab').forEach(btn => {
-        btn.classList.remove('active', 'text-white', 'border-b-2', 'border-purple-600');
-        btn.classList.add('text-zinc-400');
+        btn.classList.remove('text-white', 'border-[#00c853]');
+        btn.classList.add('text-[#a1a1aa]', 'border-transparent');
       });
       const active = document.querySelector(`button[onclick="showAuthTab('${tab}')"]`);
-      if (active) active.classList.add('active', 'text-white', 'border-b-2', 'border-purple-600');
+      if (active) { active.classList.add('text-white', 'border-[#00c853]'); active.classList.remove('text-[#a1a1aa]', 'border-transparent'); }
     }
 
     function fakeLogin() {
       const username = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword').value;
-      if (!username || !password) return alert('Fill username and password');
-      if (username === 'Vantaadmin' && password === '12345') {
-        localStorage.setItem('vantabet_username', username);
-        currentUser = username;
-        updateAuthUI();
-        closeAuthModal();
-        alert(`Admin access granted, ${username}!`);
-        return;
-      }
-      localStorage.setItem('vantabet_username', username);
+
+      if (!username || !password) return alert('Please enter username and password');
+
+      const savedPassword = localStorage.getItem(`vantabet_password_${username}`);
+      if (!savedPassword) return alert('Username not found. Please register first.');
+
+      if (savedPassword !== password) return alert('Incorrect password.');
+
+      localStorage.setItem('vantabet_current_user', username);
       currentUser = username;
       updateAuthUI();
+      loadBalance();
       closeAuthModal();
-      alert(`Welcome, ${username}!`);
+      alert(`Welcome back, ${username}!`);
     }
 
     function fakeRegister() {
       const username = document.getElementById('regUsername').value.trim();
       const pass = document.getElementById('regPassword').value;
       const confirm = document.getElementById('regConfirm').value;
-      if (!username || !pass || pass !== confirm) return alert('Check inputs');
-      localStorage.setItem('vantabet_username', username);
+
+      if (!username || !pass || pass !== confirm) return alert('Please fill all fields and make sure passwords match');
+
+      if (localStorage.getItem(`vantabet_password_${username}`)) return alert('Username already taken');
+
+      localStorage.setItem(`vantabet_password_${username}`, pass);
+      localStorage.setItem(`vantabet_balance_${username}`, '500.00');
+
+      localStorage.setItem('vantabet_current_user', username);
       currentUser = username;
       updateAuthUI();
+      loadBalance();
       closeAuthModal();
-      alert(`Registered! Welcome, ${username}`);
+      alert(`Account created! Welcome, ${username}!`);
     }
 
     function logout() {
-      localStorage.removeItem('vantabet_username');
+      localStorage.removeItem('vantabet_current_user');
       currentUser = null;
       updateAuthUI();
+      balance = 500.00;
+      updateBalance();
       alert('Logged out');
     }
 
-    updateAuthUI();
-
-    function setAdminBalance() {
-      const amount = parseFloat(document.getElementById('adminSetBalance').value);
-      if (!isNaN(amount) && amount >= 0) {
-        balance = amount;
-        updateBalance();
-        showResult('Balance Set', `New balance: $${amount.toFixed(2)}`);
-      } else {
-        showResult('Error', 'Enter a valid positive number');
-      }
+    function setTheme(theme) {
+      document.documentElement.classList.toggle('theme-light', theme === 'light');
+      localStorage.setItem('vantabet_theme', theme);
+      showResult('Theme', theme === 'dark' ? 'Dark theme applied.' : 'Light theme applied.');
     }
+    if (localStorage.getItem('vantabet_theme') === 'light') document.documentElement.classList.add('theme-light');
 
-    let showMinesDebug = false;
-    document.getElementById('showMinesToggle')?.addEventListener('change', e => {
-      showMinesDebug = e.target.checked;
-    });
+    // Initial load
+    updateAuthUI();
+    loadBalance();
 
-    // Balance
-    let balance = 500.00;
-    const balanceEl = document.getElementById('balance');
-    function updateBalance() { balanceEl.textContent = balance.toFixed(2); }
-    updateBalance();
-
-    // Tabs
+    // Tab switch – main nav: Home, Originals, Settings. Sub-games (crash, dice, etc.) show Originals as active.
+    const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal'];
     function showTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
+      const panel = document.getElementById(tabId);
+      if (panel) panel.classList.remove('hidden');
+
+      const navTabId = SUB_GAMES.includes(tabId) ? 'originals' : tabId;
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('border-purple-600', 'text-white');
-        btn.classList.add('text-zinc-400');
+        const isActive = btn.getAttribute('data-tab') === navTabId;
+        btn.classList.toggle('text-white', isActive);
+        btn.classList.toggle('bg-white/5', isActive);
+        btn.classList.toggle('text-[#a1a1aa]', !isActive);
       });
-      const active = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
-      if (active) active.classList.add('border-purple-600', 'text-white');
+
+      if (tabId === 'crash') drawCrashChart();
     }
-    showTab('home');
+    showTab('originals');
 
     // Result modal
     function showResult(title, message) {
@@ -451,17 +1222,40 @@
       document.getElementById('resultModal').classList.add('hidden');
     }
 
-    // MINES (already working - kept as is with debug)
-    let minesGameActive = false, minesPositions = [], revealed = 0, minesBet = 0;
+    // ──────────────────────────────────────────────
+    // MINES - Fully working
+    // ──────────────────────────────────────────────
+    let minesGameActive = false;
+    let minesPositions = [];
+    let revealed = 0;
+    let minesBet = 0;
     const gridSize = 25;
+
+    document.getElementById('minesCount')?.addEventListener('input', e => {
+      document.getElementById('minesValue').textContent = e.target.value;
+    });
 
     function startMines() {
       if (minesGameActive) return;
-      minesBet = parseFloat(document.getElementById('minesBet').value) || 0;
-      if (minesBet <= 0 || minesBet > balance) return showResult('Error', 'Invalid bet');
-      balance -= minesBet; updateBalance();
-      const numMines = parseInt(document.getElementById('minesCount').value);
-      minesPositions = []; revealed = 0; minesGameActive = true;
+
+      const betEl = document.getElementById('minesBet');
+      minesBet = parseFloat(betEl?.value) || 0;
+
+      if (minesBet <= 0 || minesBet > balance) {
+        return showResult('Error', 'Bet must be >0 and ≤ your balance');
+      }
+
+      balance -= minesBet;
+      updateBalance();
+      saveBalance();
+
+      const countEl = document.getElementById('minesCount');
+      const numMines = parseInt(countEl?.value) || 3;
+
+      minesPositions = [];
+      revealed = 0;
+      minesGameActive = true;
+
       document.getElementById('gemsRevealed').textContent = 0;
       document.getElementById('minesMultiplier').textContent = '1.00x';
       document.getElementById('minesBetBtn').classList.add('hidden');
@@ -476,33 +1270,28 @@
       grid.innerHTML = '';
       for (let i = 0; i < gridSize; i++) {
         const tile = document.createElement('button');
-        tile.className = 'w-16 h-16 bg-zinc-800 rounded-lg flex items-center justify-center text-3xl hover:bg-zinc-700 transition';
+        tile.className = 'w-14 h-14 sm:w-16 sm:h-16 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg flex items-center justify-center text-2xl sm:text-3xl hover:border-[#333] transition';
         tile.textContent = '?';
-        tile.onclick = () => revealTile(i, tile);
+        tile.dataset.index = i;
+        tile.addEventListener('click', () => revealTile(i, tile));
         grid.appendChild(tile);
-      }
-
-      if (showMinesDebug) {
-        document.querySelectorAll('#minesGrid button').forEach((tile, i) => {
-          if (minesPositions.includes(i)) {
-            tile.textContent = '💣';
-            tile.classList.add('bg-red-900/50');
-          }
-        });
       }
     }
 
     function revealTile(index, tile) {
       if (!minesGameActive || tile.disabled) return;
       tile.disabled = true;
+
       if (minesPositions.includes(index)) {
         tile.textContent = '💣';
-        tile.classList.add('bg-red-900');
+        tile.classList.add('bg-red-900/80', 'border-red-800', 'animate-shake');
+        playSfx('lose');
         showResult('Mine Hit!', `Lost $${minesBet.toFixed(2)}`);
         endMines(false);
       } else {
         tile.textContent = '💎';
-        tile.classList.add('bg-emerald-900');
+        tile.classList.add('bg-emerald-900/80', 'border-emerald-700', 'animate-bounce');
+        playSfx('reveal');
         revealed++;
         document.getElementById('gemsRevealed').textContent = revealed;
         const mult = (1 + revealed * 0.18).toFixed(2);
@@ -514,7 +1303,11 @@
       if (!minesGameActive) return;
       const mult = parseFloat(document.getElementById('minesMultiplier').textContent);
       const payout = minesBet * mult;
-      balance += payout; updateBalance();
+      balance += payout;
+      updateBalance();
+      saveBalance();
+      playSfx('cashout');
+      playSfx('win');
       showResult('Cashed Out!', `At ${mult}x<br>Won $${(payout - minesBet).toFixed(2)}`);
       endMines(true);
     }
@@ -524,29 +1317,1327 @@
       document.getElementById('cashoutBtn').classList.add('hidden');
       document.getElementById('minesBetBtn').classList.remove('hidden');
       document.querySelectorAll('#minesGrid button').forEach(t => t.disabled = true);
-      if (showMinesDebug) {
-        document.querySelectorAll('#minesGrid button').forEach((tile, i) => {
-          if (minesPositions.includes(i)) {
-            tile.textContent = '💣';
-            tile.classList.add('bg-red-900');
-          }
-        });
+    }
+
+    // ──────────────────────────────────────────────
+    // MINES 1000x
+    // ──────────────────────────────────────────────
+    let mines1000GameActive = false;
+    let mines1000Positions = [];
+    let mines1000Revealed = 0;
+    let mines1000Bet = 0;
+    const gridSize1000 = 25;
+
+    document.getElementById('mines1000Count')?.addEventListener('input', e => {
+      document.getElementById('mines1000Value').textContent = e.target.value;
+    });
+
+    function startMines1000() {
+      if (mines1000GameActive) return;
+
+      const betEl = document.getElementById('mines1000Bet');
+      mines1000Bet = parseFloat(betEl?.value) || 0;
+
+      if (mines1000Bet < 1000000) {
+        return showResult('Error', 'Minimum bet is $1,000,000');
+      }
+      if (mines1000Bet > balance) {
+        return showResult('Error', 'Bet exceeds balance');
+      }
+
+      balance -= mines1000Bet;
+      updateBalance();
+      saveBalance();
+
+      const countEl = document.getElementById('mines1000Count');
+      const numMines = parseInt(countEl?.value) || 7;
+
+      mines1000Positions = [];
+      mines1000Revealed = 0;
+      mines1000GameActive = true;
+
+      document.getElementById('mines1000Gems').textContent = 0;
+      document.getElementById('mines1000Multiplier').textContent = '0×';
+      document.getElementById('mines1000BetBtn').classList.add('hidden');
+      document.getElementById('mines1000CashoutBtn').classList.remove('hidden');
+
+      while (mines1000Positions.length < numMines) {
+        const pos = Math.floor(Math.random() * gridSize1000);
+        if (!mines1000Positions.includes(pos)) mines1000Positions.push(pos);
+      }
+
+      const grid = document.getElementById('mines1000Grid');
+      grid.innerHTML = '';
+      for (let i = 0; i < gridSize1000; i++) {
+        const tile = document.createElement('button');
+        tile.className = 'w-14 h-14 sm:w-16 sm:h-16 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg flex items-center justify-center text-2xl sm:text-3xl hover:border-[#333] transition';
+        tile.textContent = '?';
+        tile.dataset.index = i;
+        tile.addEventListener('click', () => revealTile1000(i, tile));
+        grid.appendChild(tile);
       }
     }
 
+    function revealTile1000(index, tile) {
+      if (!mines1000GameActive || tile.disabled) return;
+      tile.disabled = true;
+
+      if (mines1000Positions.includes(index)) {
+        tile.textContent = '💣';
+        tile.classList.add('bg-red-900/80', 'border-red-800', 'animate-shake');
+        showResult('Mine Hit!', `Lost $${mines1000Bet.toLocaleString()}`);
+        endMines1000(false);
+      } else {
+        tile.textContent = '💎';
+        tile.classList.add('bg-emerald-900/80', 'border-emerald-700', 'animate-bounce');
+        mines1000Revealed++;
+        document.getElementById('mines1000Gems').textContent = mines1000Revealed;
+        const mult = mines1000Revealed * 1000;
+        document.getElementById('mines1000Multiplier').textContent = mult + '×';
+      }
+    }
+
+    function cashoutMines1000() {
+      if (!mines1000GameActive) return;
+      const mult = mines1000Revealed * 1000;
+      const payout = mines1000Bet * mult;
+      balance += payout;
+      updateBalance();
+      saveBalance();
+      showResult('Cashed Out!', `At ${mult}×<br>Won $${(payout - mines1000Bet).toLocaleString()}`);
+      endMines1000(true);
+    }
+
+    function endMines1000(won) {
+      mines1000GameActive = false;
+      document.getElementById('mines1000CashoutBtn').classList.add('hidden');
+      document.getElementById('mines1000BetBtn').classList.remove('hidden');
+      document.querySelectorAll('#mines1000Grid button').forEach(t => t.disabled = true);
+    }
+
+    // ──────────────────────────────────────────────
+    // ROULETTE
+    // ──────────────────────────────────────────────
+    let rouletteSpinning = false;
+
+    const ROULETTE_NUMBERS = [
+      0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
+    ];
+
+    function spinRoulette() {
+      if (rouletteSpinning) return;
+      
+      const bet = parseFloat(document.getElementById('rouletteBetAmount')?.value) || 0;
+      if (bet <= 0 || bet > balance) return showResult('Error', 'Invalid bet');
+
+      balance -= bet;
+      updateBalance();
+      saveBalance();
+
+      rouletteSpinning = true;
+      document.getElementById('rouletteSpinBtn').classList.add('hidden');
+
+      const wheel = document.getElementById('rouletteWheel');
+      const numberEl = document.getElementById('rouletteNumber');
+      
+      const resultIndex = Math.floor(Math.random() * ROULETTE_NUMBERS.length);
+      const result = ROULETTE_NUMBERS[resultIndex];
+      const degrees = 360 - (resultIndex * 9.73) + (360 * 5);
+      
+      wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+      wheel.style.transform = `rotate(${degrees}deg)`;
+
+      let currentRot = 0;
+      const spinInterval = setInterval(() => {
+        currentRot += 30;
+        numberEl.textContent = Math.floor(Math.random() * 37);
+      }, 50);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        numberEl.textContent = result;
+        wheel.style.transition = 'none';
+        
+        const betType = document.getElementById('rouletteBet')?.value;
+        let won = false;
+        let multiplier = 2;
+        
+        const isRed = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(result);
+        const isBlack = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35].includes(result);
+        const isOdd = result % 2 === 1;
+        const isEven = result % 2 === 0 && result !== 0;
+
+        if (betType === 'red' && isRed) won = true;
+        else if (betType === 'black' && isBlack) won = true;
+        else if (betType === 'odd' && isOdd) won = true;
+        else if (betType === 'even' && isEven) won = true;
+        else if (betType === '1-18' && result >= 1 && result <= 18) won = true;
+        else if (betType === '19-36' && result >= 19 && result <= 36) won = true;
+        else if (betType === '1st12' && result >= 1 && result <= 12) { won = true; multiplier = 3; }
+        else if (betType === '2nd12' && result >= 13 && result <= 24) { won = true; multiplier = 3; }
+        else if (betType === '3rd12' && result >= 25 && result <= 36) { won = true; multiplier = 3; }
+
+        if (won) {
+          const payout = bet * multiplier;
+          balance += payout;
+          updateBalance();
+          saveBalance();
+          showResult('WIN!', `Landed on ${result}<br>Won $${(payout - bet).toFixed(2)}`);
+        } else {
+          showResult('LOSS', `Landed on ${result}<br>Lost $${bet.toFixed(2)}`);
+        }
+
+        setTimeout(() => {
+          wheel.style.transition = 'transform 0.5s ease-out';
+          wheel.style.transform = `rotate(${degrees % 360}deg)`;
+          rouletteSpinning = false;
+          document.getElementById('rouletteSpinBtn').classList.remove('hidden');
+        }, 1500);
+      }, 4200);
+    }
+
+    // ──────────────────────────────────────────────
+    // KENO
+    // ──────────────────────────────────────────────
+    let kenoPicked = [];
+    let kenoGameActive = false;
+    let kenoBet = 0;
+
+    const KENO_PAYOUTS = {
+      1: [0, 3],
+      2: [0, 1, 9],
+      3: [0, 1, 2, 27],
+      4: [0, 1, 2, 4, 80],
+      5: [0, 1, 2, 3, 10, 400],
+      6: [0, 1, 2, 3, 5, 50, 1000],
+      7: [0, 1, 2, 3, 4, 20, 100, 3000],
+      8: [0, 1, 2, 3, 4, 10, 50, 500, 10000],
+      9: [0, 1, 2, 3, 4, 5, 25, 200, 2000, 20000],
+      10: [0, 1, 2, 3, 4, 5, 10, 100, 1000, 10000, 100000]
+    };
+
+    document.getElementById('kenoPicks')?.addEventListener('input', e => {
+      document.getElementById('kenoPicksCount').textContent = e.target.value;
+      initKenoGrid();
+    });
+
+    function initKenoGrid() {
+      const grid = document.getElementById('kenoGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      kenoPicked = [];
+      
+      const numPicks = parseInt(document.getElementById('kenoPicks')?.value) || 1;
+      
+      for (let i = 1; i <= 80; i++) {
+        const num = document.createElement('button');
+        num.className = 'w-8 h-8 sm:w-10 sm:h-10 bg-[#1a1a1a] border border-[#2a2a2a] rounded flex items-center justify-center text-xs sm:text-sm font-bold hover:border-[#00c853] transition';
+        num.textContent = i;
+        num.dataset.num = i;
+        num.addEventListener('click', () => toggleKenoNumber(i, num));
+        grid.appendChild(num);
+      }
+    }
+
+    function toggleKenoNumber(num, el) {
+      if (kenoGameActive) return;
+      const numPicks = parseInt(document.getElementById('kenoPicks')?.value) || 1;
+      
+      if (kenoPicked.includes(num)) {
+        kenoPicked = kenoPicked.filter(n => n !== num);
+        el.classList.remove('bg-[#00c853]', 'text-black');
+        el.classList.add('bg-[#1a1a1a]', 'text-white');
+      } else if (kenoPicked.length < numPicks) {
+        kenoPicked.push(num);
+        el.classList.add('bg-[#00c853]', 'text-black');
+        el.classList.remove('bg-[#1a1a1a]', 'text-white');
+      }
+    }
+
+    function clearKeno() {
+      if (kenoGameActive) return;
+      initKenoGrid();
+    }
+
+    function playKeno() {
+      if (kenoGameActive) return;
+      
+      kenoBet = parseFloat(document.getElementById('kenoBet')?.value) || 0;
+      if (kenoBet <= 0 || kenoBet > balance) return showResult('Error', 'Invalid bet');
+      
+      const numPicks = parseInt(document.getElementById('kenoPicks')?.value) || 1;
+      if (kenoPicked.length !== numPicks) return showResult('Error', `Pick exactly ${numPicks} numbers`);
+
+      balance -= kenoBet;
+      updateBalance();
+      saveBalance();
+
+      kenoGameActive = true;
+      document.getElementById('kenoBetBtn').classList.add('hidden');
+      document.getElementById('kenoClearBtn').classList.add('hidden');
+
+      const drawn = [];
+      while (drawn.length < 20) {
+        const n = Math.floor(Math.random() * 80) + 1;
+        if (!drawn.includes(n)) drawn.push(n);
+      }
+
+      const buttons = document.querySelectorAll('#kenoGrid button');
+      let matchCount = 0;
+      
+      buttons.forEach(btn => {
+        const num = parseInt(btn.dataset.num);
+        if (drawn.includes(num)) {
+          setTimeout(() => {
+            btn.classList.add('bg-blue-500', 'text-white', 'animate-pulse');
+            btn.classList.remove('bg-[#1a1a1a]');
+          }, drawn.indexOf(num) * 100);
+        }
+        if (kenoPicked.includes(num) && drawn.includes(num)) {
+          matchCount++;
+          setTimeout(() => {
+            btn.classList.remove('bg-blue-500', 'bg-[#00c853]');
+            btn.classList.add('bg-green-500', 'text-white', 'animate-bounce');
+          }, drawn.indexOf(num) * 100 + 500);
+        }
+      });
+
+      setTimeout(() => {
+        document.getElementById('kenoMatches').textContent = matchCount;
+        const payout = KENO_PAYOUTS[numPicks][matchCount] || 0;
+        const winAmount = kenoBet * payout;
+        
+        document.getElementById('kenoPayout').textContent = payout + '×';
+        
+        if (payout > 0) {
+          balance += winAmount;
+          updateBalance();
+          saveBalance();
+          showResult('WIN!', `Matched ${matchCount}/${numPicks}<br>Won $${(winAmount - kenoBet).toFixed(2)}`);
+        } else {
+          showResult('NO MATCH', `Matched ${matchCount}/${numPicks}<br>Lost $${kenoBet.toFixed(2)}`);
+        }
+
+        kenoGameActive = false;
+        document.getElementById('kenoBetBtn').classList.remove('hidden');
+        document.getElementById('kenoClearBtn').classList.remove('hidden');
+        
+        setTimeout(initKenoGrid, 2000);
+      }, 2500);
+    }
+
+    // ──────────────────────────────────────────────
+    // COIN FLIP
+    // ──────────────────────────────────────────────
+    let coinFlipping = false;
+
+    function flipCoin() {
+      if (coinFlipping) return;
+      
+      const bet = parseFloat(document.getElementById('coinBet')?.value) || 0;
+      if (bet <= 0 || bet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+      balance -= bet;
+      updateBalance();
+      saveBalance();
+
+      coinFlipping = true;
+      document.getElementById('coinFlipBtn').classList.add('hidden');
+
+      const coin = document.getElementById('coin');
+      const isHeads = Math.random() > 0.5;
+      const choice = document.getElementById('coinChoice')?.value;
+      const spins = 5 + Math.floor(Math.random() * 3);
+      const degrees = spins * 360 + (isHeads ? 0 : 180);
+
+      coin.style.transition = 'transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+      coin.style.transform = `rotateY(${degrees}deg)`;
+      playSfx('flip');
+
+      setTimeout(() => {
+        const won = (isHeads && choice === 'heads') || (!isHeads && choice === 'tails');
+        
+        if (won) {
+          const payout = bet * 2;
+          balance += payout;
+          updateBalance();
+          saveBalance();
+          playSfx('win');
+          showResult('WIN!', `It was ${isHeads ? 'HEADS' : 'TAILS'}<br>Won $${(payout - bet).toFixed(2)}`);
+        } else {
+          playSfx('lose');
+          showResult('LOSS', `It was ${isHeads ? 'HEADS' : 'TAILS'}<br>Lost $${bet.toFixed(2)}`);
+        }
+
+        coinFlipping = false;
+        document.getElementById('coinFlipBtn').classList.remove('hidden');
+      }, 1600);
+    }
+
+    // ──────────────────────────────────────────────
+    // TOWER
+    // ──────────────────────────────────────────────
+    let towerGameActive = false;
+    let towerStep = 0;
+    let towerWon = 0;
+    let towerBet = 0;
+    let towerBombPositions = [];
+
+    document.getElementById('towerBombs')?.addEventListener('input', e => {
+      document.getElementById('towerBombsValue').textContent = e.target.value;
+      document.getElementById('towerBombsPlural').textContent = e.target.value > 1 ? 's' : '';
+    });
+
+    function initTowerGrid() {
+      const grid = document.getElementById('towerGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      towerStep = 0;
+      towerBombPositions = [];
+      document.getElementById('towerStep').textContent = 0;
+      document.getElementById('towerWon').textContent = '$0.00';
+
+      for (let row = 0; row < 8; row++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'flex justify-center gap-2';
+        rowDiv.dataset.row = row;
+        
+        for (let col = 0; col < 3; col++) {
+          const block = document.createElement('button');
+          block.className = 'w-16 h-10 sm:w-20 sm:h-12 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg hover:border-[#00c853] transition flex items-center justify-center text-lg';
+          block.dataset.row = row;
+          block.dataset.col = col;
+          block.addEventListener('click', () => clickTowerBlock(row, col, block));
+          rowDiv.appendChild(block);
+        }
+        
+        grid.appendChild(rowDiv);
+      }
+    }
+
+    function startTower() {
+      if (towerGameActive) return;
+
+      towerBet = parseFloat(document.getElementById('towerBet')?.value) || 0;
+      if (towerBet <= 0 || towerBet > balance) return showResult('Error', 'Invalid bet');
+
+      balance -= towerBet;
+      updateBalance();
+      saveBalance();
+
+      towerWon = 0;
+      towerGameActive = true;
+
+      document.getElementById('towerBetBtn').classList.add('hidden');
+      document.getElementById('towerCashoutBtn').classList.remove('hidden');
+
+      initTowerGrid();
+    }
+
+    function clickTowerBlock(row, col, block) {
+      if (!towerGameActive || row !== towerStep || block.disabled) return;
+
+      const numBombs = parseInt(document.getElementById('towerBombs')?.value) || 1;
+      
+      if (!towerBombPositions[row]) {
+        towerBombPositions[row] = [];
+        while (towerBombPositions[row].length < numBombs) {
+          const bombCol = Math.floor(Math.random() * 3);
+          if (!towerBombPositions[row].includes(bombCol)) {
+            towerBombPositions[row].push(bombCol);
+          }
+        }
+      }
+
+      block.disabled = true;
+      playSfx('click');
+
+      if (towerBombPositions[row].includes(col)) {
+        block.textContent = '💣';
+        block.classList.add('bg-red-900/80', 'border-red-800', 'animate-shake');
+        playSfx('lose');
+        showResult('BOOM!', `Hit a bomb at step ${towerStep + 1}<br>Lost $${towerBet.toFixed(2)}`);
+        endTower(false);
+      } else {
+        block.textContent = '✓';
+        block.classList.add('bg-[#00c853]', 'text-black', 'animate-pulse');
+        playSfx('reveal');
+        towerWon += towerBet * Math.pow(2, towerStep + 1);
+        towerStep++;
+        document.getElementById('towerStep').textContent = towerStep;
+        document.getElementById('towerWon').textContent = '$' + towerWon.toFixed(2);
+        
+        if (towerStep >= 8) {
+          balance += towerWon;
+          updateBalance();
+          saveBalance();
+          playSfx('win');
+          showResult('TOWER COMPLETE!', `Reached the top!<br>Won $${(towerWon).toFixed(2)}`);
+          endTower(true);
+        }
+      }
+    }
+
+    function cashoutTower() {
+      if (!towerGameActive) return;
+      balance += towerWon;
+      updateBalance();
+      saveBalance();
+      showResult('CASHED OUT!', `Stopped at step ${towerStep}<br>Won $${towerWon.toFixed(2)}`);
+      endTower(true);
+    }
+
+    function endTower(won) {
+      towerGameActive = false;
+      document.getElementById('towerCashoutBtn').classList.add('hidden');
+      document.getElementById('towerBetBtn').classList.remove('hidden');
+    }
+
+    // ──────────────────────────────────────────────
+    // AVIA MASTERS
+    // ──────────────────────────────────────────────
+    let aviatorActive = false;
+    let aviatorBet = 0;
+    let aviatorMultiplier = 1;
+    let aviatorHistory = [];
+    let aviatorAnimationId = 0;
+    let aviatorPlaneY = 0;
+    let aviatorItems = [];
+    let aviatorScrollSpeed = 2;
+    let aviatorFlying = false;
+
+    const AVIATOR_ITEMS = [
+      { emoji: '💎', add: 25, size: 'text-3xl', label: '25' },
+      { emoji: '💎', add: 10, size: 'text-2xl', label: '10' },
+      { emoji: '⭐', add: 5, size: 'text-xl', label: '5' },
+      { emoji: '⭐', add: 3, size: 'text-lg', label: '3' },
+      { emoji: '⭐', add: 2, size: 'text-base', label: '2' },
+      { emoji: '💣', add: -10, size: 'text-2xl', label: '-10', isBomb: true },
+      { emoji: '💣', add: -5, size: 'text-xl', label: '-5', isBomb: true },
+      { emoji: '💣', add: -3, size: 'text-lg', label: '-3', isBomb: true },
+    ];
+
+    function playSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (type === 'collect') {
+          osc.frequency.setValueAtTime(800, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.2);
+        } else if (type === 'bomb') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'cashout') {
+          osc.frequency.setValueAtTime(400, ctx.currentTime);
+          osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+          osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
+        } else if (type === 'win') {
+          osc.frequency.setValueAtTime(500, ctx.currentTime);
+          osc.frequency.setValueAtTime(700, ctx.currentTime + 0.1);
+          osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.5);
+        } else if (type === 'lose') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        }
+      } catch(e) {}
+    }
+
+    function startAviator() {
+      if (aviatorActive) return;
+      
+      aviatorBet = parseFloat(document.getElementById('aviatorBet')?.value) || 0;
+      if (aviatorBet <= 0 || aviatorBet > balance) { playSound('lose'); return showResult('Error', 'Invalid bet'); }
+
+      balance -= aviatorBet;
+      updateBalance();
+      saveBalance();
+
+      aviatorActive = true;
+      aviatorMultiplier = 1;
+      aviatorItems = [];
+      aviatorPlaneY = 0;
+      aviatorScrollSpeed = 2;
+      aviatorFlying = true;
+      
+      document.getElementById('aviatorMultiplier').textContent = '1.00';
+      document.getElementById('aviatorBetBtn').classList.add('hidden');
+      document.getElementById('aviatorCashoutBtn').classList.remove('hidden');
+      document.getElementById('aviatorPlane').style.bottom = '80px';
+      document.getElementById('aviatorItems').innerHTML = '';
+      
+      playSound('collect');
+      animateAviator();
+
+      setTimeout(() => {
+        if (aviatorActive && aviatorFlying) {
+          playSound('lose');
+          showResult('FLEW AWAY!', `Plane flew away at ${aviatorMultiplier.toFixed(2)}x<br>Lost $${aviatorBet.toFixed(2)}`);
+          resetAviator();
+        }
+      }, 15000 + Math.random() * 15000);
+    }
+
+    function animateAviator() {
+      if (!aviatorActive || !aviatorFlying) return;
+      
+      aviatorScrollSpeed = 2 + (aviatorMultiplier / 50);
+      aviatorPlaneY += aviatorScrollSpeed;
+      
+      const plane = document.getElementById('aviatorPlane');
+      const newBottom = Math.max(20, 80 - aviatorPlaneY);
+      plane.style.bottom = newBottom + 'px';
+      
+      if (Math.random() < 0.08) {
+        spawnAviatorItem();
+      }
+      
+      const container = document.getElementById('aviatorItems');
+      const items = container.querySelectorAll('.aviator-item');
+      
+      items.forEach(item => {
+        let top = parseFloat(item.dataset.top) + aviatorScrollSpeed;
+        item.dataset.top = top;
+        item.style.top = top + '%';
+        
+        if (top > 110) {
+          item.remove();
+        }
+        
+        const itemRect = item.getBoundingClientRect();
+        const planeRect = plane.getBoundingClientRect();
+        
+        if (itemRect.left < planeRect.right && itemRect.right > planeRect.left &&
+            itemRect.top < planeRect.bottom && itemRect.bottom > planeRect.top) {
+          if (!item.classList.contains('collected')) {
+            item.classList.add('collected');
+            const isBomb = item.dataset.isBomb === 'true';
+            const add = parseFloat(item.dataset.add);
+            
+            if (isBomb) {
+              aviatorMultiplier = Math.max(1, aviatorMultiplier + add);
+              playSound('bomb');
+              item.classList.add('animate-shake');
+            } else {
+              aviatorMultiplier += add;
+              playSound('collect');
+              item.classList.add('animate-bounce');
+            }
+            
+            item.innerHTML = `<span class="${isBomb ? 'text-red-500' : 'text-green-400'} font-bold">${add > 0 ? '+' : ''}${add}</span>`;
+            
+            document.getElementById('aviatorMultiplier').textContent = aviatorMultiplier.toFixed(2);
+            
+            setTimeout(() => item.remove(), 300);
+          }
+        }
+      });
+      
+      if (newBottom <= 20) {
+        aviatorFlying = false;
+        playSound('lose');
+        showResult('FLEW AWAY!', `Plane flew away at ${aviatorMultiplier.toFixed(2)}x<br>Lost $${aviatorBet.toFixed(2)}`);
+        resetAviator();
+        return;
+      }
+      
+      aviatorAnimationId = requestAnimationFrame(animateAviator);
+    }
+
+    function spawnAviatorItem() {
+      const container = document.getElementById('aviatorItems');
+      const item = AVIATOR_ITEMS[Math.floor(Math.random() * AVIATOR_ITEMS.length)];
+      
+      const el = document.createElement('div');
+      el.className = `absolute ${item.size} cursor-pointer aviator-item transition-all duration-100`;
+      el.innerHTML = item.emoji;
+      el.style.left = Math.random() * 80 + 10 + '%';
+      el.style.top = '-10%';
+      el.dataset.top = -10;
+      el.dataset.add = item.add;
+      el.dataset.isBomb = item.isBomb || false;
+      
+      const label = document.createElement('span');
+      label.className = `absolute -top-4 left-1/2 -translate-x-1/2 text-xs font-bold ${item.isBomb ? 'text-red-500' : 'text-green-400'}`;
+      label.textContent = item.label;
+      el.appendChild(label);
+      
+      container.appendChild(el);
+    }
+
+    function cashoutAviator() {
+      if (!aviatorActive) return;
+      
+      aviatorFlying = false;
+      if (aviatorAnimationId) cancelAnimationFrame(aviatorAnimationId);
+      
+      const payout = aviatorBet * aviatorMultiplier;
+      balance += payout;
+      updateBalance();
+      saveBalance();
+      
+      aviatorHistory.push(aviatorMultiplier);
+      if (aviatorHistory.length > 8) aviatorHistory.shift();
+      
+      playSound('cashout');
+      playSound('win');
+      
+      showResult('CASHED OUT!', `At ${aviatorMultiplier.toFixed(2)}x<br>Won $${(payout - aviatorBet).toFixed(2)}`);
+      resetAviator();
+    }
+
+    function resetAviator() {
+      aviatorActive = false;
+      aviatorFlying = false;
+      if (aviatorAnimationId) cancelAnimationFrame(aviatorAnimationId);
+      document.getElementById('aviatorCashoutBtn').classList.add('hidden');
+      document.getElementById('aviatorBetBtn').classList.remove('hidden');
+      document.getElementById('aviatorItems').innerHTML = '';
+    }
+
+    // ──────────────────────────────────────────────
+    // ROCK PAPER SCISSORS
+    // ──────────────────────────────────────────────
+    let rpsActive = false;
+    let rpsBet = 0;
+    let rpsPlayerScore = 0;
+    let rpsCpuScore = 0;
+    let rpsRound = 0;
+    let rpsPlayerChoice = null;
+    const CHOICES = ['rock', 'paper', 'scissors'];
+    const EMOJIS = { rock: '✊', paper: '✋', scissors: '✌️' };
+
+    function startRps() {
+      if (rpsActive) return;
+      
+      rpsBet = parseFloat(document.getElementById('rpsBet')?.value) || 0;
+      if (rpsBet <= 0 || rpsBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+      
+      balance -= rpsBet;
+      updateBalance();
+      saveBalance();
+
+      rpsActive = true;
+      rpsPlayerScore = 0;
+      rpsCpuScore = 0;
+      rpsRound = 0;
+      
+      document.getElementById('rpsPlayerScore').textContent = '0';
+      document.getElementById('rpsCpuScore').textContent = '0';
+      document.getElementById('rpsPlayerEmoji').textContent = '❔';
+      document.getElementById('rpsCpuEmoji').textContent = '❔';
+      document.getElementById('rpsResult').textContent = '';
+      document.getElementById('rpsPlayBtn').classList.add('hidden');
+      document.getElementById('rpsChoices').classList.remove('hidden');
+    }
+
+    function playRps(choice) {
+      if (!rpsActive) return;
+      playSfx('click');
+      
+      rpsPlayerChoice = choice;
+      const cpuChoice = CHOICES[Math.floor(Math.random() * 3)];
+      
+      document.getElementById('rpsPlayerEmoji').textContent = EMOJIS[choice];
+      document.getElementById('rpsCpuEmoji').textContent = EMOJIS[cpuChoice];
+      
+      let result = '';
+      if (choice === cpuChoice) {
+        result = 'Draw!';
+        playSfx('reveal');
+      } else if (
+        (choice === 'rock' && cpuChoice === 'scissors') ||
+        (choice === 'paper' && cpuChoice === 'rock') ||
+        (choice === 'scissors' && cpuChoice === 'paper')
+      ) {
+        rpsPlayerScore++;
+        result = 'You win round!';
+        playSfx('win');
+      } else {
+        rpsCpuScore++;
+        result = 'CPU wins round!';
+        playSfx('lose');
+      }
+      
+      document.getElementById('rpsPlayerScore').textContent = rpsPlayerScore;
+      document.getElementById('rpsCpuScore').textContent = rpsCpuScore;
+      document.getElementById('rpsResult').textContent = result;
+      
+      rpsRound++;
+      
+      if (rpsRound >= 3 || rpsPlayerScore === 2 || rpsCpuScore === 2) {
+        setTimeout(endRps, 1000);
+      } else {
+        setTimeout(() => {
+          document.getElementById('rpsPlayerEmoji').textContent = '❔';
+          document.getElementById('rpsCpuEmoji').textContent = '❔';
+          document.getElementById('rpsResult').textContent = '';
+        }, 1200);
+      }
+    }
+
+    function endRps() {
+      rpsActive = false;
+      
+      let finalResult = '';
+      if (rpsPlayerScore > rpsCpuScore) {
+        const payout = rpsBet * 2;
+        balance += payout;
+        updateBalance();
+        saveBalance();
+        finalResult = `You win! Won $${(payout - rpsBet).toFixed(2)}`;
+        playSfx('win');
+      } else if (rpsCpuScore > rpsPlayerScore) {
+        finalResult = `You lose! Lost $${rpsBet.toFixed(2)}`;
+        playSfx('lose');
+      } else {
+        balance += rpsBet;
+        updateBalance();
+        saveBalance();
+        finalResult = 'Draw! Bet returned';
+        playSfx('reveal');
+      }
+      
+      showResult(rpsPlayerScore > rpsCpuScore ? 'YOU WIN!' : rpsCpuScore > rpsPlayerScore ? 'YOU LOSE!' : 'DRAW!', finalResult);
+      
+      document.getElementById('rpsPlayBtn').classList.remove('hidden');
+      document.getElementById('rpsChoices').classList.add('hidden');
+    }
+
+    // ──────────────────────────────────────────────
+    // RACING
+    // ──────────────────────────────────────────────
+    let racingActive = false;
+    let racingBet = 0;
+
+    function startRacing() {
+      if (racingActive) return;
+      
+      racingBet = parseFloat(document.getElementById('racingBet')?.value) || 0;
+      if (racingBet <= 0 || racingBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+
+      balance -= racingBet;
+      updateBalance();
+      saveBalance();
+
+      racingActive = true;
+      document.getElementById('racingBetBtn').classList.add('hidden');
+
+      const trackWidth = 500;
+      const cars = [0, 0, 0, 0];
+      const winner = Math.floor(Math.random() * 4);
+      const selectedCar = parseInt(document.getElementById('racingPick')?.value) || 0;
+
+      const raceInterval = setInterval(() => {
+        for (let i = 0; i < 4; i++) {
+          cars[i] += Math.random() * 30;
+          const carEl = document.getElementById(`car${i}`);
+          carEl.style.transform = `translateX(${Math.min(cars[i], trackWidth)}px)`;
+        }
+
+        if (cars.some(c => c >= trackWidth)) {
+          clearInterval(raceInterval);
+          racingActive = false;
+          
+          let winningCar = 0;
+          let maxDist = -1;
+          for (let i = 0; i < 4; i++) {
+            if (cars[i] > maxDist) {
+              maxDist = cars[i];
+              winningCar = i;
+            }
+          }
+
+          const carNames = ['Car 1', 'Car 2', 'Car 3', 'Car 4'];
+          
+          if (winningCar === selectedCar) {
+            const payout = racingBet * 4;
+            balance += payout;
+            updateBalance();
+            saveBalance();
+            playSfx('win');
+            showResult('WINNER!', `${carNames[winningCar]} won!<br>Won $${(payout - racingBet).toFixed(2)}`);
+          } else {
+            playSfx('lose');
+            showResult('LOSS', `${carNames[winningCar]} won!<br>Lost $${racingBet.toFixed(2)}`);
+          }
+
+          document.getElementById('racingBetBtn').classList.remove('hidden');
+          
+          setTimeout(() => {
+            for (let i = 0; i < 4; i++) {
+              document.getElementById(`car${i}`).style.transform = 'translateX(0)';
+            }
+          }, 3000);
+        }
+      }, 100);
+    }
+
+    // ──────────────────────────────────────────────
+    // FISHING
+    // ──────────────────────────────────────────────
+    let fishingActive = false;
+    let fishingBet = 0;
+    let fishingWon = 0;
+    let fishingInterval = 0;
+
+    const FISH_DATA = [
+      { emoji: '🐟', mult: 2, speed: 2 },
+      { emoji: '🐠', mult: 3, speed: 2.5 },
+      { emoji: '🐡', mult: 5, speed: 3 },
+      { emoji: '🦀', mult: 10, speed: 1.5 },
+      { emoji: '🦞', mult: 20, speed: 1 },
+      { emoji: '🐙', mult: 50, speed: 0.8 },
+      { emoji: '💎', mult: 100, speed: 0.5 },
+    ];
+
+    function startFishing() {
+      if (fishingActive) return;
+      
+      fishingBet = parseFloat(document.getElementById('fishingBet')?.value) || 0;
+      if (fishingBet <= 0 || fishingBet > balance) return showResult('Error', 'Invalid bet');
+
+      balance -= fishingBet;
+      updateBalance();
+      saveBalance();
+
+      fishingActive = true;
+      fishingWon = 0;
+      
+      document.getElementById('fishingWon').textContent = '$0.00';
+      document.getElementById('fishingBetBtn').classList.add('hidden');
+      document.getElementById('fishingCollectBtn').classList.remove('hidden');
+
+      spawnFish();
+      
+      fishingInterval = setInterval(() => {
+        if (!fishingActive) {
+          clearInterval(fishingInterval);
+          return;
+        }
+        spawnFish();
+      }, 1500);
+
+      setTimeout(() => {
+        if (fishingActive) {
+          showResult('TIME UP!', `Total won: $${fishingWon.toFixed(2)}`);
+          if (fishingWon > 0) {
+            balance += fishingWon;
+            updateBalance();
+            saveBalance();
+          }
+          endFishing();
+        }
+      }, 30000);
+    }
+
+    function spawnFish() {
+      const area = document.getElementById('fishingArea');
+      if (!area) return;
+      
+      const fish = FISH_DATA[Math.floor(Math.random() * FISH_DATA.length)];
+      const el = document.createElement('div');
+      el.className = 'absolute text-2xl cursor-pointer hover:scale-110 transition-transform';
+      el.textContent = fish.emoji;
+      el.style.left = '100%';
+      el.style.top = Math.random() * 80 + '%';
+      el.style.transition = `left ${10 / fish.speed}s linear`;
+      
+      el.addEventListener('click', () => {
+        if (!fishingActive) return;
+        const win = fishingBet * fish.mult;
+        fishingWon += win;
+        document.getElementById('fishingWon').textContent = '$' + fishingWon.toFixed(2);
+        el.textContent = `+${fish.mult}x`;
+        el.classList.add('text-green-500', 'animate-bounce');
+        setTimeout(() => el.remove(), 500);
+      });
+      
+      area.appendChild(el);
+      
+      setTimeout(() => {
+        if (el.parentNode) {
+          el.style.left = '-10%';
+          setTimeout(() => el.remove(), 10000 / fish.speed);
+        }
+      }, 50);
+    }
+
+    function collectFishing() {
+      if (!fishingActive) return;
+      
+      if (fishingWon > 0) {
+        balance += fishingWon;
+        updateBalance();
+        saveBalance();
+      }
+      
+      showResult('COLLECTED!', `Won $${fishingWon.toFixed(2)}`);
+      endFishing();
+    }
+
+    function endFishing() {
+      fishingActive = false;
+      clearInterval(fishingInterval);
+      document.getElementById('fishingCollectBtn').classList.add('hidden');
+      document.getElementById('fishingBetBtn').classList.remove('hidden');
+      
+      const area = document.getElementById('fishingArea');
+      if (area) area.innerHTML = '';
+    }
+
+    // ──────────────────────────────────────────────
+    // GOAL
+    // ──────────────────────────────────────────────
+    let goalActive = false;
+    let goalBet = 0;
+    let goalScore = 0;
+    let goalKicks = 5;
+    let goalPayout = 0;
+
+    const GOAL_ZONES = [
+      { x: -60, y: -20 },
+      { x: 0, y: -20 },
+      { x: 60, y: -20 },
+      { x: -60, y: 20 },
+      { x: 0, y: 20 },
+      { x: 60, y: 20 },
+    ];
+
+    function startGoal() {
+      if (goalActive) return;
+      
+      goalBet = parseFloat(document.getElementById('goalBet')?.value) || 0;
+      if (goalBet <= 0 || goalBet > balance) return showResult('Error', 'Invalid bet');
+
+      balance -= goalBet;
+      updateBalance();
+      saveBalance();
+
+      goalActive = true;
+      goalScore = 0;
+      goalKicks = 5;
+      goalPayout = 0;
+      
+      document.getElementById('goalScore').textContent = '0';
+      document.getElementById('goalKicks').textContent = '5';
+      document.getElementById('goalPayout').textContent = '0×';
+      document.getElementById('goalKickBtn').classList.add('hidden');
+    }
+
+    function kickGoal(zone) {
+      if (!goalActive || goalKicks <= 0) return;
+      
+      goalKicks--;
+      document.getElementById('goalKicks').textContent = goalKicks;
+      playSfx('click');
+      
+      const ball = document.getElementById('goalBall');
+      const keeper = document.getElementById('goalKeeper');
+      const target = GOAL_ZONES[zone];
+      
+      ball.style.transform = `translate(${target.x}px, ${target.y}px)`;
+      
+      const keeperDive = Math.random() > 0.4;
+      const keeperTarget = zone + (Math.random() > 0.5 ? 1 : -1);
+      if (keeperDive && keeperTarget >= 0 && keeperTarget < 6) {
+        const dk = GOAL_ZONES[Math.min(2, Math.max(0, keeperTarget))];
+        keeper.style.transform = `translate(${dk.x}px, ${dk.y}px)`;
+      }
+      
+      setTimeout(() => {
+        const scored = keeperDive ? (zone !== Math.floor(keeperTarget / 3) * 3 + 1) : (Math.random() > 0.3);
+        
+        if (scored) {
+          goalScore++;
+          goalPayout += goalScore * 0.5;
+          document.getElementById('goalScore').textContent = goalScore;
+          document.getElementById('goalPayout').textContent = goalPayout.toFixed(1) + '×';
+          ball.textContent = '⚽✅';
+          playSfx('win');
+        } else {
+          ball.textContent = '❌';
+          playSfx('lose');
+        }
+        
+        ball.classList.add(scored ? 'animate-bounce' : 'animate-shake');
+        
+        setTimeout(() => {
+          ball.style.transform = 'translate(0, 0)';
+          ball.textContent = '⚽';
+          ball.classList.remove('animate-bounce', 'animate-shake');
+          keeper.style.transform = 'translate(-50%, -50%)';
+          
+          if (goalKicks <= 0) {
+            if (goalScore > 0) {
+              const payout = goalBet * (1 + goalScore * 0.5);
+              balance += payout;
+              updateBalance();
+              saveBalance();
+              showResult('GAME OVER!', `Scored ${goalScore} goals<br>Won $${(payout - goalBet).toFixed(2)}`);
+            } else {
+              showResult('SHUTOUT!', `No goals scored<br>Lost $${goalBet.toFixed(2)}`);
+            }
+            goalActive = false;
+            document.getElementById('goalKickBtn').classList.remove('hidden');
+          }
+        }, 800);
+      }, 500);
+    }
+
+    // Initialize games on load
+    window.addEventListener('load', () => {
+      initKenoGrid();
+      initTowerGrid();
+      initAviatorCanvas();
+    });
+
+    // ──────────────────────────────────────────────
+    // PLINKO – peg layout and physics
+    // ──────────────────────────────────────────────
+    const PLINKO_ROWS = 22;
+    const PLINKO_PADDING = 64;
+    const PEG_RADIUS = 5;
+    const BALL_RADIUS = 8;
+    const PLINKO_MULTIS = [10, 5, 2, 1, 0.2, 1, 2, 5, 10];
+    let activeBalls = [];
+    let plinkoBoardInfo = null;
+
+    function initPlinkoPegs() {
+      const container = document.getElementById('plinkoPegs');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      for (let row = 0; row < PLINKO_ROWS; row++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = row % 2 === 0 ? 'flex justify-between items-center' : 'flex justify-evenly items-center';
+
+        const pegCount = row % 2 === 0 ? 11 : 10;
+        for (let i = 0; i < pegCount; i++) {
+          const peg = document.createElement('div');
+          peg.className = 'peg';
+          rowDiv.appendChild(peg);
+        }
+
+        container.appendChild(rowDiv);
+      }
+    }
+
+    window.addEventListener('load', initPlinkoPegs);
+    window.addEventListener('resize', () => { if (document.getElementById('crash') && !document.getElementById('crash').classList.contains('hidden')) drawCrashChart(); });
+
+    function getPlinkoBoardInfo() {
+      if (plinkoBoardInfo) return plinkoBoardInfo;
+      const board = document.querySelector('#plinko .relative');
+      if (!board) return null;
+      const boardRect = board.getBoundingClientRect();
+      const pegEls = board.querySelectorAll('.peg');
+      const pegs = Array.from(pegEls).map(el => {
+        const r = el.getBoundingClientRect();
+        return {
+          x: r.left - boardRect.left + r.width / 2,
+          y: r.top - boardRect.top + r.height / 2
+        };
+      });
+      plinkoBoardInfo = {
+        board,
+        boardRect,
+        boardW: boardRect.width,
+        boardH: boardRect.height,
+        pegs
+      };
+      return plinkoBoardInfo;
+    }
+
+    function playPlinko() {
+      const betInput = document.getElementById('plinkoBet');
+      const bet = parseFloat(betInput?.value) || 0;
+
+      if (bet <= 0) { playSfx('lose'); return showResult('Error', 'Enter a valid bet amount'); }
+      if (bet > balance) { playSfx('lose'); return showResult('Error', 'Bet exceeds balance'); }
+      playSfx('bet');
+
+      const info = getPlinkoBoardInfo();
+      if (!info) return;
+
+      balance -= bet;
+      updateBalance();
+      saveBalance();
+
+      const ball = document.createElement('div');
+      ball.className = 'absolute w-4 h-4 bg-[#facc15] rounded-full shadow-lg border-2 border-[#eab308] transition-all duration-[30ms] ease-out z-10';
+      info.board.appendChild(ball);
+
+      const GRAVITY = 0.42;
+      const RESTITUTION = 0.65;
+      const HORIZONTAL_DAMPING = 0.99;
+
+      let x = info.boardW / 2 + (Math.random() - 0.5) * 20;
+      let y = BALL_RADIUS + 2;
+      let vx = (Math.random() - 0.5) * 1.5;
+      let vy = 0;
+
+      const ballObj = {
+        ball,
+        bet,
+        x, y, vx, vy,
+        GRAVITY,
+        RESTITUTION,
+        HORIZONTAL_DAMPING,
+        step: function() {
+          this.vy += this.GRAVITY;
+          this.vx *= this.HORIZONTAL_DAMPING;
+          this.x += this.vx;
+          this.y += this.vy;
+
+          for (const peg of info.pegs) {
+            const dx = this.x - peg.x;
+            const dy = this.y - peg.y;
+            const dist = Math.hypot(dx, dy);
+            const overlap = PEG_RADIUS + BALL_RADIUS - dist;
+
+            if (overlap > 0) {
+              const nx = dx / dist || 0;
+              const ny = dy / dist || 0;
+              this.x += nx * overlap;
+              this.y += ny * overlap;
+
+              const dot = this.vx * nx + this.vy * ny;
+              if (dot < 0) {
+                this.vx -= (1 + this.RESTITUTION) * dot * nx;
+                this.vy -= (1 + this.RESTITUTION) * dot * ny;
+                this.vx += (Math.random() - 0.5) * 2.0;
+                this.vy = Math.min(this.vy, -0.8);
+              }
+            }
+          }
+
+          const margin = 4;
+          const left = BALL_RADIUS + margin;
+          const right = info.boardW - BALL_RADIUS - margin;
+          if (this.x < left) {
+            this.x = left;
+            this.vx = Math.abs(this.vx) * this.RESTITUTION * 0.85;
+          }
+          if (this.x > right) {
+            this.x = right;
+            this.vx = -Math.abs(this.vx) * this.RESTITUTION * 0.85;
+          }
+
+          this.ball.style.left = (this.x - BALL_RADIUS) + 'px';
+          this.ball.style.top = (this.y - BALL_RADIUS) + 'px';
+
+          const floorY = info.boardH - 132;
+          if (this.y > floorY) {
+            const binWidth = info.boardW / 9;
+            const bin = Math.min(8, Math.max(0, Math.floor(this.x / binWidth)));
+            const finalMult = PLINKO_MULTIS[bin];
+
+            const payout = this.bet * finalMult;
+            balance += payout;
+            updateBalance();
+            saveBalance();
+            
+            if (finalMult >= 5) { playSfx('win'); } else if (finalMult >= 1) { playSfx('reveal'); } else { playSfx('lose'); }
+
+            showResult(
+              finalMult >= 5 ? 'BIG HIT!' : finalMult >= 1 ? 'NICE!' : 'TOUGH LUCK',
+              `Landed on <strong>${finalMult.toFixed(1)}×</strong><br>Payout: $${payout.toFixed(2)}`
+            );
+
+            setTimeout(() => this.ball.remove(), 2000);
+            return false;
+          }
+
+          return true;
+        }
+      };
+
+      activeBalls.push(ballObj);
+      requestAnimationFrame(function loop() {
+        activeBalls = activeBalls.filter(b => b.step());
+        if (activeBalls.length > 0) requestAnimationFrame(loop);
+      });
+    }
+
+    // ──────────────────────────────────────────────
+    // Other games (basic working versions)
+    // ──────────────────────────────────────────────
+
     // CRASH
     let crashInterval, crashMultiplier = 1, crashBet = 0, crashActive = false;
+    let crashChartHistory = [1];
+
+    function drawCrashChart() {
+      const canvas = document.getElementById('crashChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.offsetWidth;
+      const h = canvas.height = canvas.offsetHeight;
+      ctx.fillStyle = '#131313';
+      ctx.fillRect(0, 0, w, h);
+      if (crashChartHistory.length < 2) return;
+      const maxMult = Math.max(10, ...crashChartHistory);
+      ctx.strokeStyle = '#00c853';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, h - (crashChartHistory[0] / maxMult) * h * 0.9);
+      for (let i = 1; i < crashChartHistory.length; i++) {
+        const x = (i / (crashChartHistory.length - 1)) * w;
+        const y = h - (crashChartHistory[i] / maxMult) * h * 0.9;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
     function startCrash() {
-      crashBet = parseFloat(document.getElementById('crashBet').value) || 0;
-      if (crashBet <= 0 || crashBet > balance) return showResult('Error', 'Invalid bet amount');
-      balance -= crashBet; updateBalance();
+      crashBet = parseFloat(document.getElementById('crashBet')?.value) || 0;
+      if (crashBet <= 0 || crashBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+      balance -= crashBet; updateBalance(); saveBalance();
       crashActive = true; crashMultiplier = 1;
-      document.getElementById('crashMultiplier').textContent = '1.00';
+      crashChartHistory = [1];
+      drawCrashChart();
+      const crashMultEl = document.getElementById('crashMultiplier');
+      crashMultEl.textContent = '1.00';
+      crashMultEl.classList.add('animate-pulse-green');
       document.getElementById('crashBetBtn').classList.add('hidden');
       document.getElementById('crashCashoutBtn').classList.remove('hidden');
       crashInterval = setInterval(() => {
         crashMultiplier += 0.03 + Math.random() * 0.08;
-        document.getElementById('crashMultiplier').textContent = crashMultiplier.toFixed(2);
+        crashChartHistory.push(crashMultiplier);
+        drawCrashChart();
+        crashMultEl.textContent = crashMultiplier.toFixed(2);
+        crashMultEl.classList.toggle('animate-pulse-green', crashMultiplier < 2);
+        crashMultEl.classList.toggle('animate-glow', crashMultiplier >= 2);
         if (Math.random() > 0.94) {
           clearInterval(crashInterval);
           crashActive = false;
@@ -559,82 +2650,82 @@
       if (!crashActive) return;
       clearInterval(crashInterval); crashActive = false;
       const payout = crashBet * crashMultiplier;
-      balance += payout; updateBalance();
+      balance += payout; updateBalance(); saveBalance();
+      playSfx('cashout');
+      playSfx('win');
       showResult('Cashed Out', `At ${crashMultiplier.toFixed(2)}x<br>Won $${(payout - crashBet).toFixed(2)}`);
       resetCrash();
     }
     function resetCrash() {
+      const crashMultEl = document.getElementById('crashMultiplier');
+      crashMultEl.classList.remove('animate-pulse-green', 'animate-glow');
       document.getElementById('crashBetBtn').classList.remove('hidden');
       document.getElementById('crashCashoutBtn').classList.add('hidden');
     }
 
     // DICE
+    let diceRolling = false;
     function rollDice() {
-      const bet = parseFloat(document.getElementById('diceBet').value) || 0;
-      if (bet <= 0 || bet > balance) return showResult('Error', 'Invalid bet');
-      balance -= bet; updateBalance();
-      const roll = Math.floor(Math.random() * 100) + 1;
-      document.getElementById('diceResult').textContent = roll;
-      const mode = document.getElementById('diceMode').value;
-      const win = (mode === 'under' && roll < 50) || (mode === 'over' && roll > 50);
-      if (win) {
-        const payout = bet * 1.98;
-        balance += payout; updateBalance();
-        showResult('You Win!', `Rolled ${roll}<br>Won $${(payout - bet).toFixed(2)}`);
-      } else {
-        showResult('Loss', `Rolled ${roll}<br>Lost $${bet.toFixed(2)}`);
-      }
-    }
-
-    // PLINKO
-    function playPlinko() {
-      const bet = parseFloat(document.getElementById('plinkoBet').value) || 0;
-      if (bet <= 0 || bet > balance) return showResult('Error', 'Invalid bet');
-      balance -= bet; updateBalance();
-
-      const ball = document.getElementById('plinkoBall');
-      ball.classList.remove('hidden');
-      let x = 260;
-      let y = 30;
-      ball.style.left = x + 'px';
-      ball.style.top = y + 'px';
-
-      const interval = setInterval(() => {
-        y += 32;
-        x += (Math.random() < 0.5 ? -1 : 1) * (20 + Math.random() * 25);
-        x = Math.max(60, Math.min(460, x));
-        ball.style.left = x + 'px';
-        ball.style.top = y + 'px';
-
-        if (y > 380) {
-          clearInterval(interval);
-          const bin = Math.floor((x - 60) / 45);
-          const mults = [0.2, 0.5, 1, 2, 5, 10, 25, 50, 100];
-          const finalMult = mults[Math.min(Math.max(bin, 0), 8)];
-          const payout = bet * finalMult;
-          balance += payout; updateBalance();
-          showResult(
-            finalMult >= 5 ? 'Huge Win!' : finalMult >= 1 ? 'Good Drop' : 'Ouch',
-            `Landed on ${finalMult}x<br>${finalMult >= 1 ? 'Won $' + (payout - bet).toFixed(2) : 'Lost $' + bet.toFixed(2)}`
-          );
-          setTimeout(() => ball.classList.add('hidden'), 1500);
+      if (diceRolling) return;
+      diceRolling = true;
+      
+      const bet = parseFloat(document.getElementById('diceBet')?.value) || 0;
+      if (bet <= 0 || bet > balance) { diceRolling = false; playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+      balance -= bet; updateBalance(); saveBalance();
+      
+      const diceEl = document.getElementById('diceResult');
+      diceEl.classList.add('animate-dice-roll');
+      
+      let rollCount = 0;
+      const rollInterval = setInterval(() => {
+        diceEl.textContent = Math.floor(Math.random() * 100) + 1;
+        rollCount++;
+        if (rollCount >= 8) {
+          clearInterval(rollInterval);
+          diceEl.classList.remove('animate-dice-roll');
+          
+          const roll = Math.floor(Math.random() * 100) + 1;
+          diceEl.textContent = roll;
+          const mode = document.getElementById('diceMode')?.value;
+          const win = (mode === 'under' && roll < 50) || (mode === 'over' && roll > 50);
+          
+          if (win) {
+            const payout = bet * 1.98;
+            balance += payout; updateBalance(); saveBalance();
+            diceEl.classList.add('animate-pulse-green');
+            playSfx('win');
+            showResult('You Win!', `Rolled ${roll}<br>Won $${(payout - bet).toFixed(2)}`);
+          } else {
+            diceEl.classList.add('animate-shake');
+            playSfx('lose');
+            showResult('Loss', `Rolled ${roll}<br>Lost $${bet.toFixed(2)}`);
+          }
+          
+          setTimeout(() => {
+            diceEl.classList.remove('animate-pulse-green', 'animate-shake');
+            diceRolling = false;
+          }, 500);
         }
-      }, 70);
+      }, 80);
     }
 
     // LIMBO
     function playLimbo() {
-      const bet = parseFloat(document.getElementById('limboBet').value) || 0;
-      const target = parseFloat(document.getElementById('limboTarget').value) || 2;
-      if (bet <= 0 || bet > balance || target < 1.01) return showResult('Error', 'Invalid input');
-      balance -= bet; updateBalance();
+      const bet = parseFloat(document.getElementById('limboBet')?.value) || 0;
+      const target = parseFloat(document.getElementById('limboTarget')?.value) || 2;
+      if (bet <= 0 || bet > balance || target < 1.01) { playSfx('lose'); return showResult('Error', 'Invalid input'); }
+      playSfx('bet');
+      balance -= bet; updateBalance(); saveBalance();
       const roll = 1 + Math.random() * 99;
       document.getElementById('limboResult').textContent = roll.toFixed(2) + 'x';
       if (roll < target) {
         const payout = bet * (99 / (target - 1));
-        balance += payout; updateBalance();
+        balance += payout; updateBalance(); saveBalance();
+        playSfx('win');
         showResult('Win!', `Rolled ${roll.toFixed(2)}x < ${target}x<br>Won $${(payout - bet).toFixed(2)}`);
       } else {
+        playSfx('lose');
         showResult('Loss', `Rolled ${roll.toFixed(2)}x >= ${target}x<br>Lost $${bet.toFixed(2)}`);
       }
     }
@@ -643,6 +2734,11 @@
     const suits = ['♥','♦','♣','♠'];
     const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
     let deck = [], playerHand = [], dealerHand = [], bjBet = 0, bjActive = false;
+    let bjInsuranceBet = 0;
+    let bjCanSplit = false;
+    let bjCanDouble = false;
+    let bjSplitHands = [];
+    let bjCurrentHand = 0;
 
     function createDeck() {
       deck = [];
@@ -668,57 +2764,230 @@
     }
 
     function renderHand(hand, elId) {
-      document.getElementById(elId).innerHTML = hand.map(c => 
-        `<span class="px-3 py-2 bg-zinc-800 rounded text-xl border border-zinc-700">${c.rank}${c.suit}</span>`
-      ).join('');
+      document.getElementById(elId).innerHTML = hand.map((c, i) => {
+        if (c.rank === '?' && c.suit === '') {
+          return `<div class="w-20 h-28 rounded-lg shadow-lg transform rotate-180 card-deal" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #fff3; animation-delay: ${i * 0.1}s">
+            <div class="w-full h-full rounded-lg border-2 border-white/10" style="background: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 6px);"></div>
+          </div>`;
+        }
+        const isRed = ['♥','♦'].includes(c.suit);
+        return `<div class="w-20 h-28 rounded-xl shadow-lg bg-white flex flex-col justify-between p-2 card-deal ${isRed ? 'text-red-600' : 'text-black'} transform hover:scale-105 transition-transform" style="animation-delay: ${i * 0.1}s">
+          <div class="text-xs font-bold leading-none">${c.rank}</div>
+          <div class="text-3xl self-center">${c.suit}</div>
+          <div class="text-xs font-bold leading-none self-end rotate-180">${c.rank}</div>
+        </div>`;
+      }).join('');
     }
 
     function dealBlackjack() {
-      bjBet = parseFloat(document.getElementById('blackjackBet').value) || 0;
-      if (bjBet <= 0 || bjBet > balance) return showResult('Error', 'Invalid bet');
-      balance -= bjBet; updateBalance();
+      bjBet = parseFloat(document.getElementById('blackjackBet')?.value) || 0;
+      if (bjBet <= 0 || bjBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
+      playSfx('bet');
+      balance -= bjBet; updateBalance(); saveBalance();
       createDeck();
       playerHand = [deck.pop(), deck.pop()];
       dealerHand = [deck.pop(), deck.pop()];
+      bjSplitHands = [];
+      bjCurrentHand = 0;
+      bjInsuranceBet = 0;
+      
       renderHand(playerHand, 'playerHand');
       renderHand([dealerHand[0], {rank:'?',suit:''}], 'dealerHand');
-      document.getElementById('playerScore').textContent = `Score: ${handScore(playerHand)}`;
-      document.getElementById('dealerScore').textContent = 'Score: ?';
+      document.getElementById('playerScore').textContent = handScore(playerHand);
+      document.getElementById('dealerScore').textContent = cardValue(dealerHand[0]);
       bjActive = true;
+      
+      bjCanSplit = playerHand.length === 2 && cardValue(playerHand[0]) === cardValue(playerHand[1]) && balance >= bjBet;
+      bjCanDouble = playerHand.length === 2 && balance >= bjBet;
+      
       document.getElementById('bjDeal').classList.add('hidden');
       document.getElementById('bjHit').classList.remove('hidden');
       document.getElementById('bjStand').classList.remove('hidden');
+      document.getElementById('bjDouble').classList.toggle('hidden', !bjCanDouble);
+      document.getElementById('bjSplit').classList.toggle('hidden', !bjCanSplit);
+      document.getElementById('bjInsurance').classList.toggle('hidden', dealerHand[0].rank !== 'A');
+      
       if (handScore(playerHand) === 21) standBlackjack();
+    }
+
+    function doubleBlackjack() {
+      if (!bjActive || !bjCanDouble) return;
+      if (balance < bjBet) { playSfx('lose'); return showResult('Error', 'Not enough balance'); }
+      
+      balance -= bjBet;
+      bjBet *= 2;
+      updateBalance();
+      saveBalance();
+      playSfx('bet');
+      
+      playerHand.push(deck.pop());
+      renderHand(playerHand, 'playerHand');
+      document.getElementById('playerScore').textContent = handScore(playerHand);
+      
+      document.getElementById('bjDouble').classList.add('hidden');
+      document.getElementById('bjSplit').classList.add('hidden');
+      document.getElementById('bjHit').classList.add('hidden');
+      
+      if (handScore(playerHand) > 21) {
+        playSfx('lose');
+        showResult('Bust!', `You busted<br>Lost $${(bjBet/2).toFixed(2)}`);
+        resetBj();
+      } else {
+        standBlackjack();
+      }
+    }
+
+    function splitBlackjack() {
+      if (!bjActive || !bjCanSplit) return;
+      if (balance < bjBet) { playSfx('lose'); return showResult('Error', 'Not enough balance'); }
+      
+      balance -= bjBet;
+      updateBalance();
+      saveBalance();
+      playSfx('bet');
+      
+      const card1 = playerHand[0];
+      const card2 = playerHand[1];
+      
+      bjSplitHands = [
+        [card1, deck.pop()],
+        [card2, deck.pop()]
+      ];
+      playerHand = bjSplitHands[0];
+      bjCurrentHand = 0;
+      
+      renderHand(playerHand, 'playerHand');
+      document.getElementById('playerScore').textContent = handScore(playerHand);
+      
+      bjCanSplit = false;
+      bjCanDouble = handScore(playerHand) >= 9 && handScore(playerHand) <= 11 && balance >= bjBet;
+      
+      document.getElementById('bjSplit').classList.add('hidden');
+      document.getElementById('bjDouble').classList.toggle('hidden', !bjCanDouble);
+      
+      if (handScore(playerHand) === 21) {
+        nextSplitHand();
+      }
+    }
+
+    function nextSplitHand() {
+      bjCurrentHand++;
+      if (bjCurrentHand < bjSplitHands.length) {
+        playerHand = bjSplitHands[bjCurrentHand];
+        renderHand(playerHand, 'playerHand');
+        document.getElementById('playerScore').textContent = handScore(playerHand);
+        
+        bjCanDouble = handScore(playerHand) >= 9 && handScore(playerHand) <= 11 && balance >= bjBet;
+        document.getElementById('bjDouble').classList.toggle('hidden', !bjCanDouble);
+        
+        if (handScore(playerHand) === 21) {
+          nextSplitHand();
+        }
+      } else {
+        standBlackjack();
+      }
+    }
+
+    function insuranceBlackjack() {
+      if (!bjActive || dealerHand[0].rank !== 'A') return;
+      if (balance < bjBet / 2) { playSfx('lose'); return showResult('Error', 'Not enough balance'); }
+      
+      balance -= bjBet / 2;
+      bjInsuranceBet = bjBet / 2;
+      updateBalance();
+      saveBalance();
+      playSfx('bet');
+      
+      document.getElementById('bjInsurance').classList.add('hidden');
+      
+      const hasBlackjack = handScore(dealerHand) === 21;
+      renderHand(dealerHand, 'dealerHand');
+      document.getElementById('dealerScore').textContent = handScore(dealerHand);
+      
+      if (hasBlackjack) {
+        balance += bjBet + bjInsuranceBet * 2;
+        updateBalance();
+        saveBalance();
+        playSfx('reveal');
+        showResult('Dealer Blackjack!', `Insurance pays<br>Won $${bjInsuranceBet.toFixed(2)}`);
+      } else {
+        showResult('No Blackjack', `Insurance lost<br>-$${bjInsuranceBet.toFixed(2)}`);
+      }
+      resetBj();
     }
 
     function hitBlackjack() {
       if (!bjActive) return;
+      playSfx('click');
       playerHand.push(deck.pop());
       renderHand(playerHand, 'playerHand');
-      document.getElementById('playerScore').textContent = `Score: ${handScore(playerHand)}`;
+      document.getElementById('playerScore').textContent = handScore(playerHand);
+      document.getElementById('bjDouble').classList.add('hidden');
+      document.getElementById('bjSplit').classList.add('hidden');
+      
       if (handScore(playerHand) > 21) {
-        showResult('Bust!', `You busted<br>Lost $${bjBet.toFixed(2)}`);
-        resetBj();
+        if (bjSplitHands.length > 0 && bjCurrentHand < bjSplitHands.length - 1) {
+          playSfx('lose');
+          nextSplitHand();
+        } else {
+          playSfx('lose');
+          showResult('Bust!', `You busted<br>Lost $${bjBet.toFixed(2)}`);
+          resetBj();
+        }
       }
     }
 
     function standBlackjack() {
       if (!bjActive) return;
-      while (handScore(dealerHand) < 17) dealerHand.push(deck.pop());
+      
+      let dealerScore = handScore(dealerHand);
+      while (dealerScore < 17 || (dealerScore === 17 && hasSoft17(dealerHand))) {
+        dealerHand.push(deck.pop());
+        dealerScore = handScore(dealerHand);
+      }
+      
       renderHand(dealerHand, 'dealerHand');
-      document.getElementById('dealerScore').textContent = `Score: ${handScore(dealerHand)}`;
+      document.getElementById('dealerScore').textContent = handScore(dealerHand);
       const pScore = handScore(playerHand), dScore = handScore(dealerHand);
+      const bj = pScore === 21 && playerHand.length === 2;
+      const bjPay = bjBet * 1.2;
       if (dScore > 21 || pScore > dScore) {
-        const payout = bjBet * 2;
-        balance += payout; updateBalance();
-        showResult('You Win!', `Won $${(payout - bjBet).toFixed(2)}`);
+        let payout;
+        if (bj) {
+          payout = bjBet + bjPay;
+          balance += payout; updateBalance(); saveBalance();
+          playSfx('win');
+          showResult('Blackjack!', `Won $${bjPay.toFixed(2)}`);
+        } else {
+          payout = bjBet * 2;
+          balance += payout; updateBalance(); saveBalance();
+          playSfx('win');
+          showResult('You Win!', `Won $${(payout - bjBet).toFixed(2)}`);
+        }
       } else if (pScore === dScore) {
-        balance += bjBet; updateBalance();
-        showResult('Push', 'Tie – bet returned');
+        if (bj) {
+          balance += bjPay; updateBalance(); saveBalance();
+          playSfx('reveal');
+          showResult('Push', `Blackjack push – $${bjPay.toFixed(2)} returned`);
+        } else {
+          balance += bjBet; updateBalance(); saveBalance();
+          showResult('Push', 'Tie – bet returned');
+        }
       } else {
+        playSfx('lose');
         showResult('Loss', `Dealer wins<br>Lost $${bjBet.toFixed(2)}`);
       }
       resetBj();
+    }
+
+    function hasSoft17(hand) {
+      let score = 0, aces = 0;
+      for (let c of hand) {
+        let v = cardValue(c);
+        if (v === 11) aces++;
+        score += v;
+      }
+      return score === 17 && aces > 0;
     }
 
     function resetBj() {
@@ -726,6 +2995,9 @@
       document.getElementById('bjDeal').classList.remove('hidden');
       document.getElementById('bjHit').classList.add('hidden');
       document.getElementById('bjStand').classList.add('hidden');
+      document.getElementById('bjDouble').classList.add('hidden');
+      document.getElementById('bjSplit').classList.add('hidden');
+      document.getElementById('bjInsurance').classList.add('hidden');
     }
 
   </script>
