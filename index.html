@@ -117,6 +117,9 @@
         <nav class="hidden sm:flex items-center gap-1">
           <button data-tab="home" onclick="showTab('home')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Home</button>
           <button data-tab="originals" onclick="showTab('originals')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Originals</button>
+          <button data-tab="opentables" onclick="showTab('opentables')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Open Tables</button>
+          <button data-tab="slots" onclick="showTab('slots')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Slots</button>
+          <button data-tab="wallet" onclick="showTab('wallet')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Wallet</button>
           <button data-tab="settings" onclick="showTab('settings')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Settings</button>
         </nav>
         <div id="authArea" class="flex items-center gap-2"></div>
@@ -135,6 +138,9 @@
     <div class="max-w-6xl mx-auto flex sm:justify-center justify-start gap-1 overflow-x-auto px-4 sm:px-6 border-b border-[#2a2a2a] sm:border-none">
       <button data-tab="home" onclick="showTab('home')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Home</button>
       <button data-tab="originals" onclick="showTab('originals')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Originals</button>
+      <button data-tab="opentables" onclick="showTab('opentables')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Open Tables</button>
+      <button data-tab="slots" onclick="showTab('slots')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Slots</button>
+      <button data-tab="wallet" onclick="showTab('wallet')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Wallet</button>
       <button data-tab="settings" onclick="showTab('settings')" class="tab-btn sm:hidden px-4 py-3 text-sm font-medium text-[#a1a1aa] hover:text-white whitespace-nowrap">Settings</button>
     </div>
   </nav>
@@ -161,6 +167,21 @@
           <h3 class="text-xl font-semibold text-white mb-1">Promotions</h3>
           <p class="text-sm text-[#71717a]">Bonuses & rewards</p>
         </button>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
+        <div class="stake-card p-6">
+          <h3 class="text-lg font-bold text-white mb-4">Recent Bets</h3>
+          <div id="recentBetsLeaderboard" class="space-y-2 max-h-64 overflow-y-auto">
+            <p class="text-sm text-[#71717a] text-center py-4">Login to see bets</p>
+          </div>
+        </div>
+        <div class="stake-card p-6">
+          <h3 class="text-lg font-bold text-white mb-4">Richest Players</h3>
+          <div id="richestLeaderboard" class="space-y-2 max-h-64 overflow-y-auto">
+            <p class="text-sm text-[#71717a] text-center py-4">Login to see rankings</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -346,6 +367,74 @@
             <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">GOAL</span>
           </div>
         </button>
+        <button onclick="showTab('russianroulette')" class="stake-card rounded-xl overflow-hidden hover:scale-[1.02] hover:border-[#333] transition border border-[#2a2a2a] text-left">
+          <div class="h-28 bg-gradient-to-br from-[#7f1d1d] via-[#dc2626] to-[#f87171] relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="relative">
+                <div class="w-8 h-20 border-4 border-white/50 rounded-full"></div>
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-white/30 rounded-full"></div>
+              </div>
+            </div>
+            <div class="absolute top-2 right-3 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span class="relative z-10 text-xl font-black text-white tracking-wider drop-shadow-lg">R.R.</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- RUSSIAN ROULETTE -->
+    <section id="russianroulette" class="tab-content hidden">
+      <div class="flex items-center gap-4 my-6">
+        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <div class="flex-1 text-center">
+          <h2 class="text-3xl font-bold text-white">RUSSIAN ROULETTE</h2>
+          <p class="text-xl text-red-500 font-mono font-semibold">🎯 1 in 6 to hit</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="stake-card p-8 max-w-2xl mx-auto relative overflow-hidden">
+        <div id="russianRoom" class="relative h-80 bg-black rounded-xl overflow-hidden mb-6">
+          <div class="absolute inset-0 bg-gradient-to-b from-[#1a0a0a] to-black"></div>
+          
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div id="russianTable" class="absolute bottom-10 w-48 h-4 bg-gradient-to-r from-[#2a1a1a] to-[#1a0a0a] rounded-full blur-sm"></div>
+          </div>
+          
+          <div id="russianGun" class="absolute left-1/2 -translate-x-1/2 bottom-16 text-6xl transition-all duration-500" style="left: 30%;">
+            🔫
+          </div>
+          
+          <div id="russianTarget" class="absolute right-8 top-1/2 -translate-y-1/2 w-16 h-20 bg-gradient-to-b from-[#3a2a2a] to-[#2a1a1a] rounded-full border-2 border-red-900/50">
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-[#4a3a3a] to-[#2a1a1a] rounded-full"></div>
+            <div class="absolute top-12 left-1/2 -translate-x-1/2 w-10 h-8 bg-gradient-to-b from-[#3a2a2a] to-[#1a0a0a] rounded-b-full"></div>
+          </div>
+          
+          <div id="russianFlash" class="absolute inset-0 bg-red-500/30 hidden"></div>
+          
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-red-700 font-mono">
+            <span id="russianChamberDisplay">● ○ ○ ○ ○ ○</span>
+          </div>
+        </div>
+
+        <div id="russianResult" class="text-center text-3xl font-bold mb-6 min-h-[50px]"></div>
+
+        <div class="flex items-center gap-4 mb-6">
+          <div class="flex-1">
+            <label class="block text-sm text-[#a1a1aa] mb-2">Your Bet</label>
+            <input type="number" id="russianBet" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center" value="10" min="1" step="1"/>
+          </div>
+          <button id="russianSpinBtn" onclick="playRussianRoulette()" class="px-10 py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold text-lg animate-pulse">PULL TRIGGER</button>
+        </div>
+
+        <div class="bg-[#131313] rounded-lg p-4">
+          <p class="text-white font-bold mb-2">How to play:</p>
+          <ul class="text-sm text-[#a1a1aa] space-y-1">
+            <li>• Click PULL TRIGGER - gun spins and fires at your head</li>
+            <li>• If it fires (1/6 chance) = lose your bet</li>
+            <li>• If it doesn't fire = win 3x your bet</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -356,34 +445,90 @@
         <p class="text-[#a1a1aa]">Customize your experience</p>
       </div>
       
-      <div class="stake-card p-8 max-w-lg mx-auto mb-6">
-        <h3 class="text-xl font-semibold text-white mb-6">Account Details</h3>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm text-[#a1a1aa] mb-2">Username</label>
-            <input type="text" id="settingsUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" disabled/>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="stake-card p-6">
+          <div class="flex items-center gap-4 mb-4">
+            <div id="accountAvatar" class="w-16 h-16 bg-gradient-to-br from-[#00c853] to-[#00e676] rounded-full flex items-center justify-center text-2xl font-bold text-black">?</div>
+            <div>
+              <h3 id="accountUsername" class="text-xl font-bold text-white">Guest</h3>
+              <p id="accountVip" class="text-sm text-yellow-400">VIP Level: Bronze</p>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm text-[#a1a1aa] mb-2">New Password</label>
-            <input type="password" id="settingsPassword" placeholder="Enter new password" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-[#131313] rounded-lg p-3">
+              <p class="text-xs text-[#71717a]">Total Wagered</p>
+              <p id="statWagered" class="text-lg font-bold text-white">$0.00</p>
+            </div>
+            <div class="bg-[#131313] rounded-lg p-3">
+              <p class="text-xs text-[#71717a]">Net Profit</p>
+              <p id="statProfit" class="text-lg font-bold text-[#00c853]">$0.00</p>
+            </div>
+            <div class="bg-[#131313] rounded-lg p-3">
+              <p class="text-xs text-[#71717a]">Total Bets</p>
+              <p id="statBets" class="text-lg font-bold text-white">0</p>
+            </div>
+            <div class="bg-[#131313] rounded-lg p-3">
+              <p class="text-xs text-[#71717a]">Win Rate</p>
+              <p id="statWinRate" class="text-lg font-bold text-white">0%</p>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm text-[#a1a1aa] mb-2">Account Created</label>
-            <input type="text" id="settingsCreated" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" disabled/>
+        </div>
+        
+        <div class="stake-card p-6">
+          <h3 class="text-lg font-semibold text-white mb-4">Wallet</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center bg-[#131313] rounded-lg p-3">
+              <span class="text-white">Balance</span>
+              <span id="walletBalance" class="text-xl font-bold text-[#00c853]">$500.00</span>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="showDepositModal()" class="flex-1 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-sm">Free Coins</button>
+              <button onclick="showResult('Info', 'Withdrawals are disabled in demo mode')" class="flex-1 py-2 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-bold text-sm">Withdraw</button>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm text-[#a1a1aa] mb-2">Total Wagered</label>
-            <input type="text" id="settingsWagered" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" disabled/>
+          
+          <h3 class="text-lg font-semibold text-white mt-6 mb-4">Transaction History</h3>
+          <div id="transactionHistory" class="space-y-2 max-h-40 overflow-y-auto">
+            <p class="text-sm text-[#71717a] text-center py-4">No transactions yet</p>
           </div>
-          <div>
-            <label class="block text-sm text-[#a1a1aa] mb-2">Current Balance</label>
-            <input type="text" id="settingsBalance" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-[#00c853] font-bold focus:outline-none" disabled/>
-          </div>
-          <button onclick="saveAccountSettings()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mt-4">Save Changes</button>
+        </div>
+      </div>
+      
+      <div class="stake-card p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Recent Bets</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-[#71717a] border-b border-[#2a2a2a]">
+                <th class="text-left py-2 px-2">Game</th>
+                <th class="text-right py-2 px-2">Bet</th>
+                <th class="text-right py-2 px-2">Result</th>
+                <th class="text-right py-2 px-2">Profit</th>
+                <th class="text-right py-2 px-2">Time</th>
+              </tr>
+            </thead>
+            <tbody id="betHistory">
+              <tr>
+                <td colspan="5" class="text-center text-[#71717a] py-4">No bets yet</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       
       <div class="stake-card p-8 max-w-lg mx-auto">
+        <h3 class="text-xl font-semibold text-white mb-6">Change Password</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-[#a1a1aa] mb-2">New Password</label>
+            <input type="password" id="settingsPassword" placeholder="Enter new password" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          </div>
+          <button onclick="saveAccountSettings()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mt-4">Save Password</button>
+          <button onclick="resetBalance()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold mt-4">Reset Balance to $500</button>
+        </div>
+      </div>
+      
+      <div class="stake-card p-8 max-w-lg mx-auto mt-6">
         <h3 class="text-xl font-semibold text-white mb-6">Theme</h3>
         <div class="flex gap-4">
           <button onclick="setTheme('dark')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-medium text-white transition">Dark</button>
@@ -391,6 +536,187 @@
         </div>
       </div>
     </section>
+
+    <!-- Wallet -->
+    <section id="wallet" class="tab-content hidden">
+      <div class="my-10">
+        <h2 class="text-3xl font-bold text-white mb-1">Wallet</h2>
+        <p class="text-[#a1a1aa]">Transfer funds to other players</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="stake-card p-6">
+          <h3 class="text-xl font-bold text-white mb-4">Transfer Coins</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm text-[#a1a1aa] mb-2">Recipient Username</label>
+              <input type="text" id="transferUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" placeholder="Enter username"/>
+            </div>
+            <div>
+              <label class="block text-sm text-[#a1a1aa] mb-2">Amount</label>
+              <input type="number" id="transferAmount" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" placeholder="0.00" min="1" step="0.01"/>
+            </div>
+            <button onclick="transferCoins()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold transition">Transfer</button>
+          </div>
+        </div>
+
+        <div class="stake-card p-6">
+          <h3 class="text-xl font-bold text-white mb-4">Transfer History</h3>
+          <div id="transferHistory" class="space-y-2 max-h-64 overflow-y-auto">
+            <p class="text-sm text-[#71717a] text-center py-4">No transfers yet</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stake-card p-6 mt-6">
+        <h3 class="text-xl font-bold text-white mb-4">Your Balance</h3>
+        <p class="text-4xl font-bold text-[#00c853]">$<span id="walletBalance">0.00</span></p>
+      </div>
+    </section>
+
+    <!-- SLOTS -->
+    <section id="slots" class="tab-content hidden">
+      <div class="my-10">
+        <h2 class="text-3xl font-bold text-white mb-1">Slots</h2>
+        <p class="text-[#a1a1aa]">Spin to win!</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div onclick="openSlotGame('slotsClassic')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🍒</div>
+          <h3 class="font-bold text-white">Classic</h3>
+          <p class="text-xs text-[#71717a]">3 Reels</p>
+        </div>
+        <div onclick="openSlotGame('slotsLucky')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🍀</div>
+          <h3 class="font-bold text-white">Lucky 7s</h3>
+          <p class="text-xs text-[#71717a]">High Wins</p>
+        </div>
+        <div onclick="openSlotGame('slotsGold')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">💎</div>
+          <h3 class="font-bold text-white">Gold Rush</h3>
+          <p class="text-xs text-[#71717a]">Jackpot</p>
+        </div>
+        <div onclick="openSlotGame('slotsEgypt')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🐫</div>
+          <h3 class="font-bold text-white">Egyptian</h3>
+          <p class="text-xs text-[#71717a]">Mystery</p>
+        </div>
+        <div onclick="openSlotGame('slotsFruit')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🍇</div>
+          <h3 class="font-bold text-white">Fruit Mix</h3>
+          <p class="text-xs text-[#71717a]">Bonus</p>
+        </div>
+        <div onclick="openSlotGame('slotsGems')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">💠</div>
+          <h3 class="font-bold text-white">Gemstone</h3>
+          <p class="text-xs text-[#71717a]">Multi</p>
+        </div>
+        <div onclick="openSlotGame('slotsWild')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🎰</div>
+          <h3 class="font-bold text-white">Wild West</h3>
+          <p class="text-xs text-[#71717a]">Stacked</p>
+        </div>
+        <div onclick="openSlotGame('slotsAsia')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🐉</div>
+          <h3 class="font-bold text-white">Dragon</h3>
+          <p class="text-xs text-[#71717a]">Free Spins</p>
+        </div>
+        <div onclick="openSlotGame('slotsMovie')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🎬</div>
+          <h3 class="font-bold text-white">Hollywood</h3>
+          <p class="text-xs text-[#71717a]">Big Wins</p>
+        </div>
+        <div onclick="openSlotGame('slotsSpace')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+          <div class="text-4xl mb-2">🚀</div>
+          <h3 class="font-bold text-white">Space</h3>
+          <p class="text-xs text-[#71717a]">Sticky Wild</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLOT GAME MODAL -->
+    <div id="slotGameModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4">
+      <div class="stake-card p-6 w-full max-w-lg">
+        <div class="flex items-center justify-between mb-4">
+          <h3 id="slotGameTitle" class="text-2xl font-bold text-white">Slot Game</h3>
+          <button onclick="closeSlotGame()" class="text-[#71717a] hover:text-white text-2xl">&times;</button>
+        </div>
+        
+        <div id="slotReels" class="flex justify-center gap-2 mb-6 bg-[#0a0a0a] p-4 rounded-lg">
+          <div class="slot-reel w-20 h-24 bg-[#1a1a1a] border-2 border-[#333] rounded-lg flex items-center justify-center text-4xl">🍒</div>
+          <div class="slot-reel w-20 h-24 bg-[#1a1a1a] border-2 border-[#333] rounded-lg flex items-center justify-center text-4xl">🍒</div>
+          <div class="slot-reel w-20 h-24 bg-[#1a1a1a] border-2 border-[#333] rounded-lg flex items-center justify-center text-4xl">🍒</div>
+        </div>
+
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex-1">
+            <label class="block text-xs text-[#a1a1aa] mb-1">Bet Amount</label>
+            <input type="number" id="slotBet" class="w-full px-3 py-2 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center" value="1" min="0.01" step="0.01"/>
+          </div>
+          <button onclick="spinSlots()" class="px-8 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">SPIN</button>
+        </div>
+
+        <p id="slotResult" class="text-center text-lg font-bold mb-4"></p>
+        
+        <div id="slotPaytable" class="bg-[#0a0a0a] rounded-lg p-3">
+          <p class="text-xs text-[#71717a] mb-2 text-center font-bold">PAYOUT TABLE</p>
+          <div id="slotPaytableContent" class="grid grid-cols-5 gap-2 text-center text-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPEN TABLES -->
+    <section id="opentables" class="tab-content hidden">
+      <div class="my-10">
+        <h2 class="text-3xl font-bold text-white mb-1">Open Tables</h2>
+        <p class="text-[#a1a1aa]">Create or join multiplayer tables</p>
+      </div>
+
+      <div class="flex justify-end mb-4">
+        <button onclick="openCreateTableModal()" class="px-6 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">+ Create Table</button>
+      </div>
+
+      <div id="tablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <p class="text-[#71717a] text-center py-8 col-span-full">No tables available. Create one!</p>
+      </div>
+    </section>
+
+    <!-- CREATE TABLE MODAL -->
+    <div id="createTableModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center p-4">
+      <div class="stake-card p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-white">Create Table</h3>
+          <button onclick="closeCreateTableModal()" class="text-[#71717a] hover:text-white text-2xl">&times;</button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-[#a1a1aa] mb-2">Table Name</label>
+            <input type="text" id="tableName" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white" placeholder="My Table"/>
+          </div>
+          <div>
+            <label class="block text-sm text-[#a1a1aa] mb-2">Select Game</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="selectTableGame('blackjack')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+                🃏 Blackjack
+              </button>
+              <button onclick="selectTableGame('roulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+                🎡 Roulette
+              </button>
+              <button onclick="selectTableGame('russianroulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+                🔫 Russian Roulette
+              </button>
+              <button onclick="selectTableGame('rps')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+                ✊ Rock Paper Scissors
+              </button>
+            </div>
+          </div>
+          <input type="hidden" id="selectedTableGame" value=""/>
+          <button onclick="createTable()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Create Table</button>
+        </div>
+      </div>
+    </div>
 
     <!-- CRASH -->
     <section id="crash" class="tab-content hidden">
@@ -492,15 +818,15 @@
         <div class="relative w-full max-w-[540px] h-[800px] bg-gradient-to-b from-[#131313] to-[#0d0d0d] rounded-2xl border border-[#2a2a2a] overflow-hidden">
           <div id="plinkoPegs" class="absolute inset-0 flex flex-col justify-between py-16 px-16 pointer-events-none"></div>
           <div class="absolute bottom-0 left-0 right-0 h-32 flex justify-between px-10 items-end pb-10 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/90 to-transparent">
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-pink-500">10×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-purple-400">5×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-cyan-400">2×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-teal-400">1×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-yellow-400">0.2×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-teal-400">1×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-cyan-400">2×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-purple-400">5×</div></div>
-            <div class="text-center w-[11%]"><div class="text-2xl font-bold text-pink-500">10×</div></div>
+            <div class="text-center w-[11%]"><div id="mult0" class="text-sm font-bold text-pink-500 px-1 py-2 rounded bg-black/60">10×</div></div>
+            <div class="text-center w-[11%]"><div id="mult1" class="text-sm font-bold text-purple-400 px-1 py-2 rounded bg-black/60">5×</div></div>
+            <div class="text-center w-[11%]"><div id="mult2" class="text-sm font-bold text-cyan-400 px-1 py-2 rounded bg-black/60">2×</div></div>
+            <div class="text-center w-[11%]"><div id="mult3" class="text-sm font-bold text-teal-400 px-1 py-2 rounded bg-black/60">1×</div></div>
+            <div class="text-center w-[11%]"><div id="mult4" class="text-sm font-bold text-yellow-400 px-1 py-2 rounded bg-black/60">0.2×</div></div>
+            <div class="text-center w-[11%]"><div id="mult5" class="text-sm font-bold text-teal-400 px-1 py-2 rounded bg-black/60">1×</div></div>
+            <div class="text-center w-[11%]"><div id="mult6" class="text-sm font-bold text-cyan-400 px-1 py-2 rounded bg-black/60">2×</div></div>
+            <div class="text-center w-[11%]"><div id="mult7" class="text-sm font-bold text-purple-400 px-1 py-2 rounded bg-black/60">5×</div></div>
+            <div class="text-center w-[11%]"><div id="mult8" class="text-sm font-bold text-pink-500 px-1 py-2 rounded bg-black/60">10×</div></div>
           </div>
         </div>
 
@@ -534,14 +860,17 @@
     <!-- BLACKJACK -->
     <section id="blackjack" class="tab-content hidden">
       <div class="flex items-center gap-4 my-6">
-        <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
+        <button onclick="showTab('opentables')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
         <div class="flex-1 text-center">
           <h2 class="text-3xl font-bold text-white">BLACKJACK</h2>
           <p class="text-[#a1a1aa]">Beat the dealer without busting</p>
         </div>
         <div class="w-16"></div>
       </div>
+
       <div class="max-w-4xl mx-auto">
+        <div id="tablePlayers" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4"></div>
+        
         <div class="rounded-2xl overflow-hidden" style="background: linear-gradient(180deg, #166534 0%, #14532d 50%, #166534 100%); border: 3px solid #15803d;">
           <div class="p-8">
             <div class="flex flex-col items-center gap-8">
@@ -710,23 +1039,26 @@
         <div class="w-16"></div>
       </div>
       <div class="flex flex-col items-center gap-8">
-        <div class="perspective-500">
-          <div id="coin" class="w-40 h-40 relative transform-style-preserve-3d transition-transform duration-700" style="transform-style: preserve-3d;">
-            <div class="absolute inset-0 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-full shadow-2xl flex items-center justify-center" style="backface-visibility: hidden;">
-              <span class="text-5xl font-bold text-yellow-600">H</span>
+        <div class="w-48 h-48 flex items-center justify-center">
+          <div id="coinContainer" class="relative w-40 h-40">
+            <div id="coinHeads" class="absolute inset-0 rounded-full flex items-center justify-center transition-all duration-75" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); border: 6px solid #fcd34d; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);">
+              <div class="text-7xl font-black text-yellow-900">H</div>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-gray-300 to-gray-500 rounded-full shadow-2xl flex items-center justify-center rotate-y-180" style="backface-visibility: hidden;">
-              <span class="text-5xl font-bold text-gray-700">T</span>
+            <div id="coinTails" class="absolute inset-0 rounded-full flex items-center justify-center transition-all duration-75" style="transform: rotateY(180deg); background: linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%); border: 6px solid #d1d5db; box-shadow: 0 10px 30px rgba(156, 163, 175, 0.4); display: none;">
+              <div class="text-7xl font-black text-gray-900">T</div>
             </div>
           </div>
         </div>
+        
+        <div id="coinResult" class="text-2xl font-bold text-[#00c853] min-h-[40px]"></div>
+        
         <div class="flex gap-4 flex-wrap justify-center">
-          <select id="coinChoice" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
-            <option value="heads">HEADS</option>
-            <option value="tails">TAILS</option>
+          <select id="coinChoice" class="px-6 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-white font-bold focus:outline-none focus:border-[#00c853]">
+            <option value="heads">🪙 HEADS</option>
+            <option value="tails">🪙 TAILS</option>
           </select>
-          <input type="number" id="coinBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button id="coinFlipBtn" onclick="flipCoin()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">FLIP</button>
+          <input type="number" id="coinBet" placeholder="Bet ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
+          <button id="coinFlipBtn" onclick="flipCoin()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-lg">FLIP COIN</button>
         </div>
         <p class="text-[#71717a] text-sm">Choose heads or tails, win 2x your bet!</p>
       </div>
@@ -900,6 +1232,19 @@
             <div id="fishingHook" class="text-4xl transition-transform">🎣</div>
           </div>
         </div>
+
+        <div class="stake-card p-4">
+          <h4 class="font-bold text-white mb-3 text-center">Fish Chart</h4>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <div class="flex items-center gap-2"><span class="text-xl">🐟</span><span class="text-[#00c853]">0.5x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐠</span><span class="text-[#00c853]">0.8x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐡</span><span class="text-[#00c853]">1.2x</span><span class="text-[#71717a] text-xs">(medium)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🦀</span><span class="text-[#00c853]">2x</span><span class="text-[#71717a] text-xs">(fast)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🦞</span><span class="text-[#00c853]">3x</span><span class="text-[#71717a] text-xs">(very fast)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐙</span><span class="text-[#00c853]">5x</span><span class="text-[#71717a] text-xs">(超快)</span></div>
+            <div class="flex items-center gap-2 col-span-2 justify-center"><span class="text-xl">💎</span><span class="text-yellow-400 font-bold">10x</span><span class="text-[#71717a] text-xs">(extremely fast!)</span></div>
+          </div>
+        </div>
       </div>
       <p class="text-center mt-6 text-[#71717a] text-sm">Fish swim across the screen with different multipliers. Click to shoot!</p>
     </section>
@@ -958,6 +1303,31 @@
     </section>
   </main>
 
+  <!-- Global Chat -->
+  <div id="chatWidget" class="fixed bottom-4 right-4 z-40">
+    <div id="chatToggle" onclick="toggleChat()" class="w-12 h-12 bg-[#00c853] rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-[#00e676] transition">
+      <span class="text-xl">💬</span>
+    </div>
+    
+    <div id="chatBox" class="hidden absolute bottom-14 right-0 w-80 h-96 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] flex flex-col overflow-hidden">
+      <div class="p-3 bg-[#0a0a0a] border-b border-[#2a2a2a] flex justify-between items-center">
+        <span class="font-bold text-white">Global Chat</span>
+        <button onclick="toggleChat()" class="text-[#71717a] hover:text-white">✕</button>
+      </div>
+      
+      <div id="chatMessages" class="flex-1 overflow-y-auto p-3 space-y-2">
+        <p class="text-xs text-[#71717a] text-center">Welcome to chat!</p>
+      </div>
+      
+      <div class="p-2 border-t border-[#2a2a2a]">
+        <div class="flex gap-2">
+          <input type="text" id="chatInput" placeholder="Type a message..." class="flex-1 px-3 py-2 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm"/>
+          <button id="chatSendBtn" class="px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg text-sm font-bold">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Result Modal -->
   <div id="resultModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
     <div class="bg-[#1a1a1a] p-10 rounded-2xl text-center max-w-md w-full border border-[#2a2a2a] shadow-2xl">
@@ -1010,6 +1380,18 @@
   </div>
 
   <script>
+    // Global variables - defined first to avoid reference errors
+    const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal', 'wallet', 'slots', 'russianroulette', 'opentables'];
+    
+    // Chat
+    let chatMessages = JSON.parse(localStorage.getItem('vantabet_chat') || '[]');
+    
+    let minesGameActive = false;
+    let minesPositions = [];
+    let revealed = 0;
+    let minesBet = 0;
+    const gridSize = 25;
+
     // Global Sound Effects
     function playSfx(type) {
       try {
@@ -1177,6 +1559,7 @@
       currentUser = username;
       updateAuthUI();
       loadBalance();
+      loadAccountSettings();
       closeAuthModal();
       alert(`Welcome back, ${username}!`);
     }
@@ -1210,7 +1593,485 @@
       updateAuthUI();
       balance = 500.00;
       updateBalance();
+      loadAccountSettings();
       alert('Logged out');
+    }
+
+    function transferCoins() {
+      if (!currentUser) {
+        showResult('Error', 'Please login to transfer coins');
+        return;
+      }
+
+      const recipient = document.getElementById('transferUsername').value.trim();
+      const amount = parseFloat(document.getElementById('transferAmount').value);
+
+      if (!recipient) {
+        showResult('Error', 'Please enter recipient username');
+        return;
+      }
+
+      if (recipient === currentUser) {
+        showResult('Error', 'Cannot transfer to yourself');
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        showResult('Error', 'Please enter a valid amount');
+        return;
+      }
+
+      if (amount > balance) {
+        showResult('Error', 'Insufficient balance');
+        return;
+      }
+
+      const recipientPassword = localStorage.getItem(`vantabet_password_${recipient}`);
+      if (!recipientPassword) {
+        showResult('Error', 'Recipient username not found');
+        return;
+      }
+
+      balance -= amount;
+      updateBalance();
+      saveBalance();
+
+      const recipientBalance = parseFloat(localStorage.getItem(`vantabet_balance_${recipient}`) || '0');
+      localStorage.setItem(`vantabet_balance_${recipient}`, (recipientBalance + amount).toFixed(2));
+
+      const tx = {
+        from: currentUser,
+        to: recipient,
+        amount: amount,
+        time: new Date().toLocaleString()
+      };
+      const transfers = JSON.parse(localStorage.getItem(`vantabet_transfers_${currentUser}`) || '[]');
+      transfers.unshift(tx);
+      localStorage.setItem(`vantabet_transfers_${currentUser}`, JSON.stringify(transfers.slice(0, 50)));
+
+      showResult('Success', `Transferred $${amount.toFixed(2)} to ${recipient}`);
+      loadTransferHistory();
+      updateLeaderboards();
+    }
+
+    function loadTransferHistory() {
+      if (!currentUser) return;
+      const transfers = JSON.parse(localStorage.getItem(`vantabet_transfers_${currentUser}`) || '[]');
+      const container = document.getElementById('transferHistory');
+      const walletBalance = document.getElementById('walletBalance');
+      
+      if (walletBalance) walletBalance.textContent = balance.toFixed(2);
+      
+      if (transfers.length === 0) {
+        container.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No transfers yet</p>';
+        return;
+      }
+
+      container.innerHTML = transfers.slice(0, 20).map(t => `
+        <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2">
+          <div>
+            <span class="text-white text-sm">To: ${t.to}</span>
+            <span class="text-xs text-[#71717a] block">${t.time}</span>
+          </div>
+          <span class="text-red-400 font-bold">-$${t.amount.toFixed(2)}</span>
+        </div>
+      `).join('');
+    }
+
+    let currentSlotGame = '';
+    const slotSymbols = {
+      classic: ['🍒', '🍋', '🍇', '💎', '7️⃣'],
+      lucky: ['7️⃣', '⭐', '🍀', '💎', '🍒'],
+      gold: ['💰', '💎', '🏆', '⭐', '🍀'],
+      egypt: ['🐫', '👁️', '💎', '🏺', '⭐'],
+      fruit: ['🍇', '🍊', '🍋', '🍓', '🍒'],
+      gems: ['💠', '💎', '🔮', '💜', '💙'],
+      wild: ['🤠', '🐴', '🌵', '⭐', '💰'],
+      asia: ['🐉', '🏮', '🎴', '💰', '⭐'],
+      movie: ['🎬', '🎭', '⭐', '💎', '🎪'],
+      space: ['🚀', '🪐', '⭐', '👽', '💫']
+    };
+
+    const slotMultipliers = {
+      classic: { '7️⃣': 5, '💎': 3, '🍇': 1.5, '🍋': 1, '🍒': 0.5 },
+      lucky: { '7️⃣': 8, '💎': 4, '🍀': 2, '⭐': 1, '🍒': 0.5 },
+      gold: { '💰': 10, '💎': 5, '🏆': 2.5, '⭐': 1.2, '🍀': 0.5 },
+      egypt: { '🐫': 6, '👁️': 3, '💎': 1.5, '🏺': 1, '⭐': 0.5 },
+      fruit: { '🍇': 3, '🍊': 2, '🍋': 1.2, '🍓': 0.8, '🍒': 0.5 },
+      gems: { '💎': 6, '💠': 3, '🔮': 1.5, '💜': 1, '💙': 0.5 },
+      wild: { '🤠': 5, '🐴': 2.5, '🌵': 1.5, '⭐': 1, '💰': 0.5 },
+      asia: { '🐉': 8, '🏮': 3, '🎴': 1.5, '💰': 1, '⭐': 0.5 },
+      movie: { '🎬': 6, '🎭': 3, '⭐': 1.5, '💎': 1, '🎪': 0.5 },
+      space: { '🚀': 7, '🪐': 4, '⭐': 2, '👽': 1, '💫': 0.5 }
+    };
+
+    function openSlotGame(gameName) {
+      currentSlotGame = gameName.replace('slots', '').toLowerCase();
+      const titles = {
+        classic: 'Classic Slots',
+        lucky: 'Lucky 7s',
+        gold: 'Gold Rush',
+        egypt: 'Egyptian Mysteries',
+        fruit: 'Fruit Mix',
+        gems: 'Gemstone Valley',
+        wild: 'Wild West',
+        asia: 'Dragon Fortune',
+        hollywood: 'Hollywood Nights',
+        space: 'Space Adventure'
+      };
+      
+      const paytables = {
+        classic: { '7️⃣': '5x', '💎': '3x', '🍇': '1.5x', '🍋': '1x', '🍒': '0.5x' },
+        lucky: { '7️⃣': '8x', '💎': '4x', '🍀': '2x', '⭐': '1x', '🍒': '0.5x' },
+        gold: { '💰': '10x', '💎': '5x', '🏆': '2.5x', '⭐': '1.2x', '🍀': '0.5x' },
+        egypt: { '🐫': '6x', '👁️': '3x', '💎': '1.5x', '🏺': '1x', '⭐': '0.5x' },
+        fruit: { '🍇': '3x', '🍊': '2x', '🍋': '1.2x', '🍓': '0.8x', '🍒': '0.5x' },
+        gems: { '💎': '6x', '💠': '3x', '🔮': '1.5x', '💜': '1x', '💙': '0.5x' },
+        wild: { '🤠': '5x', '🐴': '2.5x', '🌵': '1.5x', '⭐': '1x', '💰': '0.5x' },
+        asia: { '🐉': '8x', '🏮': '3x', '🎴': '1.5x', '💰': '1x', '⭐': '0.5x' },
+        movie: { '🎬': '6x', '🎭': '3x', '⭐': '1.5x', '💎': '1x', '🎪': '0.5x' },
+        space: { '🚀': '7x', '🪐': '4x', '⭐': '2x', '👽': '1x', '💫': '0.5x' }
+      };
+      
+      const symbols = slotSymbols[currentSlotGame] || slotSymbols.classic;
+      const paytable = paytables[currentSlotGame] || paytables.classic;
+      
+      let paytableHTML = '';
+      for (const [symbol, mult] of Object.entries(paytable)) {
+        paytableHTML += `<div class="flex flex-col items-center"><span class="text-xl">${symbol}</span><span class="${parseFloat(mult) >= 2 ? 'text-yellow-400' : parseFloat(mult) >= 1 ? 'text-[#00c853]' : 'text-[#71717a]'}">${mult}</span></div>`;
+      }
+      
+      document.getElementById('slotGameTitle').textContent = titles[currentSlotGame] || 'Slots';
+      document.getElementById('slotGameModal').classList.remove('hidden');
+      document.getElementById('slotResult').textContent = '';
+      document.getElementById('slotPaytableContent').innerHTML = paytableHTML;
+      resetReels();
+    }
+
+    function closeSlotGame() {
+      document.getElementById('slotGameModal').classList.add('hidden');
+    }
+
+    function resetReels() {
+      const reels = document.querySelectorAll('.slot-reel');
+      reels.forEach(r => r.textContent = '🍒');
+    }
+
+    function spinSlots() {
+      const bet = parseFloat(document.getElementById('slotBet').value);
+      if (isNaN(bet) || bet <= 0) {
+        showResult('Error', 'Please enter a valid bet');
+        return;
+      }
+      if (bet > balance) {
+        showResult('Error', 'Insufficient balance');
+        return;
+      }
+
+      balance -= bet;
+      updateBalance();
+      saveBalance();
+      addWagered(bet);
+
+      const symbols = slotSymbols[currentSlotGame] || slotSymbols.classic;
+      const multipliers = slotMultipliers[currentSlotGame] || slotMultipliers.classic;
+      const reels = document.querySelectorAll('.slot-reel');
+      const result = [];
+
+      let spinCount = 0;
+      const spinInterval = setInterval(() => {
+        reels.forEach((reel, i) => {
+          reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        });
+        spinCount++;
+        if (spinCount >= 10) {
+          clearInterval(spinInterval);
+          const finalSymbols = [];
+          reels.forEach(reel => {
+            const sym = symbols[Math.floor(Math.random() * symbols.length)];
+            reel.textContent = sym;
+            finalSymbols.push(sym);
+          });
+
+          let win = 0;
+          if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
+            win = bet * (multipliers[finalSymbols[0]] || 1);
+          } else if (finalSymbols[0] === finalSymbols[1] || finalSymbols[1] === finalSymbols[2]) {
+            win = bet * 0.5;
+          }
+
+          const resultEl = document.getElementById('slotResult');
+          if (win > 0) {
+            balance += win;
+            updateBalance();
+            saveBalance();
+            const profit = win - bet;
+            addBetRecord('Slots', bet, profit);
+            resultEl.textContent = `WIN! +$${win.toFixed(2)}`;
+            resultEl.className = 'text-center text-lg font-bold text-[#00c853]';
+            playSfx('win');
+          } else {
+            addBetRecord('Slots', bet, -bet);
+            resultEl.textContent = `Bet: $${bet.toFixed(2)}`;
+            resultEl.className = 'text-center text-lg font-bold text-[#71717a]';
+            playSfx('lose');
+          }
+          updateLeaderboards();
+        }
+      }, 100);
+    }
+
+    let russianPlaying = false;
+    let russianWins = 0;
+
+    function playRussianRoulette() {
+      if (russianPlaying) return;
+      
+      const bet = parseFloat(document.getElementById('russianBet').value);
+      if (isNaN(bet) || bet <= 0) {
+        showResult('Error', 'Please enter a valid bet');
+        return;
+      }
+      if (bet > balance) {
+        showResult('Error', 'Insufficient balance');
+        return;
+      }
+
+      russianPlaying = true;
+      const btn = document.getElementById('russianSpinBtn');
+      btn.disabled = true;
+      btn.classList.remove('animate-pulse');
+
+      balance -= bet;
+      updateBalance();
+      saveBalance();
+      addWagered(bet);
+
+      const gunEl = document.getElementById('russianGun');
+      const resultEl = document.getElementById('russianResult');
+      const flashEl = document.getElementById('russianFlash');
+      const chamberEl = document.getElementById('russianChamberDisplay');
+
+      resultEl.textContent = 'Spinning cylinder...';
+      resultEl.className = 'text-center text-2xl font-bold text-yellow-400';
+      chamberEl.textContent = '● ○ ○ ○ ○ ○';
+
+      let spinCount = 0;
+
+      const spinInterval = setInterval(() => {
+        chamberEl.textContent = '● ○ ○ ○ ○ ○'.split('').sort(() => Math.random() - 0.5).join(' ');
+        gunEl.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+        spinCount++;
+        
+        if (spinCount >= 8) {
+          clearInterval(spinInterval);
+          
+          setTimeout(() => {
+            gunEl.style.transition = 'all 0.5s ease-in';
+            gunEl.style.left = '70%';
+            gunEl.style.transform = 'rotate(-15deg)';
+            resultEl.textContent = 'Click...';
+            
+            setTimeout(() => {
+              const isHit = Math.random() < (1/6);
+              
+              if (isHit) {
+                flashEl.classList.remove('hidden');
+                gunEl.textContent = '💥';
+                resultEl.textContent = '💥 BANG! YOU DIED!';
+                resultEl.className = 'text-center text-3xl font-bold text-red-500 animate-shake';
+                russianWins = 0;
+                addBetRecord('Russian Roulette', bet, -bet);
+                playSfx('lose');
+              } else {
+                russianWins++;
+                const streak = russianWins > 1 ? ` (${russianWins} in a row!)` : '';
+                gunEl.textContent = '✓';
+                resultEl.textContent = `😐 CLICK... Survived!${streak}`;
+                resultEl.className = 'text-center text-3xl font-bold text-[#00c853]';
+                const win = bet * 3;
+                balance += win;
+                updateBalance();
+                saveBalance();
+                addBetRecord('Russian Roulette', bet, win - bet);
+                playSfx('win');
+              }
+              
+              setTimeout(() => {
+                gunEl.style.transition = 'all 0.8s ease-out';
+                gunEl.style.left = '30%';
+                gunEl.style.transform = 'rotate(0deg)';
+                
+                setTimeout(() => {
+                  gunEl.textContent = '🔫';
+                  flashEl.classList.add('hidden');
+                  russianPlaying = false;
+                  btn.disabled = false;
+                  btn.classList.add('animate-pulse');
+                  updateLeaderboards();
+                }, 800);
+              }, 1500);
+            }, 600);
+          }, 500);
+        }
+      }, 100);
+    }
+
+    let gameTables = [];
+
+    function openCreateTableModal() {
+      if (!currentUser) {
+        showResult('Login Required', 'Please login to create a table');
+        return;
+      }
+      document.getElementById('createTableModal').classList.remove('hidden');
+      document.getElementById('tableName').value = currentUser + "'s Table";
+      document.getElementById('selectedTableGame').value = '';
+      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#00c853]', 'bg-[#1a2a1a]'));
+    }
+
+    function closeCreateTableModal() {
+      document.getElementById('createTableModal').classList.add('hidden');
+    }
+
+    function selectTableGame(game) {
+      document.getElementById('selectedTableGame').value = game;
+      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#00c853]', 'bg-[#1a2a1a]'));
+      event.target.closest('button').classList.add('border-[#00c853]', 'bg-[#1a2a1a]');
+    }
+
+    function createTable() {
+      const name = document.getElementById('tableName').value.trim() || currentUser + "'s Table";
+      const game = document.getElementById('selectedTableGame').value;
+      
+      if (!game) {
+        showResult('Error', 'Please select a game');
+        return;
+      }
+
+      const table = {
+        id: Date.now(),
+        name: name,
+        game: game,
+        host: currentUser,
+        players: [currentUser],
+        created: new Date().toLocaleTimeString()
+      };
+
+      gameTables.push(table);
+      saveTables();
+      closeCreateTableModal();
+      renderTables();
+      showResult('Table Created', `Table "${name}" is now open!`);
+    }
+
+    function joinTable(tableId) {
+      if (!currentUser) {
+        showResult('Login Required', 'Please login to join a table');
+        return;
+      }
+
+      const table = gameTables.find(t => t.id === tableId);
+      if (!table) {
+        showResult('Error', 'Table not found');
+        return;
+      }
+
+      if (table.players.includes(currentUser)) {
+        showTab(table.game);
+        return;
+      }
+
+      if (table.players.length >= 5) {
+        showResult('Error', 'Table is full');
+        return;
+      }
+
+      table.players.push(currentUser);
+      saveTables();
+      renderTables();
+      showTab(table.game);
+    }
+
+    function leaveTable(tableId) {
+      const table = gameTables.find(t => t.id === tableId);
+      if (table) {
+        table.players = table.players.filter(p => p !== currentUser);
+        if (table.players.length === 0 || table.host === currentUser) {
+          gameTables = gameTables.filter(t => t.id !== tableId);
+        }
+        saveTables();
+        renderTables();
+      }
+    }
+
+    function saveTables() {
+      localStorage.setItem('vantabet_tables', JSON.stringify(gameTables));
+    }
+
+    function loadTables() {
+      gameTables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+    }
+
+    function renderTables() {
+      loadTables();
+      const container = document.getElementById('tablesList');
+      
+      if (gameTables.length === 0) {
+        container.innerHTML = '<p class="text-[#71717a] text-center py-8 col-span-full">No tables available. Create one!</p>';
+        return;
+      }
+
+      const gameIcons = {
+        blackjack: '🃏',
+        roulette: '🎡',
+        russianroulette: '🔫',
+        rps: '✊'
+      };
+
+      const gameNames = {
+        blackjack: 'Blackjack',
+        roulette: 'Roulette',
+        russianroulette: 'Russian Roulette',
+        rps: 'Rock Paper Scissors'
+      };
+
+      const isOwner = currentUser && currentUser === (gameTables.find(t => t.host === currentUser)?.host);
+
+      container.innerHTML = gameTables.map(table => `
+        <div class="stake-card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${gameIcons[table.game] || '🎮'}</span>
+              <div>
+                <h4 class="font-bold text-white">${table.name}</h4>
+                <p class="text-xs text-[#71717a]">${gameNames[table.game]}</p>
+              </div>
+            </div>
+            ${currentUser === table.host ? `<button onclick="closeTable(${table.id})" class="text-red-500 hover:text-red-400 text-sm">✕ Close</button>` : ''}
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-[#a1a1aa]">
+              <span class="text-[#00c853]">${table.players.length}/5</span> players
+              <br>
+              <span class="text-xs">Host: ${table.host}</span>
+            </div>
+            <button onclick="joinTable(${table.id})" class="px-4 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-sm">
+              ${table.players.includes(currentUser) ? 'Playing' : 'Join'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function closeTable(tableId) {
+      const table = gameTables.find(t => t.id === tableId);
+      if (table && currentUser === table.host) {
+        gameTables = gameTables.filter(t => t.id !== tableId);
+        saveTables();
+        renderTables();
+        showResult('Table Closed', `Table "${table.name}" has been closed`);
+      }
     }
 
     function setTheme(theme) {
@@ -1219,54 +2080,28 @@
       showResult('Theme', theme === 'dark' ? 'Dark theme applied.' : 'Light theme applied.');
     }
 
-    function loadAccountSettings() {
-      const username = localStorage.getItem('vantabet_current_user') || 'Guest';
-      const created = localStorage.getItem(`vantabet_created_${username}`) || new Date().toLocaleDateString();
-      const wagered = parseFloat(localStorage.getItem(`vantabet_wagered_${username}`)) || 0;
-      
-      document.getElementById('settingsUsername').value = username;
-      document.getElementById('settingsCreated').value = created;
-      document.getElementById('settingsWagered').value = '$' + wagered.toFixed(2);
-      document.getElementById('settingsBalance').value = '$' + balance.toFixed(2);
-    }
-
-    function saveAccountSettings() {
-      const newPassword = document.getElementById('settingsPassword').value;
-      const username = localStorage.getItem('vantabet_current_user');
-      
-      if (!username) {
-        showResult('Error', 'Please login to save settings');
-        return;
-      }
-      
-      if (newPassword && newPassword.length >= 4) {
-        localStorage.setItem(`vantabet_password_${username}`, newPassword);
-        document.getElementById('settingsPassword').value = '';
-        showResult('Success', 'Password updated successfully!');
-      } else if (newPassword) {
-        showResult('Error', 'Password must be at least 4 characters');
-      } else {
-        showResult('Success', 'Settings saved!');
-      }
-    }
-
-    function addWagered(amount) {
-      const username = localStorage.getItem('vantabet_current_user');
-      if (username) {
-        const current = parseFloat(localStorage.getItem(`vantabet_wagered_${username}`)) || 0;
-        localStorage.setItem(`vantabet_wagered_${username}`, current + amount);
-      }
-    }
-
     if (localStorage.getItem('vantabet_theme') === 'light') document.documentElement.classList.add('theme-light');
 
     // Initial load
     updateAuthUI();
     loadBalance();
     loadAccountSettings();
+    updateLeaderboards();
+    loadTables();
+    renderChat();
+    setupChatListeners();
+    
+    setInterval(() => {
+      const saved = JSON.parse(localStorage.getItem('vantabet_chat') || '[]');
+      if (saved.length !== chatMessages.length) {
+        chatMessages = saved;
+        if (!document.getElementById('chatBox').classList.contains('hidden')) {
+          renderChat();
+        }
+      }
+    }, 3000);
 
     // Tab switch – main nav: Home, Originals, Settings. Sub-games (crash, dice, etc.) show Originals as active.
-    const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal'];
     function showTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       const panel = document.getElementById(tabId);
@@ -1282,8 +2117,88 @@
 
       if (tabId === 'crash') drawCrashChart();
       if (tabId === 'settings') loadAccountSettings();
+      if (tabId === 'home') updateLeaderboards();
+      if (tabId === 'wallet') loadTransferHistory();
+      if (tabId === 'opentables') renderTables();
+      if (tabId === 'blackjack') loadBjTablePlayers();
     }
     showTab('originals');
+
+    // Global Chat
+    
+    function toggleChat() {
+      const box = document.getElementById('chatBox');
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        renderChat();
+      }
+    }
+    
+    function sendChat() {
+      console.log('sendChat called');
+      const input = document.getElementById('chatInput');
+      if (!input) {
+        console.log('chatInput not found');
+        return;
+      }
+      const message = input.value.trim();
+      if (!message) return;
+      
+      const username = currentUser || 'Guest';
+      const chat = {
+        user: username,
+        message: message,
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      };
+      
+      chatMessages.push(chat);
+      if (chatMessages.length > 100) chatMessages = chatMessages.slice(-100);
+      localStorage.setItem('vantabet_chat', JSON.stringify(chatMessages));
+      
+      input.value = '';
+      renderChat();
+    }
+    
+    function setupChatListeners() {
+      try {
+        const sendBtn = document.getElementById('chatSendBtn');
+        const input = document.getElementById('chatInput');
+        console.log('Setting up chat listeners', sendBtn, input);
+        if (sendBtn) {
+          sendBtn.addEventListener('click', function() {
+            console.log('Send button clicked');
+            sendChat();
+          });
+        }
+        if (input) {
+          input.addEventListener('keypress', function(e) { 
+            if(e.key === 'Enter') {
+              console.log('Enter pressed');
+              sendChat(); 
+            }
+          });
+        }
+      } catch(e) {
+        console.error('Error setting up chat:', e);
+      }
+    }
+    
+    function renderChat() {
+      const container = document.getElementById('chatMessages');
+      if (chatMessages.length === 0) {
+        container.innerHTML = '<p class="text-xs text-[#71717a] text-center">Welcome to chat!</p>';
+        return;
+      }
+      
+      container.innerHTML = chatMessages.slice(-50).map(m => `
+        <div class="text-sm">
+          <span class="font-bold ${m.user === currentUser ? 'text-[#00c853]' : 'text-white'}">${m.user}:</span>
+          <span class="text-[#a1a1aa]">${m.message}</span>
+        </div>
+      `).join('');
+      
+      container.scrollTop = container.scrollHeight;
+    }
 
     // Result modal
     function showResult(title, message) {
@@ -1298,11 +2213,6 @@
     // ──────────────────────────────────────────────
     // MINES - Fully working
     // ──────────────────────────────────────────────
-    let minesGameActive = false;
-    let minesPositions = [];
-    let revealed = 0;
-    let minesBet = 0;
-    const gridSize = 25;
 
     document.getElementById('minesCount')?.addEventListener('input', e => {
       document.getElementById('minesValue').textContent = e.target.value;
@@ -1367,7 +2277,7 @@
         playSfx('reveal');
         revealed++;
         document.getElementById('gemsRevealed').textContent = revealed;
-        const mult = (1 + revealed * 0.18).toFixed(2);
+        const mult = (1 + revealed * 0.08).toFixed(2);
         document.getElementById('minesMultiplier').textContent = mult + 'x';
       }
     }
@@ -1381,8 +2291,11 @@
       saveBalance();
       playSfx('cashout');
       playSfx('win');
+      addBetRecord('Mines', minesBet, payout - minesBet);
+      addWagered(minesBet);
       showResult('Cashed Out!', `At ${mult}x<br>Won $${(payout - minesBet).toFixed(2)}`);
       endMines(true);
+      updateLeaderboards();
     }
 
     function endMines(won) {
@@ -1474,9 +2387,11 @@
       if (!mines1000GameActive) return;
       const mult = mines1000Revealed * 1000;
       const payout = mines1000Bet * mult;
-      balance += payout;
-      updateBalance();
-      saveBalance();
+            balance += payout;
+            updateBalance();
+            saveBalance();
+            addBetRecord('Plinko', this.bet, payout - this.bet);
+            addWagered(this.bet);
       showResult('Cashed Out!', `At ${mult}×<br>Won $${(payout - mines1000Bet).toLocaleString()}`);
       endMines1000(true);
     }
@@ -1713,38 +2628,63 @@
       balance -= bet;
       updateBalance();
       saveBalance();
+      addWagered(bet);
 
       coinFlipping = true;
       document.getElementById('coinFlipBtn').classList.add('hidden');
+      document.getElementById('coinResult').textContent = '';
 
-      const coin = document.getElementById('coin');
       const isHeads = Math.random() > 0.5;
       const choice = document.getElementById('coinChoice')?.value;
-      const spins = 5 + Math.floor(Math.random() * 3);
-      const degrees = spins * 360 + (isHeads ? 0 : 180);
-
-      coin.style.transition = 'transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-      coin.style.transform = `rotateY(${degrees}deg)`;
-      playSfx('flip');
-
-      setTimeout(() => {
-        const won = (isHeads && choice === 'heads') || (!isHeads && choice === 'tails');
-        
-        if (won) {
-          const payout = bet * 2;
-          balance += payout;
-          updateBalance();
-          saveBalance();
-          playSfx('win');
-          showResult('WIN!', `It was ${isHeads ? 'HEADS' : 'TAILS'}<br>Won $${(payout - bet).toFixed(2)}`);
+      const coinHeads = document.getElementById('coinHeads');
+      const coinTails = document.getElementById('coinTails');
+      
+      let flips = 0;
+      const flipInterval = setInterval(() => {
+        if (flips % 2 === 0) {
+          coinHeads.style.display = 'none';
+          coinTails.style.display = 'flex';
         } else {
-          playSfx('lose');
-          showResult('LOSS', `It was ${isHeads ? 'HEADS' : 'TAILS'}<br>Lost $${bet.toFixed(2)}`);
+          coinHeads.style.display = 'flex';
+          coinTails.style.display = 'none';
         }
+        flips++;
+        
+        if (flips >= 15) {
+          clearInterval(flipInterval);
+          
+          if (isHeads) {
+            coinHeads.style.display = 'flex';
+            coinTails.style.display = 'none';
+          } else {
+            coinHeads.style.display = 'none';
+            coinTails.style.display = 'flex';
+          }
+          
+          const won = (isHeads && choice === 'heads') || (!isHeads && choice === 'tails');
+          const resultText = isHeads ? 'HEADS 🟡' : 'TAILS ⚪';
+          
+          if (won) {
+            const payout = bet * 2;
+            balance += payout;
+            updateBalance();
+            saveBalance();
+            addBetRecord('Coin Flip', bet, bet);
+            playSfx('win');
+            document('coinResult').textContent = `🎉 YOU WON! ${resultText}`;
+            document.getElementById('coinResult').className = 'text-2xl font-bold text-[#00c853] min-h-[40px] animate-bounce';
+          } else {
+            addBetRecord('Coin Flip', bet, -bet);
+            playSfx('lose');
+            document.getElementById('coinResult').textContent = `💔 YOU LOST! ${resultText}`;
+            document.getElementById('coinResult').className = 'text-2xl font-bold text-red-500 min-h-[40px]';
+          }
 
-        coinFlipping = false;
-        document.getElementById('coinFlipBtn').classList.remove('hidden');
-      }, 1600);
+          coinFlipping = false;
+          document.getElementById('coinFlipBtn').classList.remove('hidden');
+          updateLeaderboards();
+        }
+      }, 150);
     }
 
     // ──────────────────────────────────────────────
@@ -2282,13 +3222,13 @@
     let fishingInterval = 0;
 
     const FISH_DATA = [
-      { emoji: '🐟', mult: 2, speed: 2 },
-      { emoji: '🐠', mult: 3, speed: 2.5 },
-      { emoji: '🐡', mult: 5, speed: 3 },
-      { emoji: '🦀', mult: 10, speed: 1.5 },
-      { emoji: '🦞', mult: 20, speed: 1 },
-      { emoji: '🐙', mult: 50, speed: 0.8 },
-      { emoji: '💎', mult: 100, speed: 0.5 },
+      { emoji: '🐟', mult: 0.5, speed: 2 },
+      { emoji: '🐠', mult: 0.8, speed: 3 },
+      { emoji: '🐡', mult: 1.2, speed: 5 },
+      { emoji: '🦀', mult: 2, speed: 8 },
+      { emoji: '🦞', mult: 3, speed: 12 },
+      { emoji: '🐙', mult: 5, speed: 18 },
+      { emoji: '💎', mult: 10, speed: 30 },
     ];
 
     function startFishing() {
@@ -2316,7 +3256,7 @@
           return;
         }
         spawnFish();
-      }, 1500);
+      }, 2500);
 
       setTimeout(() => {
         if (fishingActive) {
@@ -2328,7 +3268,7 @@
           }
           endFishing();
         }
-      }, 30000);
+      }, 15000);
     }
 
     function spawnFish() {
@@ -2499,8 +3439,9 @@
     const PLINKO_PADDING = 64;
     const PEG_RADIUS = 5;
     const BALL_RADIUS = 8;
-    const PLINKO_MULTIS = [10, 5, 2, 1, 0.2, 1, 2, 5, 10];
+    const PLINKO_MULTIS = [5, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5];
     let activeBalls = [];
+    let plinkoAnimRunning = false;
     let plinkoBoardInfo = null;
 
     function initPlinkoPegs() {
@@ -2564,101 +3505,112 @@
       balance -= bet;
       updateBalance();
       saveBalance();
+      addWagered(bet);
 
       const ball = document.createElement('div');
-      ball.className = 'absolute w-4 h-4 bg-[#facc15] rounded-full shadow-lg border-2 border-[#eab308] transition-all duration-[30ms] ease-out z-10';
+      ball.className = 'absolute w-5 h-5 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full shadow-lg z-10';
+      ball.style.boxShadow = '0 0 10px rgba(250, 204, 21, 0.6), 0 2px 4px rgba(0,0,0,0.3)';
+      ball.style.transition = 'none';
       info.board.appendChild(ball);
 
-      const GRAVITY = 0.42;
-      const RESTITUTION = 0.65;
-      const HORIZONTAL_DAMPING = 0.99;
+      const GRAVITY = 0.12;
+      const RESTITUTION = 0.55;
+      const FRICTION = 0.995;
+      const PEG_BOUNCE = 0.7;
 
-      let x = info.boardW / 2 + (Math.random() - 0.5) * 20;
-      let y = BALL_RADIUS + 2;
-      let vx = (Math.random() - 0.5) * 1.5;
+      let x = info.boardW / 2 + (Math.random() - 0.5) * 10;
+      let y = 15;
+      let vx = (Math.random() - 0.5) * 1;
       let vy = 0;
+      let lastY = y;
 
-      const ballObj = {
-        ball,
-        bet,
-        x, y, vx, vy,
-        GRAVITY,
-        RESTITUTION,
-        HORIZONTAL_DAMPING,
-        step: function() {
-          this.vy += this.GRAVITY;
-          this.vx *= this.HORIZONTAL_DAMPING;
-          this.x += this.vx;
-          this.y += this.vy;
+      function animate() {
+        lastY = y;
+        vy += GRAVITY;
+        vx *= FRICTION;
+        x += vx;
+        y += vy;
 
-          for (const peg of info.pegs) {
-            const dx = this.x - peg.x;
-            const dy = this.y - peg.y;
-            const dist = Math.hypot(dx, dy);
-            const overlap = PEG_RADIUS + BALL_RADIUS - dist;
+        let hitPeg = false;
+        for (const peg of info.pegs) {
+          const dx = x - peg.x;
+          const dy = y - peg.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = PEG_RADIUS + BALL_RADIUS;
 
-            if (overlap > 0) {
-              const nx = dx / dist || 0;
-              const ny = dy / dist || 0;
-              this.x += nx * overlap;
-              this.y += ny * overlap;
-
-              const dot = this.vx * nx + this.vy * ny;
-              if (dot < 0) {
-                this.vx -= (1 + this.RESTITUTION) * dot * nx;
-                this.vy -= (1 + this.RESTITUTION) * dot * ny;
-                this.vx += (Math.random() - 0.5) * 2.0;
-                this.vy = Math.min(this.vy, -0.8);
-              }
+          if (dist < minDist) {
+            hitPeg = true;
+            const nx = dx / dist;
+            const ny = dy / dist;
+            
+            const overlap = minDist - dist;
+            x += nx * overlap;
+            y += ny * overlap;
+            
+            const dot = vx * nx + vy * ny;
+            if (dot < 0) {
+              vx -= (1 + PEG_BOUNCE) * dot * nx;
+              vy -= (1 + PEG_BOUNCE) * dot * ny;
+              
+              vx += (Math.random() - 0.5) * 0.8;
+              vy *= 0.95;
             }
           }
-
-          const margin = 4;
-          const left = BALL_RADIUS + margin;
-          const right = info.boardW - BALL_RADIUS - margin;
-          if (this.x < left) {
-            this.x = left;
-            this.vx = Math.abs(this.vx) * this.RESTITUTION * 0.85;
-          }
-          if (this.x > right) {
-            this.x = right;
-            this.vx = -Math.abs(this.vx) * this.RESTITUTION * 0.85;
-          }
-
-          this.ball.style.left = (this.x - BALL_RADIUS) + 'px';
-          this.ball.style.top = (this.y - BALL_RADIUS) + 'px';
-
-          const floorY = info.boardH - 132;
-          if (this.y > floorY) {
-            const binWidth = info.boardW / 9;
-            const bin = Math.min(8, Math.max(0, Math.floor(this.x / binWidth)));
-            const finalMult = PLINKO_MULTIS[bin];
-
-            const payout = this.bet * finalMult;
-            balance += payout;
-            updateBalance();
-            saveBalance();
-            
-            if (finalMult >= 5) { playSfx('win'); } else if (finalMult >= 1) { playSfx('reveal'); } else { playSfx('lose'); }
-
-            showResult(
-              finalMult >= 5 ? 'BIG HIT!' : finalMult >= 1 ? 'NICE!' : 'TOUGH LUCK',
-              `Landed on <strong>${finalMult.toFixed(1)}×</strong><br>Payout: $${payout.toFixed(2)}`
-            );
-
-            setTimeout(() => this.ball.remove(), 2000);
-            return false;
-          }
-
-          return true;
         }
-      };
 
-      activeBalls.push(ballObj);
-      requestAnimationFrame(function loop() {
-        activeBalls = activeBalls.filter(b => b.step());
-        if (activeBalls.length > 0) requestAnimationFrame(loop);
-      });
+        const margin = 8;
+        const left = BALL_RADIUS + margin;
+        const right = info.boardW - BALL_RADIUS - margin;
+        if (x < left) {
+          x = left;
+          vx = Math.abs(vx) * RESTITUTION;
+        }
+        if (x > right) {
+          x = right;
+          vx = -Math.abs(vx) * RESTITUTION;
+        }
+
+        ball.style.left = (x - BALL_RADIUS) + 'px';
+        ball.style.top = (y - BALL_RADIUS) + 'px';
+
+        const floorY = info.boardH - 100;
+        if (y > floorY || (vy > 0 && y > floorY - 20)) {
+          const binWidth = info.boardW / 9;
+          const bin = Math.min(8, Math.max(0, Math.floor(x / binWidth)));
+          const finalMult = PLINKO_MULTIS[bin];
+          
+          ball.remove();
+          
+          const multEl = document.getElementById('mult' + bin);
+          if (multEl) {
+            multEl.classList.add('animate-bounce');
+            multEl.style.backgroundColor = finalMult >= 5 ? 'rgba(236, 72, 153, 0.6)' : finalMult >= 1 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)';
+            setTimeout(() => {
+              multEl.classList.remove('animate-bounce');
+              multEl.style.backgroundColor = '';
+            }, 500);
+          }
+
+          const payout = bet * finalMult;
+          balance += payout;
+          updateBalance();
+          saveBalance();
+          addBetRecord('Plinko', bet, payout - bet);
+          addWagered(bet);
+
+          if (payout > bet) {
+            playSfx('win');
+          } else {
+            playSfx('lose');
+          }
+          updateLeaderboards();
+          return;
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
     }
 
     // ──────────────────────────────────────────────
@@ -2711,7 +3663,7 @@
         crashMultEl.textContent = crashMultiplier.toFixed(2);
         crashMultEl.classList.toggle('animate-pulse-green', crashMultiplier < 2);
         crashMultEl.classList.toggle('animate-glow', crashMultiplier >= 2);
-        if (Math.random() > 0.94) {
+        if (Math.random() > 0.88) {
           clearInterval(crashInterval);
           crashActive = false;
           showResult('Crashed', `Crashed at ${crashMultiplier.toFixed(2)}x<br>Lost $${crashBet.toFixed(2)}`);
@@ -2726,6 +3678,8 @@
       balance += payout; updateBalance(); saveBalance();
       playSfx('cashout');
       playSfx('win');
+      addBetRecord('Crash', crashBet, payout - crashBet);
+      addWagered(crashBet);
       showResult('Cashed Out', `At ${crashMultiplier.toFixed(2)}x<br>Won $${(payout - crashBet).toFixed(2)}`);
       resetCrash();
     }
@@ -2812,6 +3766,49 @@
     let bjCanDouble = false;
     let bjSplitHands = [];
     let bjCurrentHand = 0;
+    let bjTablePlayers = [];
+    let bjAllPlayerHands = {};
+
+    function loadBjTablePlayers() {
+      bjTablePlayers = [];
+      bjAllPlayerHands = {};
+      const tables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      const currentTable = tables.find(t => t.game === 'blackjack' && t.players.includes(currentUser));
+      if (currentTable) {
+        bjTablePlayers = currentTable.players;
+        bjTablePlayers.forEach(p => {
+          bjAllPlayerHands[p] = { hand: [], bet: 0, standing: false, busted: false, done: false };
+        });
+      }
+      renderTablePlayers();
+    }
+
+    function renderTablePlayers() {
+      const container = document.getElementById('tablePlayers');
+      if (!container) return;
+      
+      if (bjTablePlayers.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = bjTablePlayers.map((p, idx) => {
+        const isMe = p === currentUser;
+        const handData = bjAllPlayerHands[p] || { hand: [], bet: 0 };
+        const status = handData.busted ? '💥 BUST' : handData.standing ? '✅' : handData.done ? '🏆' : '🎴';
+        return `
+          <div class="p-2 rounded-lg ${isMe ? 'bg-[#00c853]/20 border border-[#00c853]' : 'bg-[#1a1a1a]'}">
+            <div class="text-xs font-bold text-white truncate">${p}${isMe ? ' (You)' : ''}</div>
+            <div class="text-xs ${handData.bet > 0 ? 'text-[#00c853]' : 'text-[#71717a]'}">$${handData.bet.toFixed(0)}</div>
+            <div class="flex gap-1 mt-1">
+              ${handData.hand.slice(0,3).map(c => c.rank ? `<span class="text-xs ${['♥','♦'].includes(c.suit) ? 'text-red-500' : 'text-white'}">${c.rank}${c.suit}</span>` : '🂠').join('')}
+              ${handData.hand.length > 3 ? `<span class="text-xs text-[#71717a]">+${handData.hand.length-3}</span>` : ''}
+            </div>
+            <div class="text-xs text-center">${handData.hand.length > 0 ? status : ''}</div>
+          </div>
+        `;
+      }).join('');
+    }
 
     function createDeck() {
       deck = [];
@@ -2853,22 +3850,39 @@
     }
 
     function dealBlackjack() {
+      loadBjTablePlayers();
+      
       bjBet = parseFloat(document.getElementById('blackjackBet')?.value) || 0;
       if (bjBet <= 0 || bjBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
       playSfx('bet');
       balance -= bjBet; updateBalance(); saveBalance();
+      addWagered(bjBet);
+      
       createDeck();
-      playerHand = [deck.pop(), deck.pop()];
+      
+      bjAllPlayerHands[currentUser] = { hand: [deck.pop(), deck.pop()], bet: bjBet, standing: false, busted: false, done: false };
+      
+      bjTablePlayers.forEach(p => {
+        if (p !== currentUser) {
+          const otherBet = Math.floor(Math.random() * 100) + 10;
+          bjAllPlayerHands[p] = { hand: [deck.pop(), deck.pop()], bet: otherBet, standing: false, busted: false, done: false };
+        }
+      });
+      
       dealerHand = [deck.pop(), deck.pop()];
       bjSplitHands = [];
       bjCurrentHand = 0;
       bjInsuranceBet = 0;
+      
+      playerHand = bjAllPlayerHands[currentUser].hand;
       
       renderHand(playerHand, 'playerHand');
       renderHand([dealerHand[0], {rank:'?',suit:''}], 'dealerHand');
       document.getElementById('playerScore').textContent = handScore(playerHand);
       document.getElementById('dealerScore').textContent = cardValue(dealerHand[0]);
       bjActive = true;
+      
+      renderTablePlayers();
       
       bjCanSplit = playerHand.length === 2 && cardValue(playerHand[0]) === cardValue(playerHand[1]) && balance >= bjBet;
       bjCanDouble = playerHand.length === 2 && balance >= bjBet;
@@ -3071,6 +4085,233 @@
       document.getElementById('bjDouble').classList.add('hidden');
       document.getElementById('bjSplit').classList.add('hidden');
       document.getElementById('bjInsurance').classList.add('hidden');
+    }
+
+    // Get Free Coins (once per day)
+    function showDepositModal() {
+      if (!currentUser) { showResult('Error', 'Please login first'); return; }
+      
+      const lastClaim = localStorage.getItem(`vantabet_lastclaim_${currentUser}`);
+      const now = new Date().getTime();
+      const oneDay = 24 * 60 * 60 * 1000;
+      
+      if (lastClaim && (now - parseInt(lastClaim)) < oneDay) {
+        const timeLeft = oneDay - (now - parseInt(lastClaim));
+        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        showResult('Cooldown', `Come back in ${hours}h ${minutes}m`);
+        return;
+      }
+      
+      const bonus = 1000 + Math.floor(Math.random() * 1000);
+      balance += bonus;
+      updateBalance();
+      saveBalance();
+      localStorage.setItem(`vantabet_lastclaim_${currentUser}`, now);
+      addTransaction('Daily Bonus', bonus, '+');
+      showResult('Daily Bonus!', `You received $${bonus.toFixed(2)}!`);
+      loadAccountSettings();
+    }
+
+    // Withdraw Modal (removed - no real money)
+
+    function addTransaction(type, amount, symbol) {
+      const username = currentUser;
+      if (!username) return;
+      let txns = JSON.parse(localStorage.getItem(`vantabet_txns_${username}`) || '[]');
+      txns.unshift({ type, amount, symbol, time: new Date().toLocaleString() });
+      if (txns.length > 20) txns = txns.slice(0, 20);
+      localStorage.setItem(`vantabet_txns_${username}`, JSON.stringify(txns));
+      loadAccountSettings();
+    }
+
+    function addBetRecord(game, bet, profit) {
+      const username = currentUser;
+      if (!username) return;
+      let bets = JSON.parse(localStorage.getItem(`vantabet_bets_${username}`) || '[]');
+      bets.unshift({ game, bet, profit, time: new Date().toLocaleString() });
+      if (bets.length > 50) bets = bets.slice(0, 50);
+      localStorage.setItem(`vantabet_bets_${username}`, JSON.stringify(bets));
+    }
+
+    // Leaderboard functions
+
+    function updateLeaderboards() {
+      // Recent bets - only real user bets
+      let allBets = JSON.parse(localStorage.getItem('vantabet_allbets') || '[]');
+      
+      // Add user's bet if logged in
+      if (currentUser) {
+        const userBets = JSON.parse(localStorage.getItem(`vantabet_bets_${currentUser}`) || '[]');
+        if (userBets.length > 0) {
+          const lastBet = userBets[0];
+          allBets.unshift({
+            user: currentUser,
+            game: lastBet.game,
+            bet: lastBet.bet,
+            profit: lastBet.profit,
+            time: 'Just now',
+            isUser: true
+          });
+        }
+      }
+      
+      // Keep only last 20 bets
+      allBets = allBets.slice(0, 20);
+      localStorage.setItem('vantabet_allbets', JSON.stringify(allBets));
+      
+      // Render recent bets
+      const betsContainer = document.getElementById('recentBetsLeaderboard');
+      if (allBets.length === 0) {
+        betsContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No bets yet</p>';
+      } else {
+        betsContainer.innerHTML = allBets.slice(0, 15).map((b, i) => `
+          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${b.isUser ? 'border border-[#00c853]' : ''}">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-[#71717a] w-4">${i+1}.</span>
+              <span class="text-white font-medium text-sm">${b.user}</span>
+              <span class="text-xs text-[#71717a]">${b.game}</span>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-white">$${b.bet.toFixed(0)}</span>
+              <span class="text-xs ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(0)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Richest players - only real users
+      let players = [];
+      
+      // Add current user if logged in
+      if (currentUser) {
+        const userBalance = balance;
+        players.push({ name: currentUser, balance: userBalance, isUser: true });
+      }
+      
+      // Sort by balance
+      players.sort((a, b) => b.balance - a.balance);
+      
+      const richestContainer = document.getElementById('richestLeaderboard');
+      if (players.length === 0) {
+        richestContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No players yet</p>';
+      } else {
+        richestContainer.innerHTML = players.slice(0, 10).map((p, i) => `
+          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${p.isUser ? 'border border-[#00c853]' : ''}">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-[#71717a] w-4">${i+1}.</span>
+              <span class="${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-amber-600' : 'text-white'} font-medium text-sm">${p.name}</span>
+              ${i < 3 ? '<span class="text-xs">👑</span>' : ''}
+            </div>
+            <span class="text-[#00c853] font-bold text-sm">$${p.balance.toLocaleString()}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function loadAccountSettings() {
+      const username = currentUser || 'Guest';
+      const created = localStorage.getItem(`vantabet_created_${username}`) || new Date().toLocaleDateString();
+      const wagered = parseFloat(localStorage.getItem(`vantabet_wagered_${username}`)) || 0;
+      const bets = JSON.parse(localStorage.getItem(`vantabet_bets_${username}`) || '[]');
+      const txns = JSON.parse(localStorage.getItem(`vantabet_txns_${username}`) || '[]');
+      
+      let totalProfit = 0;
+      bets.forEach(b => totalProfit += b.profit);
+      
+      const wins = bets.filter(b => b.profit > 0).length;
+      const winRate = bets.length > 0 ? Math.round((wins / bets.length) * 100) : 0;
+      
+      document.getElementById('accountUsername').textContent = username;
+      document.getElementById('accountAvatar').textContent = username.charAt(0).toUpperCase();
+      
+      let vip = 'Bronze';
+      if (wagered > 10000) vip = 'Silver';
+      if (wagered > 50000) vip = 'Gold';
+      if (wagered > 100000) vip = 'Platinum';
+      if (wagered > 500000) vip = 'Diamond';
+      document.getElementById('accountVip').textContent = 'VIP Level: ' + vip;
+      
+      document.getElementById('statWagered').textContent = '$' + wagered.toFixed(2);
+      document.getElementById('statProfit').textContent = (totalProfit >= 0 ? '+' : '') + '$' + totalProfit.toFixed(2);
+      document.getElementById('statProfit').className = 'text-lg font-bold ' + (totalProfit >= 0 ? 'text-[#00c853]' : 'text-red-500');
+      document.getElementById('statBets').textContent = bets.length;
+      document.getElementById('statWinRate').textContent = winRate + '%';
+      document.getElementById('walletBalance').textContent = '$' + balance.toFixed(2);
+      
+      // Transaction history
+      const txContainer = document.getElementById('transactionHistory');
+      if (txns.length === 0) {
+        txContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No transactions yet</p>';
+      } else {
+        txContainer.innerHTML = txns.slice(0, 10).map(t => 
+          `<div class="flex justify-between items-center bg-[#131313] rounded-lg p-2 text-sm">
+            <span class="text-white">${t.type}</span>
+            <span class="${t.symbol === '+' ? 'text-[#00c853]' : 'text-red-500'}">${t.symbol}$${t.amount.toFixed(2)}</span>
+          </div>`
+        ).join('');
+      }
+      
+      // Bet history
+      const betContainer = document.getElementById('betHistory');
+      if (bets.length === 0) {
+        betContainer.innerHTML = '<tr><td colspan="5" class="text-center text-[#71717a] py-4">No bets yet</td></tr>';
+      } else {
+        betContainer.innerHTML = bets.slice(0, 10).map(b => 
+          `<tr class="border-b border-[#2a2a2a]">
+            <td class="py-2 px-2 text-white">${b.game}</td>
+            <td class="py-2 px-2 text-right text-white">$${b.bet.toFixed(2)}</td>
+            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? 'WON' : 'LOST'}</td>
+            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(2)}</td>
+            <td class="py-2 px-2 text-right text-[#71717a] text-xs">${b.time}</td>
+          </tr>`
+        ).join('');
+      }
+    }
+
+    function saveAccountSettings() {
+      const newPassword = document.getElementById('settingsPassword').value;
+      const username = localStorage.getItem('vantabet_current_user');
+      
+      if (!username) {
+        showResult('Error', 'Please login to save settings');
+        return;
+      }
+      
+      if (newPassword && newPassword.length >= 4) {
+        localStorage.setItem(`vantabet_password_${username}`, newPassword);
+        document.getElementById('settingsPassword').value = '';
+        showResult('Success', 'Password updated successfully!');
+      } else if (newPassword) {
+        showResult('Error', 'Password must be at least 4 characters');
+      } else {
+        showResult('Success', 'Settings saved!');
+      }
+    }
+
+    function resetBalance() {
+      const username = localStorage.getItem('vantabet_current_user');
+      if (!username) {
+        showResult('Error', 'Please login first');
+        return;
+      }
+      balance = 500.00;
+      updateBalance();
+      saveBalance();
+      localStorage.setItem(`vantabet_balance_${username}`, '500.00');
+      localStorage.setItem(`vantabet_wagered_${username}`, '0');
+      localStorage.setItem(`vantabet_bets_${username}`, '[]');
+      localStorage.setItem(`vantabet_txns_${username}`, '[]');
+      loadAccountSettings();
+      showResult('Reset Complete', 'Balance reset to $500!');
+    }
+
+    function addWagered(amount) {
+      const username = localStorage.getItem('vantabet_current_user');
+      if (username) {
+        const current = parseFloat(localStorage.getItem(`vantabet_wagered_${username}`)) || 0;
+        localStorage.setItem(`vantabet_wagered_${username}`, current + amount);
+      }
     }
 
   </script>
