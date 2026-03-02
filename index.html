@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
   <title>Eclipse – Social Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pubnub@7/dist/pubnub.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -164,6 +165,22 @@
     .animate-float { animation: float 2s ease-in-out infinite; }
     .animate-glow { animation: glow 1.5s ease-in-out infinite; }
     .animate-slide-up { animation: slide-up 0.3s ease-out; }
+    
+    /* Typing indicator */
+    .typing-dots span {
+      display: inline-block;
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
     
     /* Crash multiplier animation */
     .crash-multiplier {
@@ -1866,8 +1883,83 @@
     // Global variables - defined first to avoid reference errors
     const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal', 'russianroulette', 'baccarat', 'poker', 'threecard', 'scratch', 'powerball', 'horserace', 'dograce', 'wheel', 'hilo'];
     
-    // Chat
+    // PubNub Config - Get free keys at https://admin.pubnub.com
+    const PN_KEYS = {
+      publishKey: 'sub-c-0470159f-d4fa-4d67-9792-1d02f0ec6528',
+      subscribeKey: 'sub-c-0470159f-d4fa-4d67-9792-1d02f0ec6528'
+    };
+    
+    let pubnub = null;
+    
+    // Initialize PubNub if configured
+    if (PN_KEYS.publishKey !== 'YOUR_PUBLISH_KEY') {
+      try {
+        pubnub = new PubNub({
+          publishKey: PN_KEYS.publishKey,
+          subscribeKey: PN_KEYS.subscribeKey,
+          userId: 'eclipse_' + Math.random().toString(36).substr(2, 9)
+        });
+        
+        pubnub.subscribe({ channels: ['eclipse_chat'] });
+        pubnub.addListener({
+          message: function(event) {
+            const msg = event.message;
+            if (!chatMessages.find(m => m.message === msg.message && m.user === msg.user && m.time === msg.time)) {
+              chatMessages.push(msg);
+              if (chatMessages.length > 100) chatMessages = chatMessages.slice(-100);
+              renderChat();
+            }
+          }
+        });
+        console.log('PubNub connected!');
+      } catch(e) {
+        console.log('PubNub init failed:', e);
+      }
+    }
+    
+    // Chat - Uses localStorage + PubNub for global sync
     let chatMessages = JSON.parse(localStorage.getItem('vantabet_chat') || '[]');
+    let isTyping = false;
+    let typingTimeout = null;
+    
+    // Sync chat across tabs/windows
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'vantabet_chat') {
+        chatMessages = JSON.parse(e.newValue || '[]');
+        renderChat();
+      }
+      if (e.key === 'vantabet_typing') {
+        const typingData = JSON.parse(e.newValue || '{}');
+        showTypingIndicator(typingData);
+      }
+    });
+    
+    function showTypingIndicator(data) {
+      const existing = document.getElementById('typingIndicator');
+      if (data.user && data.user !== currentUser && document.getElementById('chatBox')?.classList.contains('hidden') === false) {
+        if (!existing) {
+          const indicator = document.createElement('div');
+          indicator.id = 'typingIndicator';
+          indicator.className = 'px-3 py-1 text-xs text-[#71717a] italic';
+          indicator.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span> ' + data.user + ' is typing...';
+          document.getElementById('chatMessages')?.appendChild(indicator);
+        }
+        setTimeout(() => existing?.remove(), 2000);
+      }
+    }
+    
+    function setTyping() {
+      if (isTyping) return;
+      isTyping = true;
+      const typingData = { user: currentUser || 'Guest', time: Date.now() };
+      localStorage.setItem('vantabet_typing', JSON.stringify(typingData));
+      
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        isTyping = false;
+        localStorage.removeItem('vantabet_typing');
+      }, 1500);
+    }
     
     let minesGameActive = false;
     let minesPositions = [];
@@ -2666,6 +2758,11 @@
       if (chatMessages.length > 100) chatMessages = chatMessages.slice(-100);
       localStorage.setItem('vantabet_chat', JSON.stringify(chatMessages));
       
+      // Send to PubNub for global sync
+      if (pubnub) {
+        pubnub.publish({ channel: 'eclipse_chat', message: chat });
+      }
+      
       input.value = '';
       renderChat();
     }
@@ -2683,6 +2780,7 @@
         }
         if (input) {
           input.addEventListener('keypress', function(e) { 
+            setTyping();
             if(e.key === 'Enter') {
               console.log('Enter pressed');
               sendChat(); 
