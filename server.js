@@ -12,8 +12,18 @@ const io = new Server(server, { cors: { origin: "*" } });
 
 let users = {};
 let bets = [];
+let chats = [];
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+
+app.get('/api/chats', (req, res) => res.json(chats.slice(-50)));
+app.post('/api/chat', (req, res) => {
+  const msg = req.body;
+  chats.push(msg);
+  if (chats.length > 100) chats = chats.slice(-100);
+  io.emit('chat', msg);
+  res.json({ success: true });
+});
 
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
