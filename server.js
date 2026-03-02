@@ -55,7 +55,6 @@ app.post('/api/bet', (req, res) => {
   users[username].balance += profit;
   bets.push({ user: username, game, bet, profit, time: new Date().toISOString() });
   if (bets.length > 100) bets = bets.slice(-100);
-  io.emit('bet', { user: username, game, bet, profit });
   res.json({ success: true, balance: users[username].balance });
 });
 
@@ -65,7 +64,6 @@ app.post('/api/transfer', (req, res) => {
   if (users[from].balance < amount) return res.json({ error: 'Insufficient balance' });
   users[from].balance -= amount;
   users[to].balance += amount;
-  io.emit('transfer', { from, to, amount });
   res.json({ success: true, balance: users[from].balance });
 });
 
