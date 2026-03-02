@@ -2,32 +2,38 @@
 <html lang="en" class="bg-[#0a0a0a] text-white">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vantabet – Made by callan to screw schools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <title>Eclipse – Social Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    /* Fluid Typography & Responsive Sizing */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #121212;
       --bg-card: #1a1a1a;
       --bg-elevated: #242424;
       --border: #2a2a2a;
-      --accent: #00c853;
-      --accent-glow: rgba(0, 200, 83, 0.3);
-      --text-primary: #ffffff nigger;
+      --accent: #fbbf24;
+      --accent-glow: rgba(251, 191, 36, 0.3);
+      --text-primary: #ffffff;
       --text-muted: #a1a1aa;
       --text-dim: #71717a;
       --glass: rgba(255, 255, 255, 0.05);
       --glass-border: rgba(255, 255, 255, 0.1);
     }
+    
+    html {
+      font-size: clamp(12px, 1.5vw, 18px);
+    }
+    
     body { 
       font-family: 'Inter', sans-serif; 
       background: var(--bg-primary);
       background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(0, 200, 83, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.03) 0%, transparent 50%),
         radial-gradient(ellipse at 100% 100%, rgba(59, 130, 246, 0.02) 0%, transparent 40%);
     }
     .stake-card { 
@@ -44,13 +50,13 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
     .btn-primary { 
-      background: linear-gradient(180deg, #00c853 0%, #00a846 100%); 
+      background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%); 
       color: #000; 
       font-weight: 700;
       box-shadow: 0 4px 16px rgba(0, 200, 83, 0.3);
     }
     .btn-primary:hover { 
-      background: linear-gradient(180deg, #00e676 0%, #00c853 100%);
+      background: linear-gradient(180deg, #fcd34d 0%, #fbbf24 100%);
       box-shadow: 0 6px 24px rgba(0, 200, 83, 0.4);
       transform: translateY(-1px);
     }
@@ -118,7 +124,7 @@
     }
     
     /* Game Animations */
-    @keyframes pulse-green {
+    @keyframes pulse-gold {
       0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.4); }
       50% { box-shadow: 0 0 0 10px rgba(0, 200, 83, 0); }
     }
@@ -151,7 +157,7 @@
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    .animate-pulse-green { animation: pulse-green 1s infinite; }
+    .animate-pulse-gold { animation: pulse-green 1s infinite; }
     .animate-shake { animation: shake 0.3s ease-in-out; }
     .animate-card-flip { animation: card-flip 0.5s ease-in-out; }
     .animate-dice-roll { animation: dice-roll 0.5s ease-in-out; }
@@ -176,15 +182,67 @@
     .lose-effect {
       animation: shake 0.3s ease-in-out;
     }
+    
+    /* Responsive Game Elements */
+    .game-card {
+      min-height: clamp(80px, 12vw, 120px);
+    }
+    
+    .stake-card {
+      border-radius: clamp(8px, 2vw, 16px);
+      padding: clamp(12px, 2vw, 24px);
+    }
+    
+    /* Responsive Text */
+    h1, h2, h3 {
+      font-size: clamp(1.25rem, 3vw, 2rem);
+    }
+    
+    /* Responsive Buttons */
+    button {
+      padding: clamp(8px, 1.5vw, 16px) clamp(12px, 2vw, 24px);
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+    }
+    
+    /* Responsive Inputs */
+    input, select {
+      padding: clamp(8px, 1vw, 12px);
+      font-size: clamp(0.875rem, 1.2vw, 1rem);
+    }
+    
+    /* Responsive Grid */
+    .responsive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 25vw, 200px), 1fr));
+      gap: clamp(8px, 2vw, 16px);
+    }
+    
+    /* Responsive Tables */
+    .responsive-table {
+      font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    }
+    
+    /* Full width on mobile */
+    @media (max-width: 640px) {
+      .mobile-full { width: 100%; }
+      .mobile-hidden { display: none; }
+    }
+    
+    /* Tablet adjustments */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .tablet-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen bg-[#0d0d0d] text-white antialiased">
+<body class="min-h-screen bg-[#0d0d0d] text-white antialiased overflow-x-hidden">
 
   <!-- Header - Stake style -->
   <header class="fixed top-0 w-full z-50" style="background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.9) 100%); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
       <div class="flex items-center gap-8">
-        <h1 onclick="showTab('originals')" class="text-2xl font-extrabold tracking-tight text-white cursor-pointer hover:opacity-90 transition" style="background: linear-gradient(135deg, #ffffff 0%, #00c853 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">VANTABET</h1>
+        <h1 onclick="showTab('originals')" class="text-2xl font-extrabold tracking-tight text-white cursor-pointer hover:opacity-90 transition" style="background: linear-gradient(135deg, #ffffff 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">ECLIPSE</h1>
         <nav class="hidden sm:flex items-center gap-1">
           <button data-tab="home" onclick="showTab('home')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Home</button>
           <button data-tab="originals" onclick="showTab('originals')" class="tab-btn px-4 py-2 text-sm font-medium text-[#a1a1aa] hover:text-white rounded-lg hover:bg-white/5 transition">Originals</button>
@@ -198,9 +256,9 @@
       <div class="flex items-center gap-3">
         <div class="px-4 py-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-sm font-medium">
           <span class="text-[#71717a] text-xs uppercase tracking-wide">Balance</span>
-          <div class="text-[#00c853] font-bold text-lg">$<span id="balance">500.00</span></div>
+          <div class="text-[#fbbf24] font-bold text-lg">$<span id="balance">500.00</span></div>
         </div>
-        <button onclick="showDepositModal()" class="px-5 py-2.5 bg-gradient-to-r from-[#00c853] to-[#00a846] text-black rounded-lg font-bold text-sm hover:from-[#00e676] hover:to-[#00c853] transition-all shadow-lg shadow-[#00c853]/20">DEPOSIT</button>
+        <button onclick="showDepositModal()" class="px-5 py-2.5 bg-gradient-to-r from-[#fbbf24] to-[#d97706] text-black rounded-lg font-bold text-sm hover:from-[#fcd34d] hover:to-[#fbbf24] transition-all shadow-lg shadow-[#fbbf24]/20">DEPOSIT</button>
       </div>
     </div>
   </header>
@@ -223,7 +281,7 @@
     <!-- Home -->
     <section id="home" class="tab-content hidden">
       <div class="text-center my-12">
-        <h2 class="text-4xl sm:text-5xl font-bold text-white mb-3">Welcome to Vantabet</h2>
+        <h2 class="text-4xl sm:text-5xl font-bold text-white mb-3">Welcome to Eclipse</h2>
         <p class="text-lg text-[#a1a1aa]">Play originals, slots, and more. Provably fair gaming.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -264,15 +322,15 @@
         <p class="text-[#a1a1aa]">Provably fair instant games</p>
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <button onclick="showTab('crash')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#00c853]">
-          <div class="h-28 bg-gradient-to-br from-[#064e3b] via-[#059669] to-[#10b981] relative overflow-hidden flex items-center justify-center">
+        <button onclick="showTab('crash')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#fbbf24]">
+          <div class="h-28 bg-gradient-to-br from-[#064e3b] via-[#b45309] to-[#10b981] relative overflow-hidden flex items-center justify-center">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoMTAwdjEwMEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMGgxMDB2MTAwSDBWMHptMjUgMjVoNTB2NTBIMTI1VjI1eiIgZmlsbD0iIzA5Y2ZmMCIvPjwvZz48L3N2Zz4=')] opacity-30"></div>
             <div class="absolute top-2 right-2 w-8 h-8 bg-green-400/20 rounded-full animate-pulse"></div>
             <div class="absolute bottom-3 left-3 text-5xl font-black text-white/20 rotate-12">↑</div>
             <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">CRASH</span>
           </div>
         </button>
-        <button onclick="showTab('dice')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#00c853]">
+        <button onclick="showTab('dice')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#fbbf24]">
           <div class="h-28 bg-gradient-to-br from-[#0c4a6e] via-[#0284c7] to-[#38bdf8] relative overflow-hidden flex items-center justify-center">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%)]"></div>
             <div class="absolute -right-2 -bottom-2 text-7xl font-bold text-white/10 rotate-12">❔</div>
@@ -281,7 +339,7 @@
             <span class="relative z-10 text-2xl font-black text-white tracking-wider drop-shadow-lg">DICE</span>
           </div>
         </button>
-        <button onclick="showTab('mines')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#00c853]">
+        <button onclick="showTab('mines')" class="game-card stake-card rounded-2xl overflow-hidden text-left border border-[#2a2a2a] hover:border-[#fbbf24]">
           <div class="h-28 bg-gradient-to-br from-[#111827] via-[#065f46] to-[#10b981] relative overflow-hidden flex items-center justify-center">
             <div class="absolute inset-0 opacity-50">
               <div class="absolute top-2 left-2 text-amber-400/60">💎</div>
@@ -659,7 +717,7 @@
           <p id="pokerResult" class="text-center text-lg font-bold mb-4"></p>
           <div class="flex gap-4 justify-center flex-wrap">
             <input type="number" id="pokerBet" placeholder="Bet ($)" class="w-32 px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center"/>
-            <button onclick="dealPoker()" class="px-6 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">DEAL</button>
+            <button onclick="dealPoker()" class="px-6 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">DEAL</button>
             <button onclick="drawPoker()" id="pokerDrawBtn" class="px-6 py-3 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg font-bold hidden">DRAW</button>
           </div>
         </div>
@@ -682,7 +740,7 @@
           <p id="threecardResult" class="text-center text-lg font-bold mb-4"></p>
           <div class="flex gap-4 justify-center flex-wrap">
             <input type="number" id="threecardBet" placeholder="Bet ($)" class="w-32 px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center"/>
-            <button onclick="dealThreeCard()" class="px-6 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">DEAL</button>
+            <button onclick="dealThreeCard()" class="px-6 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">DEAL</button>
           </div>
         </div>
       </div>
@@ -708,7 +766,7 @@
             <p class="text-2xl font-bold text-yellow-900">🎫 CLICK TO SCRATCH</p>
           </div>
           <p id="scratchResult" class="text-center text-xl font-bold mb-4"></p>
-          <button onclick="resetScratch()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">NEW CARD</button>
+          <button onclick="resetScratch()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">NEW CARD</button>
         </div>
       </div>
     </section>
@@ -725,7 +783,7 @@
       </div>
       <div class="max-w-lg mx-auto">
         <div class="stake-card p-6">
-          <p class="text-sm text-[#a1a1aa] mb-2">Your picks: <span id="powerballPicks" class="text-[#00c853]">-</span></p>
+          <p class="text-sm text-[#a1a1aa] mb-2">Your picks: <span id="powerballPicks" class="text-[#fbbf24]">-</span></p>
           <div class="flex flex-wrap gap-1 mb-4 justify-center" id="powerballNumbers"></div>
           <div class="flex gap-2 mb-4 justify-center">
             <button onclick="clearPowerball()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm">Clear</button>
@@ -735,7 +793,7 @@
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
             <input type="number" id="powerballBet" value="5" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center"/>
           </div>
-          <button onclick="playPowerball()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-4">BUY TICKET</button>
+          <button onclick="playPowerball()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-4">BUY TICKET</button>
           <p id="powerballResult" class="text-center text-lg font-bold"></p>
         </div>
       </div>
@@ -765,7 +823,7 @@
               <option value="4">🏇 Horse 5</option>
             </select>
           </div>
-          <button onclick="startHorseRace()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">START RACE</button>
+          <button onclick="startHorseRace()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">START RACE</button>
         </div>
       </div>
     </section>
@@ -794,7 +852,7 @@
               <option value="4">🐕 Dog 5</option>
             </select>
           </div>
-          <button onclick="startDogRace()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">START RACE</button>
+          <button onclick="startDogRace()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">START RACE</button>
         </div>
       </div>
     </section>
@@ -824,7 +882,7 @@
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
             <input type="number" id="wheelBet" value="10" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center"/>
           </div>
-          <button onclick="spinWheel()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">SPIN</button>
+          <button onclick="spinWheel()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">SPIN</button>
         </div>
       </div>
     </section>
@@ -856,7 +914,7 @@
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
             <input type="number" id="hiloBet" value="10" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center"/>
           </div>
-          <button onclick="startHilo()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">START</button>
+          <button onclick="startHilo()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">START</button>
         </div>
       </div>
     </section>
@@ -871,7 +929,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div class="stake-card p-6">
           <div class="flex items-center gap-4 mb-4">
-            <div id="accountAvatar" class="w-16 h-16 bg-gradient-to-br from-[#00c853] to-[#00e676] rounded-full flex items-center justify-center text-2xl font-bold text-black">?</div>
+            <div id="accountAvatar" class="w-16 h-16 bg-gradient-to-br from-[#fbbf24] to-[#fcd34d] rounded-full flex items-center justify-center text-2xl font-bold text-black">?</div>
             <div>
               <h3 id="accountUsername" class="text-xl font-bold text-white">Guest</h3>
               <p id="accountVip" class="text-sm text-yellow-400">VIP Level: Bronze</p>
@@ -884,7 +942,7 @@
             </div>
             <div class="bg-[#131313] rounded-lg p-3">
               <p class="text-xs text-[#71717a]">Net Profit</p>
-              <p id="statProfit" class="text-lg font-bold text-[#00c853]">$0.00</p>
+              <p id="statProfit" class="text-lg font-bold text-[#fbbf24]">$0.00</p>
             </div>
             <div class="bg-[#131313] rounded-lg p-3">
               <p class="text-xs text-[#71717a]">Total Bets</p>
@@ -902,11 +960,11 @@
           <div class="space-y-3">
             <div class="flex justify-between items-center bg-[#131313] rounded-lg p-3">
               <span class="text-white">Balance</span>
-              <span id="walletBalance" class="text-xl font-bold text-[#00c853]">$500.00</span>
+              <span id="walletBalance" class="text-xl font-bold text-[#fbbf24]">$500.00</span>
             </div>
             <div class="flex gap-2">
-              <button onclick="showDepositModal()" class="flex-1 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-sm">Free Coins</button>
-              <button onclick="showResult('Info', 'Withdrawals are disabled in demo mode')" class="flex-1 py-2 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-bold text-sm">Withdraw</button>
+              <button onclick="showDepositModal()" class="flex-1 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold text-sm">Free Coins</button>
+              <button onclick="showResult('Info', 'Withdrawals are disabled in demo mode')" class="flex-1 py-2 bg-[#222] border border-[#2a2a2a] hover:border-[#fbbf24] rounded-lg font-bold text-sm">Withdraw</button>
             </div>
           </div>
           
@@ -944,9 +1002,9 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm text-[#a1a1aa] mb-2">New Password</label>
-            <input type="password" id="settingsPassword" placeholder="Enter new password" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="password" id="settingsPassword" placeholder="Enter new password" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
-          <button onclick="saveAccountSettings()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mt-4">Save Password</button>
+          <button onclick="saveAccountSettings()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mt-4">Save Password</button>
           <button onclick="resetBalance()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold mt-4">Reset Balance to $500</button>
         </div>
       </div>
@@ -954,8 +1012,8 @@
       <div class="stake-card p-8 max-w-lg mx-auto mt-6">
         <h3 class="text-xl font-semibold text-white mb-6">Theme</h3>
         <div class="flex gap-4">
-          <button onclick="setTheme('dark')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-medium text-white transition">Dark</button>
-          <button onclick="setTheme('light')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-medium text-white transition">Light</button>
+          <button onclick="setTheme('dark')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#fbbf24] rounded-lg font-medium text-white transition">Dark</button>
+          <button onclick="setTheme('light')" class="flex-1 py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#fbbf24] rounded-lg font-medium text-white transition">Light</button>
         </div>
       </div>
     </section>
@@ -973,13 +1031,13 @@
           <div class="space-y-4">
             <div>
               <label class="block text-sm text-[#a1a1aa] mb-2">Recipient Username</label>
-              <input type="text" id="transferUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" placeholder="Enter username"/>
+              <input type="text" id="transferUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]" placeholder="Enter username"/>
             </div>
             <div>
               <label class="block text-sm text-[#a1a1aa] mb-2">Amount</label>
-              <input type="number" id="transferAmount" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]" placeholder="0.00" min="1" step="0.01"/>
+              <input type="number" id="transferAmount" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]" placeholder="0.00" min="1" step="0.01"/>
             </div>
-            <button onclick="transferCoins()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold transition">Transfer</button>
+            <button onclick="transferCoins()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold transition">Transfer</button>
           </div>
         </div>
 
@@ -993,7 +1051,7 @@
 
       <div class="stake-card p-6 mt-6">
         <h3 class="text-xl font-bold text-white mb-4">Your Balance</h3>
-        <p class="text-4xl font-bold text-[#00c853]">$<span id="walletBalance">0.00</span></p>
+        <p class="text-4xl font-bold text-[#fbbf24]">$<span id="walletBalance">0.00</span></p>
       </div>
     </section>
 
@@ -1005,52 +1063,52 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <div onclick="openSlotGame('slotsClassic')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsClassic')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🍒</div>
           <h3 class="font-bold text-white">Classic</h3>
           <p class="text-xs text-[#71717a]">3 Reels</p>
         </div>
-        <div onclick="openSlotGame('slotsLucky')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsLucky')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🍀</div>
           <h3 class="font-bold text-white">Lucky 7s</h3>
           <p class="text-xs text-[#71717a]">High Wins</p>
         </div>
-        <div onclick="openSlotGame('slotsGold')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsGold')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">💎</div>
           <h3 class="font-bold text-white">Gold Rush</h3>
           <p class="text-xs text-[#71717a]">Jackpot</p>
         </div>
-        <div onclick="openSlotGame('slotsEgypt')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsEgypt')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🐫</div>
           <h3 class="font-bold text-white">Egyptian</h3>
           <p class="text-xs text-[#71717a]">Mystery</p>
         </div>
-        <div onclick="openSlotGame('slotsFruit')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsFruit')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🍇</div>
           <h3 class="font-bold text-white">Fruit Mix</h3>
           <p class="text-xs text-[#71717a]">Bonus</p>
         </div>
-        <div onclick="openSlotGame('slotsGems')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsGems')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">💠</div>
           <h3 class="font-bold text-white">Gemstone</h3>
           <p class="text-xs text-[#71717a]">Multi</p>
         </div>
-        <div onclick="openSlotGame('slotsWild')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsWild')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🎰</div>
           <h3 class="font-bold text-white">Wild West</h3>
           <p class="text-xs text-[#71717a]">Stacked</p>
         </div>
-        <div onclick="openSlotGame('slotsAsia')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsAsia')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🐉</div>
           <h3 class="font-bold text-white">Dragon</h3>
           <p class="text-xs text-[#71717a]">Free Spins</p>
         </div>
-        <div onclick="openSlotGame('slotsMovie')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsMovie')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🎬</div>
           <h3 class="font-bold text-white">Hollywood</h3>
           <p class="text-xs text-[#71717a]">Big Wins</p>
         </div>
-        <div onclick="openSlotGame('slotsSpace')" class="stake-card p-4 cursor-pointer hover:border-[#00c853] transition">
+        <div onclick="openSlotGame('slotsSpace')" class="stake-card p-4 cursor-pointer hover:border-[#fbbf24] transition">
           <div class="text-4xl mb-2">🚀</div>
           <h3 class="font-bold text-white">Space</h3>
           <p class="text-xs text-[#71717a]">Sticky Wild</p>
@@ -1077,7 +1135,7 @@
             <label class="block text-xs text-[#a1a1aa] mb-1">Bet Amount</label>
             <input type="number" id="slotBet" class="w-full px-3 py-2 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-center" value="1" min="0.01" step="0.01"/>
           </div>
-          <button onclick="spinSlots()" class="px-8 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">SPIN</button>
+          <button onclick="spinSlots()" class="px-8 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">SPIN</button>
         </div>
 
         <p id="slotResult" class="text-center text-lg font-bold mb-4"></p>
@@ -1097,7 +1155,7 @@
       </div>
 
       <div class="flex justify-end mb-4">
-        <button onclick="openCreateTableModal()" class="px-6 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">+ Create Table</button>
+        <button onclick="openCreateTableModal()" class="px-6 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">+ Create Table</button>
       </div>
 
       <div id="tablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1121,22 +1179,22 @@
           <div>
             <label class="block text-sm text-[#a1a1aa] mb-2">Select Game</label>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="selectTableGame('blackjack')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+              <button onclick="selectTableGame('blackjack')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#fbbf24] transition">
                 🃏 Blackjack
               </button>
-              <button onclick="selectTableGame('roulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+              <button onclick="selectTableGame('roulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#fbbf24] transition">
                 🎡 Roulette
               </button>
-              <button onclick="selectTableGame('russianroulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+              <button onclick="selectTableGame('russianroulette')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#fbbf24] transition">
                 🔫 Russian Roulette
               </button>
-              <button onclick="selectTableGame('rps')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] transition">
+              <button onclick="selectTableGame('rps')" class="table-game-btn p-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#fbbf24] transition">
                 ✊ Rock Paper Scissors
               </button>
             </div>
           </div>
           <input type="hidden" id="selectedTableGame" value=""/>
-          <button onclick="createTable()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Create Table</button>
+          <button onclick="createTable()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">Create Table</button>
         </div>
       </div>
     </div>
@@ -1147,7 +1205,7 @@
         <button onclick="showTab('originals')" class="text-[#a1a1aa] hover:text-white text-sm font-medium">← Back</button>
         <div class="flex-1 text-center">
           <h2 class="text-3xl font-bold text-white">CRASH</h2>
-          <p class="text-xl text-[#00c853] font-mono font-semibold">Multiplier: <span id="crashMultiplier">1.00</span>x</p>
+          <p class="text-xl text-[#fbbf24] font-mono font-semibold">Multiplier: <span id="crashMultiplier">1.00</span>x</p>
         </div>
         <div class="w-16"></div>
       </div>
@@ -1155,8 +1213,8 @@
         <canvas id="crashChart" class="w-full h-full rounded-xl"></canvas>
       </div>
       <div class="flex justify-center gap-4 mt-8 flex-wrap">
-        <input type="number" id="crashBet" placeholder="Bet amount ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-        <button id="crashBetBtn" onclick="startCrash()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">BET</button>
+        <input type="number" id="crashBet" placeholder="Bet amount ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+        <button id="crashBetBtn" onclick="startCrash()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">BET</button>
         <button id="crashCashoutBtn" onclick="cashoutCrash()" class="px-10 py-3 bg-red-600 hover:bg-red-500 rounded-lg font-bold hidden">CASH OUT</button>
       </div>
     </section>
@@ -1176,12 +1234,12 @@
           <span id="diceResult" class="text-7xl font-bold text-white">?</span>
         </div>
         <div class="flex gap-4 flex-wrap justify-center">
-          <select id="diceMode" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+          <select id="diceMode" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]">
             <option value="under">Under 50</option>
             <option value="over">Over 50</option>
           </select>
-          <input type="number" id="diceBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button onclick="rollDice()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">ROLL</button>
+          <input type="number" id="diceBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button onclick="rollDice()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">ROLL</button>
         </div>
       </div>
     </section>
@@ -1200,23 +1258,23 @@
         <div class="w-full lg:w-72 stake-card p-6">
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
-            <input type="number" id="minesBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="number" id="minesBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Mines (1–24)</label>
-            <input type="range" id="minesCount" min="1" max="24" value="3" class="w-full accent-[#00c853]"/>
+            <input type="range" id="minesCount" min="1" max="24" value="3" class="w-full accent-[#fbbf24]"/>
             <p class="text-center mt-2 text-[#71717a]"><span id="minesValue">3</span> mines</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Gems Revealed</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="gemsRevealed">0</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="gemsRevealed">0</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Multiplier</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="minesMultiplier">1.00x</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="minesMultiplier">1.00x</p>
             <p id="minesResult" class="text-center text-lg font-bold min-h-[30px]"></p>
           </div>
-          <button id="minesBetBtn" onclick="startMines()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="minesBetBtn" onclick="startMines()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-3">BET</button>
           <button id="cashoutBtn" onclick="cashoutMines()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden mb-2">CASH OUT</button>
           <button id="randomBtn" onclick="revealRandomTile()" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-bold hidden">RANDOM</button>
         </div>
@@ -1256,8 +1314,8 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 items-center">
-          <input type="number" id="plinkoBet" placeholder="Bet ($)" min="0.1" step="0.1" class="w-48 px-5 py-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button onclick="playPlinko()" class="px-12 py-4 bg-[#00c853] hover:bg-[#00e676] text-black rounded-xl font-bold">DROP BALL</button>
+          <input type="number" id="plinkoBet" placeholder="Bet ($)" min="0.1" step="0.1" class="w-48 px-5 py-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button onclick="playPlinko()" class="px-12 py-4 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-xl font-bold">DROP BALL</button>
         </div>
       </div>
     </section>
@@ -1273,11 +1331,11 @@
         <div class="w-16"></div>
       </div>
       <div class="flex flex-col items-center gap-8">
-        <p class="text-6xl font-bold text-[#00c853] font-mono" id="limboResult">1.00x</p>
+        <p class="text-6xl font-bold text-[#fbbf24] font-mono" id="limboResult">1.00x</p>
         <div class="flex gap-4 flex-wrap justify-center">
-          <input type="number" id="limboTarget" step="0.01" placeholder="Target (e.g. 2.00)" class="w-44 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <input type="number" id="limboBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button onclick="playLimbo()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">ROLL</button>
+          <input type="number" id="limboTarget" step="0.01" placeholder="Target (e.g. 2.00)" class="w-44 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <input type="number" id="limboBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button onclick="playLimbo()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">ROLL</button>
         </div>
       </div>
     </section>
@@ -1321,10 +1379,10 @@
           
           <div class="bg-black/30 p-4">
             <div class="flex gap-4 flex-wrap justify-center items-center">
-              <input type="number" id="blackjackBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a]/80 border border-white/20 rounded-lg text-center text-white placeholder-white/50 focus:outline-none focus:border-[#00c853]"/>
-              <button id="bjDeal" onclick="dealBlackjack()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">DEAL</button>
-              <button id="bjHit" onclick="hitBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#00c853] rounded-lg font-bold text-white hidden">HIT</button>
-              <button id="bjStand" onclick="standBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#00c853] rounded-lg font-bold text-white hidden">STAND</button>
+              <input type="number" id="blackjackBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a]/80 border border-white/20 rounded-lg text-center text-white placeholder-white/50 focus:outline-none focus:border-[#fbbf24]"/>
+              <button id="bjDeal" onclick="dealBlackjack()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">DEAL</button>
+              <button id="bjHit" onclick="hitBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#fbbf24] rounded-lg font-bold text-white hidden">HIT</button>
+              <button id="bjStand" onclick="standBlackjack()" class="px-8 py-3 bg-white/10 border border-white/20 hover:border-[#fbbf24] rounded-lg font-bold text-white hidden">STAND</button>
               <button id="bjDouble" onclick="doubleBlackjack()" class="px-8 py-3 bg-blue-600/80 border border-blue-400/50 hover:border-blue-400 rounded-lg font-bold text-white hidden">DOUBLE</button>
               <button id="bjSplit" onclick="splitBlackjack()" class="px-8 py-3 bg-purple-600/80 border border-purple-400/50 hover:border-purple-400 rounded-lg font-bold text-white hidden">SPLIT</button>
               <button id="bjInsurance" onclick="insuranceBlackjack()" class="px-8 py-3 bg-yellow-600/80 border border-yellow-400/50 hover:border-yellow-400 rounded-lg font-bold text-white hidden">INSURANCE</button>
@@ -1348,22 +1406,22 @@
         <div class="w-full lg:w-72 stake-card p-6">
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($) - Min: 1,000,000</label>
-            <input type="number" id="mines1000Bet" value="1000000" step="100000" min="1000000" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="number" id="mines1000Bet" value="1000000" step="100000" min="1000000" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Mines (7–24)</label>
-            <input type="range" id="mines1000Count" min="7" max="24" value="7" class="w-full accent-[#00c853]"/>
+            <input type="range" id="mines1000Count" min="7" max="24" value="7" class="w-full accent-[#fbbf24]"/>
             <p class="text-center mt-2 text-[#71717a]"><span id="mines1000Value">7</span> mines</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Gems Revealed</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="mines1000Gems">0</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="mines1000Gems">0</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Multiplier</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="mines1000Multiplier">0×</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="mines1000Multiplier">0×</p>
           </div>
-          <button id="mines1000BetBtn" onclick="startMines1000()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="mines1000BetBtn" onclick="startMines1000()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-3">BET</button>
           <button id="mines1000CashoutBtn" onclick="cashoutMines1000()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">CASH OUT</button>
         </div>
 
@@ -1396,7 +1454,7 @@
           <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[20px] border-t-white"></div>
         </div>
         <div class="flex gap-4 flex-wrap justify-center">
-          <select id="rouletteBet" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+          <select id="rouletteBet" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]">
             <option value="red">Red (2x)</option>
             <option value="black">Black (2x)</option>
             <option value="odd">Odd (2x)</option>
@@ -1407,8 +1465,8 @@
             <option value="2nd12">2nd 12 (3x)</option>
             <option value="3rd12">3rd 12 (3x)</option>
           </select>
-          <input type="number" id="rouletteBetAmount" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button id="rouletteSpinBtn" onclick="spinRoulette()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">SPIN</button>
+          <input type="number" id="rouletteBetAmount" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button id="rouletteSpinBtn" onclick="spinRoulette()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">SPIN</button>
         </div>
         <p class="text-[#71717a] text-sm">Bet on red/black, odd/even, ranges, or dozens!</p>
       </div>
@@ -1428,22 +1486,22 @@
         <div class="w-full lg:w-72 stake-card p-6">
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
-            <input type="number" id="kenoBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="number" id="kenoBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Picks: <span id="kenoPicksCount">1</span></label>
-            <input type="range" id="kenoPicks" min="1" max="10" value="1" class="w-full accent-[#00c853]"/>
+            <input type="range" id="kenoPicks" min="1" max="10" value="1" class="w-full accent-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Matches</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="kenoMatches">0</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="kenoMatches">0</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Payout</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="kenoPayout">0×</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="kenoPayout">0×</p>
           </div>
-          <button id="kenoBetBtn" onclick="playKeno()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">PLAY</button>
-          <button id="kenoClearBtn" onclick="clearKeno()" class="w-full py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#00c853] rounded-lg font-bold">CLEAR</button>
+          <button id="kenoBetBtn" onclick="playKeno()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-3">PLAY</button>
+          <button id="kenoClearBtn" onclick="clearKeno()" class="w-full py-3 bg-[#222] border border-[#2a2a2a] hover:border-[#fbbf24] rounded-lg font-bold">CLEAR</button>
         </div>
 
         <div class="max-w-[500px] mx-auto">
@@ -1475,15 +1533,15 @@
           </div>
         </div>
         
-        <div id="coinResult" class="text-2xl font-bold text-[#00c853] min-h-[40px]"></div>
+        <div id="coinResult" class="text-2xl font-bold text-[#fbbf24] min-h-[40px]"></div>
         
         <div class="flex gap-4 flex-wrap justify-center">
-          <select id="coinChoice" class="px-6 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-white font-bold focus:outline-none focus:border-[#00c853]">
+          <select id="coinChoice" class="px-6 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-white font-bold focus:outline-none focus:border-[#fbbf24]">
             <option value="heads">🪙 HEADS</option>
             <option value="tails">🪙 TAILS</option>
           </select>
-          <input type="number" id="coinBet" placeholder="Bet ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button id="coinFlipBtn" onclick="flipCoin()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-lg">FLIP COIN</button>
+          <input type="number" id="coinBet" placeholder="Bet ($)" class="w-40 px-4 py-3 bg-[#1a1a1a] border-2 border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button id="coinFlipBtn" onclick="flipCoin()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold text-lg">FLIP COIN</button>
         </div>
         <p class="text-[#71717a] text-sm">Choose heads or tails, win 2x your bet!</p>
       </div>
@@ -1503,22 +1561,22 @@
         <div class="w-full lg:w-72 stake-card p-6">
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
-            <input type="number" id="towerBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="number" id="towerBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bombs per row</label>
-            <input type="range" id="towerBombs" min="1" max="3" value="1" class="w-full accent-[#00c853]"/>
+            <input type="range" id="towerBombs" min="1" max="3" value="1" class="w-full accent-[#fbbf24]"/>
             <p class="text-center mt-2 text-[#71717a]"><span id="towerBombsValue">1</span> bomb<span id="towerBombsPlural"></span></p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Current Step</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="towerStep">0</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="towerStep">0</p>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Total Won</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="towerWon">$0.00</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="towerWon">$0.00</p>
           </div>
-          <button id="towerBetBtn" onclick="startTower()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">BET</button>
+          <button id="towerBetBtn" onclick="startTower()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-3">BET</button>
           <button id="towerCashoutBtn" onclick="cashoutTower()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">CASH OUT</button>
         </div>
 
@@ -1555,16 +1613,16 @@
         </div>
         
         <div id="rpsChoices" class="flex gap-4">
-          <button onclick="playRps('rock')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✊</button>
-          <button onclick="playRps('paper')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✋</button>
-          <button onclick="playRps('scissors')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#00c853] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✌️</button>
+          <button onclick="playRps('rock')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#fbbf24] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✊</button>
+          <button onclick="playRps('paper')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#fbbf24] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✋</button>
+          <button onclick="playRps('scissors')" class="w-24 h-24 bg-[#1a1a1a] border-2 border-[#2a2a2a] hover:border-[#fbbf24] rounded-xl flex items-center justify-center text-5xl transition hover:scale-110">✌️</button>
         </div>
         
         <div id="rpsResult" class="text-2xl font-bold text-white h-8"></div>
         
         <div class="flex gap-4 flex-wrap justify-center">
-          <input type="number" id="rpsBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button id="rpsPlayBtn" onclick="startRps()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">PLAY</button>
+          <input type="number" id="rpsBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button id="rpsPlayBtn" onclick="startRps()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">PLAY</button>
         </div>
         <p class="text-[#71717a] text-sm">Best of 3 rounds. Win 2 out of 3 to double your bet!</p>
       </div>
@@ -1614,14 +1672,14 @@
           </div>
         </div>
         <div class="flex gap-4 flex-wrap justify-center">
-          <select id="racingPick" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]">
+          <select id="racingPick" class="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]">
             <option value="0">Car 1 (🏎️)</option>
             <option value="1">Car 2 (🚗)</option>
             <option value="2">Car 3 (🚙)</option>
             <option value="3">Car 4 (🚕)</option>
           </select>
-          <input type="number" id="racingBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-          <button id="racingBetBtn" onclick="startRacing()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">RACE</button>
+          <input type="number" id="racingBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+          <button id="racingBetBtn" onclick="startRacing()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">RACE</button>
         </div>
         <p class="text-[#71717a] text-sm">Pick a winner! All cars have equal odds.</p>
       </div>
@@ -1641,13 +1699,13 @@
         <div class="w-full lg:w-72 stake-card p-6">
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Bet Amount ($)</label>
-            <input type="number" id="fishingBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#00c853]"/>
+            <input type="number" id="fishingBet" value="1" step="0.1" min="0.1" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-center text-white focus:outline-none focus:border-[#fbbf24]"/>
           </div>
           <div class="mb-5">
             <label class="block text-sm text-[#a1a1aa] mb-2">Total Won</label>
-            <p class="text-2xl font-bold text-center text-[#00c853]" id="fishingWon">$0.00</p>
+            <p class="text-2xl font-bold text-center text-[#fbbf24]" id="fishingWon">$0.00</p>
           </div>
-          <button id="fishingBetBtn" onclick="startFishing()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold mb-3">START</button>
+          <button id="fishingBetBtn" onclick="startFishing()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold mb-3">START</button>
           <button id="fishingCollectBtn" onclick="collectFishing()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold hidden">COLLECT</button>
         </div>
 
@@ -1661,12 +1719,12 @@
         <div class="stake-card p-4">
           <h4 class="font-bold text-white mb-3 text-center">Fish Chart</h4>
           <div class="grid grid-cols-2 gap-2 text-sm">
-            <div class="flex items-center gap-2"><span class="text-xl">🐟</span><span class="text-[#00c853]">0.5x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
-            <div class="flex items-center gap-2"><span class="text-xl">🐠</span><span class="text-[#00c853]">0.8x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
-            <div class="flex items-center gap-2"><span class="text-xl">🐡</span><span class="text-[#00c853]">1.2x</span><span class="text-[#71717a] text-xs">(medium)</span></div>
-            <div class="flex items-center gap-2"><span class="text-xl">🦀</span><span class="text-[#00c853]">2x</span><span class="text-[#71717a] text-xs">(fast)</span></div>
-            <div class="flex items-center gap-2"><span class="text-xl">🦞</span><span class="text-[#00c853]">3x</span><span class="text-[#71717a] text-xs">(very fast)</span></div>
-            <div class="flex items-center gap-2"><span class="text-xl">🐙</span><span class="text-[#00c853]">5x</span><span class="text-[#71717a] text-xs">(超快)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐟</span><span class="text-[#fbbf24]">0.5x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐠</span><span class="text-[#fbbf24]">0.8x</span><span class="text-[#71717a] text-xs">(slow)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐡</span><span class="text-[#fbbf24]">1.2x</span><span class="text-[#71717a] text-xs">(medium)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🦀</span><span class="text-[#fbbf24]">2x</span><span class="text-[#71717a] text-xs">(fast)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🦞</span><span class="text-[#fbbf24]">3x</span><span class="text-[#71717a] text-xs">(very fast)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xl">🐙</span><span class="text-[#fbbf24]">5x</span><span class="text-[#71717a] text-xs">(超快)</span></div>
             <div class="flex items-center gap-2 col-span-2 justify-center"><span class="text-xl">💎</span><span class="text-yellow-400 font-bold">10x</span><span class="text-[#71717a] text-xs">(extremely fast!)</span></div>
           </div>
         </div>
@@ -1714,13 +1772,13 @@
             </div>
             <div class="text-center">
               <p class="text-sm text-[#71717a]">Payout</p>
-              <p class="text-2xl font-bold text-[#00c853]" id="goalPayout">0×</p>
+              <p class="text-2xl font-bold text-[#fbbf24]" id="goalPayout">0×</p>
             </div>
           </div>
           
           <div class="flex gap-4 flex-wrap justify-center">
-            <input type="number" id="goalBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#00c853]"/>
-            <button id="goalKickBtn" onclick="startGoal()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">KICK</button>
+            <input type="number" id="goalBet" placeholder="Bet ($)" class="w-36 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-center text-white placeholder-[#71717a] focus:outline-none focus:border-[#fbbf24]"/>
+            <button id="goalKickBtn" onclick="startGoal()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">KICK</button>
           </div>
         </div>
         <p class="text-[#71717a] text-sm">Pick a spot to kick. Score more goals for higher multipliers!</p>
@@ -1730,7 +1788,7 @@
 
   <!-- Global Chat -->
   <div id="chatWidget" class="fixed bottom-4 right-4 z-40">
-    <div id="chatToggle" onclick="toggleChat()" class="w-12 h-12 bg-[#00c853] rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-[#00e676] transition">
+    <div id="chatToggle" onclick="toggleChat()" class="w-12 h-12 bg-[#fbbf24] rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-[#fcd34d] transition">
       <span class="text-xl">💬</span>
     </div>
     
@@ -1747,7 +1805,7 @@
       <div class="p-2 border-t border-[#2a2a2a]">
         <div class="flex gap-2">
           <input type="text" id="chatInput" placeholder="Type a message..." class="flex-1 px-3 py-2 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white text-sm"/>
-          <button id="chatSendBtn" class="px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg text-sm font-bold">Send</button>
+          <button id="chatSendBtn" class="px-3 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg text-sm font-bold">Send</button>
         </div>
       </div>
     </div>
@@ -1758,7 +1816,7 @@
     <div class="bg-[#1a1a1a] p-10 rounded-2xl text-center max-w-md w-full border border-[#2a2a2a] shadow-2xl">
       <h3 id="resultTitle" class="text-2xl font-bold mb-4 text-white"></h3>
       <p id="resultMessage" class="text-lg mb-8 text-[#a1a1aa]"></p>
-      <button onclick="closeResultModal()" class="px-10 py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-xl font-bold">OK</button>
+      <button onclick="closeResultModal()" class="px-10 py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-xl font-bold">OK</button>
     </div>
   </div>
 
@@ -1770,43 +1828,43 @@
         <button onclick="closeAuthModal()" class="text-[#71717a] hover:text-white text-2xl leading-none">×</button>
       </div>
       <div class="flex mb-6 border-b border-[#2a2a2a]">
-        <button onclick="showAuthTab('login')" class="flex-1 py-3 font-medium auth-tab active text-white border-b-2 border-[#00c853] -mb-px">Login</button>
+        <button onclick="showAuthTab('login')" class="flex-1 py-3 font-medium auth-tab active text-white border-b-2 border-[#fbbf24] -mb-px">Login</button>
         <button onclick="showAuthTab('register')" class="flex-1 py-3 font-medium auth-tab text-[#a1a1aa] border-b-2 border-transparent -mb-px">Register</button>
       </div>
 
       <div id="loginForm">
         <div class="mb-4">
           <label class="block text-sm text-[#a1a1aa] mb-2">Username</label>
-          <input type="text" id="loginUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <input type="text" id="loginUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
         </div>
         <div class="mb-6">
           <label class="block text-sm text-[#a1a1aa] mb-2">Password</label>
-          <input type="password" id="loginPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <input type="password" id="loginPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
         </div>
-        <button onclick="fakeLogin()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Login</button>
+        <button onclick="fakeLogin()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">Login</button>
       </div>
 
       <div id="registerForm" class="hidden">
         <div class="mb-4">
           <label class="block text-sm text-[#a1a1aa] mb-2">Username</label>
-          <input type="text" id="regUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <input type="text" id="regUsername" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
         </div>
         <div class="mb-4">
           <label class="block text-sm text-[#a1a1aa] mb-2">Password</label>
-          <input type="password" id="regPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <input type="password" id="regPassword" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
         </div>
         <div class="mb-6">
           <label class="block text-sm text-[#a1a1aa] mb-2">Confirm Password</label>
-          <input type="password" id="regConfirm" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#00c853]"/>
+          <input type="password" id="regConfirm" class="w-full px-4 py-3 bg-[#131313] border border-[#2a2a2a] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]"/>
         </div>
-        <button onclick="fakeRegister()" class="w-full py-3 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold">Register</button>
+        <button onclick="fakeRegister()" class="w-full py-3 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold">Register</button>
       </div>
     </div>
   </div>
 
   <script>
     // Global variables - defined first to avoid reference errors
-    const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal', 'wallet', 'slots', 'russianroulette', 'opentables', 'baccarat', 'poker', 'threecard', 'scratch', 'powerball', 'horserace', 'dograce', 'wheel', 'hilo'];
+    const SUB_GAMES = ['crash', 'dice', 'mines', 'plinko', 'limbo', 'blackjack', 'mines1000', 'roulette', 'keno', 'coinflip', 'tower', 'rps', 'racing', 'fishing', 'goal', 'russianroulette', 'baccarat', 'poker', 'threecard', 'scratch', 'powerball', 'horserace', 'dograce', 'wheel', 'hilo'];
     
     // Chat
     let chatMessages = JSON.parse(localStorage.getItem('vantabet_chat') || '[]');
@@ -1817,92 +1875,113 @@
     let minesBet = 0;
     const gridSize = 25;
 
-    // Global Sound Effects
+    // Global Sound Effects - Enhanced
     function playSfx(type) {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        
+        const createOsc = (freq, type = 'sine', duration = 0.1, volume = 0.15) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(volume, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        };
+        
+        const createTone = (freq1, freq2, type = 'sine', duration = 0.15, volume = 0.12) => {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc1.type = type;
+          osc2.type = type;
+          osc1.frequency.setValueAtTime(freq1, ctx.currentTime);
+          osc2.frequency.setValueAtTime(freq2, ctx.currentTime);
+          gain.gain.setValueAtTime(volume, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          osc1.start();
+          osc2.start();
+          osc1.stop(ctx.currentTime + duration);
+          osc2.stop(ctx.currentTime + duration);
+        };
         
         switch(type) {
           case 'click':
-            osc.frequency.setValueAtTime(600, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
+            createOsc(800, 'sine', 0.05, 0.08);
             break;
           case 'win':
-            osc.frequency.setValueAtTime(400, ctx.currentTime);
-            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
+            createTone(523, 659, 'sine', 0.15, 0.1);
+            setTimeout(() => createTone(659, 784, 'sine', 0.15, 0.1), 100);
+            setTimeout(() => createTone(784, 1047, 'sine', 0.25, 0.12), 200);
             break;
           case 'lose':
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(300, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
+            createTone(200, 150, 'sawtooth', 0.3, 0.1);
+            setTimeout(() => createOsc(100, 'sawtooth', 0.2, 0.08), 100);
             break;
           case 'bet':
-            osc.frequency.setValueAtTime(500, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.1);
+            createTone(440, 550, 'sine', 0.08, 0.1);
             break;
           case 'cashout':
-            osc.frequency.setValueAtTime(300, ctx.currentTime);
-            osc.frequency.setValueAtTime(500, ctx.currentTime + 0.08);
-            osc.frequency.setValueAtTime(700, ctx.currentTime + 0.16);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.25);
+            createTone(400, 500, 'sine', 0.1, 0.1);
+            setTimeout(() => createTone(500, 600, 'sine', 0.1, 0.1), 80);
+            setTimeout(() => createTone(600, 800, 'sine', 0.15, 0.1), 160);
+            setTimeout(() => createTone(800, 1000, 'sine', 0.2, 0.12), 240);
             break;
           case 'hit':
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.1);
+            createOsc(600, 'square', 0.08, 0.06);
+            setTimeout(() => createOsc(400, 'square', 0.06, 0.04), 50);
             break;
           case 'reveal':
-            osc.frequency.setValueAtTime(600, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.08);
+            createOsc(900, 'sine', 0.06, 0.08);
+            setTimeout(() => createOsc(1100, 'sine', 0.08, 0.06), 40);
             break;
           case 'spin':
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(200, ctx.currentTime);
-            for(let i = 0; i < 10; i++) {
-              osc.frequency.setValueAtTime(200 + (i * 30), ctx.currentTime + i * 0.05);
+            for(let i = 0; i < 12; i++) {
+              setTimeout(() => createOsc(150 + (i * 20), 'triangle', 0.04, 0.05), i * 40);
             }
-            gain.gain.setValueAtTime(0.08, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.5);
             break;
           case 'flip':
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(400, ctx.currentTime);
-            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
-            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.4);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.6);
+            createOsc(500, 'sine', 0.1, 0.1);
+            setTimeout(() => createOsc(700, 'sine', 0.15, 0.1), 100);
+            setTimeout(() => createOsc(900, 'sine', 0.2, 0.1), 200);
+            break;
+          case 'card':
+            createOsc(200, 'sine', 0.05, 0.15);
+            setTimeout(() => createOsc(300, 'sine', 0.05, 0.1), 30);
+            break;
+          case 'chip':
+            createTone(800, 1200, 'square', 0.05, 0.05);
+            setTimeout(() => createTone(1000, 1500, 'square', 0.05, 0.04), 50);
+            break;
+          case 'jackpot':
+            createTone(523, 659, 'sine', 0.12, 0.1);
+            setTimeout(() => createTone(659, 784, 'sine', 0.12, 0.1), 100);
+            setTimeout(() => createTone(784, 1047, 'sine', 0.12, 0.1), 200);
+            setTimeout(() => createTone(1047, 1319, 'sine', 0.12, 0.1), 300);
+            setTimeout(() => createTone(1319, 1568, 'sine', 0.3, 0.15), 400);
+            break;
+          case 'shoot':
+            const noise = ctx.createOscillator();
+            const noiseGain = ctx.createGain();
+            noise.type = 'sawtooth';
+            noise.frequency.setValueAtTime(100, ctx.currentTime);
+            noise.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.3);
+            noiseGain.gain.setValueAtTime(0.3, ctx.currentTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            noise.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+            noise.start();
+            noise.stop(ctx.currentTime + 0.3);
+            break;
+          case 'click2':
+            createOsc(1200, 'sine', 0.03, 0.06);
             break;
         }
       } catch(e) {}
@@ -1962,11 +2041,11 @@
       document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
       document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
       document.querySelectorAll('.auth-tab').forEach(btn => {
-        btn.classList.remove('text-white', 'border-[#00c853]');
+        btn.classList.remove('text-white', 'border-[#fbbf24]');
         btn.classList.add('text-[#a1a1aa]', 'border-transparent');
       });
       const active = document.querySelector(`button[onclick="showAuthTab('${tab}')"]`);
-      if (active) { active.classList.add('text-white', 'border-[#00c853]'); active.classList.remove('text-[#a1a1aa]', 'border-transparent'); }
+      if (active) { active.classList.add('text-white', 'border-[#fbbf24]'); active.classList.remove('text-[#a1a1aa]', 'border-transparent'); }
     }
 
     function fakeLogin() {
@@ -2163,7 +2242,7 @@
       
       let paytableHTML = '';
       for (const [symbol, mult] of Object.entries(paytable)) {
-        paytableHTML += `<div class="flex flex-col items-center"><span class="text-xl">${symbol}</span><span class="${parseFloat(mult) >= 2 ? 'text-yellow-400' : parseFloat(mult) >= 1 ? 'text-[#00c853]' : 'text-[#71717a]'}">${mult}</span></div>`;
+        paytableHTML += `<div class="flex flex-col items-center"><span class="text-xl">${symbol}</span><span class="${parseFloat(mult) >= 2 ? 'text-yellow-400' : parseFloat(mult) >= 1 ? 'text-[#fbbf24]' : 'text-[#71717a]'}">${mult}</span></div>`;
       }
       
       document.getElementById('slotGameTitle').textContent = titles[currentSlotGame] || 'Slots';
@@ -2233,7 +2312,7 @@
             const profit = win - bet;
             addBetRecord('Slots', bet, profit);
             resultEl.textContent = `WIN! +$${win.toFixed(2)}`;
-            resultEl.className = 'text-center text-lg font-bold text-[#00c853]';
+            resultEl.className = 'text-center text-lg font-bold text-[#fbbf24]';
             playSfx('win');
           } else {
             addBetRecord('Slots', bet, -bet);
@@ -2251,6 +2330,13 @@
 
     function playRussianRoulette() {
       if (russianPlaying) return;
+      
+      // Check for multiplayer
+      const tables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      const currentTable = tables.find(t => t.game === 'russianroulette' && t.players.includes(currentUser));
+      if (currentTable && currentTable.players.length < 2) {
+        return showResult('Need More Players', 'Wait for at least 2 players to join the table');
+      }
       
       const bet = parseFloat(document.getElementById('russianBet').value);
       if (isNaN(bet) || bet <= 0) {
@@ -2313,7 +2399,7 @@
                 const streak = russianWins > 1 ? ` (${russianWins} in a row!)` : '';
                 gunEl.textContent = '✓';
                 resultEl.textContent = `😐 CLICK... Survived!${streak}`;
-                resultEl.className = 'text-center text-3xl font-bold text-[#00c853]';
+                resultEl.className = 'text-center text-3xl font-bold text-[#fbbf24]';
                 const win = bet * 3;
                 balance += win;
                 updateBalance();
@@ -2352,7 +2438,7 @@
       document.getElementById('createTableModal').classList.remove('hidden');
       document.getElementById('tableName').value = currentUser + "'s Table";
       document.getElementById('selectedTableGame').value = '';
-      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#00c853]', 'bg-[#1a2a1a]'));
+      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#fbbf24]', 'bg-[#1a2a1a]'));
     }
 
     function closeCreateTableModal() {
@@ -2361,8 +2447,8 @@
 
     function selectTableGame(game) {
       document.getElementById('selectedTableGame').value = game;
-      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#00c853]', 'bg-[#1a2a1a]'));
-      event.target.closest('button').classList.add('border-[#00c853]', 'bg-[#1a2a1a]');
+      document.querySelectorAll('.table-game-btn').forEach(b => b.classList.remove('border-[#fbbf24]', 'bg-[#1a2a1a]'));
+      event.target.closest('button').classList.add('border-[#fbbf24]', 'bg-[#1a2a1a]');
     }
 
     function createTable() {
@@ -2477,11 +2563,11 @@
           </div>
           <div class="flex items-center justify-between">
             <div class="text-sm text-[#a1a1aa]">
-              <span class="text-[#00c853]">${table.players.length}/5</span> players
+              <span class="text-[#fbbf24]">${table.players.length}/5</span> players
               <br>
               <span class="text-xs">Host: ${table.host}</span>
             </div>
-            <button onclick="joinTable(${table.id})" class="px-4 py-2 bg-[#00c853] hover:bg-[#00e676] text-black rounded-lg font-bold text-sm">
+            <button onclick="joinTable(${table.id})" class="px-4 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg font-bold text-sm">
               ${table.players.includes(currentUser) ? 'Playing' : 'Join'}
             </button>
           </div>
@@ -2617,7 +2703,7 @@
       
       container.innerHTML = chatMessages.slice(-50).map(m => `
         <div class="text-sm">
-          <span class="font-bold ${m.user === currentUser ? 'text-[#00c853]' : 'text-white'}">${m.user}:</span>
+          <span class="font-bold ${m.user === currentUser ? 'text-[#fbbf24]' : 'text-white'}">${m.user}:</span>
           <span class="text-[#a1a1aa]">${m.message}</span>
         </div>
       `).join('');
@@ -2744,7 +2830,7 @@
       addBetRecord('Mines', minesBet, payout - minesBet);
       addWagered(minesBet);
       document.getElementById('minesResult').textContent = '🎉 CASHED OUT! Won $' + (payout - minesBet).toFixed(2);
-      document.getElementById('minesResult').className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+      document.getElementById('minesResult').className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
       endMines(true);
       updateLeaderboards();
     }
@@ -2883,6 +2969,13 @@
     function spinRoulette() {
       if (rouletteSpinning) return;
       
+      // Check for multiplayer
+      const tables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      const currentTable = tables.find(t => t.game === 'roulette' && t.players.includes(currentUser));
+      if (currentTable && currentTable.players.length < 2) {
+        return showResult('Need More Players', 'Wait for at least 2 players to join the table');
+      }
+      
       const bet = parseFloat(document.getElementById('rouletteBetAmount')?.value) || 0;
       if (bet <= 0 || bet > balance) return showResult('Error', 'Invalid bet');
 
@@ -2987,7 +3080,7 @@
       
       for (let i = 1; i <= 80; i++) {
         const num = document.createElement('button');
-        num.className = 'w-8 h-8 sm:w-10 sm:h-10 bg-[#1a1a1a] border border-[#2a2a2a] rounded flex items-center justify-center text-xs sm:text-sm font-bold hover:border-[#00c853] transition';
+        num.className = 'w-8 h-8 sm:w-10 sm:h-10 bg-[#1a1a1a] border border-[#2a2a2a] rounded flex items-center justify-center text-xs sm:text-sm font-bold hover:border-[#fbbf24] transition';
         num.textContent = i;
         num.dataset.num = i;
         num.addEventListener('click', () => toggleKenoNumber(i, num));
@@ -3001,11 +3094,11 @@
       
       if (kenoPicked.includes(num)) {
         kenoPicked = kenoPicked.filter(n => n !== num);
-        el.classList.remove('bg-[#00c853]', 'text-black');
+        el.classList.remove('bg-[#fbbf24]', 'text-black');
         el.classList.add('bg-[#1a1a1a]', 'text-white');
       } else if (kenoPicked.length < numPicks) {
         kenoPicked.push(num);
-        el.classList.add('bg-[#00c853]', 'text-black');
+        el.classList.add('bg-[#fbbf24]', 'text-black');
         el.classList.remove('bg-[#1a1a1a]', 'text-white');
       }
     }
@@ -3052,7 +3145,7 @@
         if (kenoPicked.includes(num) && drawn.includes(num)) {
           matchCount++;
           setTimeout(() => {
-            btn.classList.remove('bg-blue-500', 'bg-[#00c853]');
+            btn.classList.remove('bg-blue-500', 'bg-[#fbbf24]');
             btn.classList.add('bg-green-500', 'text-white', 'animate-bounce');
           }, drawn.indexOf(num) * 100 + 500);
         }
@@ -3140,7 +3233,7 @@
             addBetRecord('Coin Flip', bet, bet);
             playSfx('win');
             document('coinResult').textContent = `🎉 YOU WON! ${resultText}`;
-            document.getElementById('coinResult').className = 'text-2xl font-bold text-[#00c853] min-h-[40px] animate-bounce';
+            document.getElementById('coinResult').className = 'text-2xl font-bold text-[#fbbf24] min-h-[40px] animate-bounce';
           } else {
             addBetRecord('Coin Flip', bet, -bet);
             playSfx('lose');
@@ -3219,7 +3312,7 @@
         saveBalance();
         addBetRecord('Baccarat', bet, payout - bet);
         resultEl.textContent = `🎉 YOU WIN! Won $${(payout - bet).toFixed(2)}`;
-        resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+        resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
         playSfx('win');
       } else {
         addBetRecord('Baccarat', bet, -bet);
@@ -3294,7 +3387,7 @@
         saveBalance();
         addBetRecord('Poker', pokerBet, win - pokerBet);
         resultEl.textContent = `🎉 ${rank}! Won $${(win - pokerBet).toFixed(2)}`;
-        resultEl.className = 'text-center text-lg font-bold text-[#00c853] mb-4';
+        resultEl.className = 'text-center text-lg font-bold text-[#fbbf24] mb-4';
         playSfx('win');
       } else {
         addBetRecord('Poker', pokerBet, -pokerBet);
@@ -3372,7 +3465,7 @@
         saveBalance();
         addBetRecord('Three Card', bet, win - bet);
         resultEl.textContent = `🎉 ${rank}! Won $${(win - bet).toFixed(2)}`;
-        resultEl.className = 'text-center text-lg font-bold text-[#00c853] mb-4';
+        resultEl.className = 'text-center text-lg font-bold text-[#fbbf24] mb-4';
         playSfx('win');
       } else {
         addBetRecord('Three Card', bet, -bet);
@@ -3435,7 +3528,7 @@
         saveBalance();
         addBetRecord('Scratch', scratchBet, win - scratchBet);
         resultEl.textContent = `You won $${win.toFixed(2)}!`;
-        resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+        resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
         playSfx('win');
       } else {
         addBetRecord('Scratch', scratchBet, -scratchBet);
@@ -3466,7 +3559,7 @@
         const btn = document.createElement('button');
         btn.textContent = i;
         btn.id = 'pb-' + i;
-        btn.className = 'w-10 h-10 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#00c853] cursor-pointer transition';
+        btn.className = 'w-10 h-10 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm hover:border-[#fbbf24] cursor-pointer transition';
         btn.onclick = function() { togglePowerball(i); };
         container.appendChild(btn);
       }
@@ -3485,9 +3578,9 @@
       for (let i = 1; i <= 69; i++) {
         const btn = document.getElementById('pb-' + i);
         if (powerballNumbers.includes(i)) {
-          btn.classList.add('bg-[#00c853]', 'text-black', 'border-[#00c853]');
+          btn.classList.add('bg-[#fbbf24]', 'text-black', 'border-[#fbbf24]');
         } else {
-          btn.classList.remove('bg-[#00c853]', 'text-black', 'border-[#00c853]');
+          btn.classList.remove('bg-[#fbbf24]', 'text-black', 'border-[#fbbf24]');
         }
       }
       document.getElementById('powerballPicks').textContent = powerballNumbers.length > 0 ? powerballNumbers.sort((a,b) => a-b).join(', ') : '-';
@@ -3549,7 +3642,7 @@
         saveBalance();
         addBetRecord('Powerball', bet, win - bet);
         resultEl.textContent = `🎉 Matched ${matches} + Powerball! Won $${win.toFixed(2)}`;
-        resultEl.className = 'text-center text-lg font-bold text-[#00c853]';
+        resultEl.className = 'text-center text-lg font-bold text-[#fbbf24]';
         playSfx('win');
       } else {
         addBetRecord('Powerball', bet, -bet);
@@ -3610,7 +3703,7 @@
             saveBalance();
             addBetRecord('Horse Racing', bet, win - bet);
             resultEl.textContent = `🎉 Horse ${winner + 1} wins! Won $${(win - bet).toFixed(2)}`;
-            resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+            resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
             playSfx('win');
           } else {
             addBetRecord('Horse Racing', bet, -bet);
@@ -3670,7 +3763,7 @@
             saveBalance();
             addBetRecord('Dog Racing', bet, win - bet);
             resultEl.textContent = `🎉 Dog ${winner + 1} wins! Won $${(win - bet).toFixed(2)}`;
-            resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+            resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
             playSfx('win');
           } else {
             addBetRecord('Dog Racing', bet, -bet);
@@ -3724,7 +3817,7 @@
             saveBalance();
             addBetRecord('Wheel', bet, win - bet);
             resultEl.textContent = `🎉 Won ${result}! Profit: $${(win - bet).toFixed(2)}`;
-            resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+            resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
             playSfx('win');
           } else if (multiplier === 1) {
             balance += bet;
@@ -3801,7 +3894,7 @@
         saveBalance();
         addBetRecord('Hi-Lo', bet, win - bet);
         resultEl.textContent = `🎉 ${choice.toUpperCase()}! Won $${(win - bet).toFixed(2)}`;
-        resultEl.className = 'text-center text-xl font-bold text-[#00c853] mb-4';
+        resultEl.className = 'text-center text-xl font-bold text-[#fbbf24] mb-4';
         playSfx('win');
         hiloStreak++;
       } else {
@@ -3849,7 +3942,7 @@
         
         for (let col = 0; col < 3; col++) {
           const block = document.createElement('button');
-          block.className = 'w-16 h-10 sm:w-20 sm:h-12 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg hover:border-[#00c853] transition flex items-center justify-center text-lg';
+          block.className = 'w-16 h-10 sm:w-20 sm:h-12 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg hover:border-[#fbbf24] transition flex items-center justify-center text-lg';
           block.dataset.row = row;
           block.dataset.col = col;
           block.addEventListener('click', () => clickTowerBlock(row, col, block));
@@ -3905,7 +3998,7 @@
         endTower(false);
       } else {
         block.textContent = '✓';
-        block.classList.add('bg-[#00c853]', 'text-black', 'animate-pulse');
+        block.classList.add('bg-[#fbbf24]', 'text-black', 'animate-pulse');
         playSfx('reveal');
         towerWon += towerBet * Math.pow(2, towerStep + 1);
         towerStep++;
@@ -4204,6 +4297,14 @@
 
     function playRps(choice) {
       if (!rpsActive) return;
+      
+      // Check for multiplayer
+      const tables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      const currentTable = tables.find(t => t.game === 'rps' && t.players.includes(currentUser));
+      if (currentTable && currentTable.players.length < 2) {
+        return showResult('Need More Players', 'Wait for at least 2 players to join the table');
+      }
+      
       playSfx('click');
       
       rpsPlayerChoice = choice;
@@ -4763,7 +4864,7 @@
       ctx.fillRect(0, 0, w, h);
       if (crashChartHistory.length < 2) return;
       const maxMult = Math.max(10, ...crashChartHistory);
-      ctx.strokeStyle = '#00c853';
+      ctx.strokeStyle = '#fbbf24';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(0, h - (crashChartHistory[0] / maxMult) * h * 0.9);
@@ -4785,7 +4886,7 @@
       drawCrashChart();
       const crashMultEl = document.getElementById('crashMultiplier');
       crashMultEl.textContent = '1.00';
-      crashMultEl.classList.add('animate-pulse-green');
+      crashMultEl.classList.add('animate-pulse-gold');
       document.getElementById('crashBetBtn').classList.add('hidden');
       document.getElementById('crashCashoutBtn').classList.remove('hidden');
       crashInterval = setInterval(() => {
@@ -4793,7 +4894,7 @@
         crashChartHistory.push(crashMultiplier);
         drawCrashChart();
         crashMultEl.textContent = crashMultiplier.toFixed(2);
-        crashMultEl.classList.toggle('animate-pulse-green', crashMultiplier < 2);
+        crashMultEl.classList.toggle('animate-pulse-gold', crashMultiplier < 2);
         crashMultEl.classList.toggle('animate-glow', crashMultiplier >= 2);
         if (Math.random() > 0.88) {
           clearInterval(crashInterval);
@@ -4817,7 +4918,7 @@
     }
     function resetCrash() {
       const crashMultEl = document.getElementById('crashMultiplier');
-      crashMultEl.classList.remove('animate-pulse-green', 'animate-glow');
+      crashMultEl.classList.remove('animate-pulse-gold', 'animate-glow');
       document.getElementById('crashBetBtn').classList.remove('hidden');
       document.getElementById('crashCashoutBtn').classList.add('hidden');
     }
@@ -4852,7 +4953,7 @@
           if (win) {
             const payout = bet * 1.98;
             balance += payout; updateBalance(); saveBalance();
-            diceEl.classList.add('animate-pulse-green');
+            diceEl.classList.add('animate-pulse-gold');
             playSfx('win');
             showResult('You Win!', `Rolled ${roll}<br>Won $${(payout - bet).toFixed(2)}`);
           } else {
@@ -4862,7 +4963,7 @@
           }
           
           setTimeout(() => {
-            diceEl.classList.remove('animate-pulse-green', 'animate-shake');
+            diceEl.classList.remove('animate-pulse-gold', 'animate-shake');
             diceRolling = false;
           }, 500);
         }
@@ -4929,9 +5030,9 @@
         const handData = bjAllPlayerHands[p] || { hand: [], bet: 0 };
         const status = handData.busted ? '💥 BUST' : handData.standing ? '✅' : handData.done ? '🏆' : '🎴';
         return `
-          <div class="p-2 rounded-lg ${isMe ? 'bg-[#00c853]/20 border border-[#00c853]' : 'bg-[#1a1a1a]'}">
+          <div class="p-2 rounded-lg ${isMe ? 'bg-[#fbbf24]/20 border border-[#fbbf24]' : 'bg-[#1a1a1a]'}">
             <div class="text-xs font-bold text-white truncate">${p}${isMe ? ' (You)' : ''}</div>
-            <div class="text-xs ${handData.bet > 0 ? 'text-[#00c853]' : 'text-[#71717a]'}">$${handData.bet.toFixed(0)}</div>
+            <div class="text-xs ${handData.bet > 0 ? 'text-[#fbbf24]' : 'text-[#71717a]'}">$${handData.bet.toFixed(0)}</div>
             <div class="flex gap-1 mt-1">
               ${handData.hand.slice(0,3).map(c => c.rank ? `<span class="text-xs ${['♥','♦'].includes(c.suit) ? 'text-red-500' : 'text-white'}">${c.rank}${c.suit}</span>` : '🂠').join('')}
               ${handData.hand.length > 3 ? `<span class="text-xs text-[#71717a]">+${handData.hand.length-3}</span>` : ''}
@@ -4983,6 +5084,10 @@
 
     function dealBlackjack() {
       loadBjTablePlayers();
+      
+      if (bjTablePlayers.length < 2) {
+        return showResult('Need More Players', 'Wait for at least 2 players to join the table');
+      }
       
       bjBet = parseFloat(document.getElementById('blackjackBet')?.value) || 0;
       if (bjBet <= 0 || bjBet > balance) { playSfx('lose'); return showResult('Error', 'Invalid bet'); }
@@ -5298,7 +5403,7 @@
         betsContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No bets yet</p>';
       } else {
         betsContainer.innerHTML = allBets.slice(0, 15).map((b, i) => `
-          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${b.isUser ? 'border border-[#00c853]' : ''}">
+          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${b.isUser ? 'border border-[#fbbf24]' : ''}">
             <div class="flex items-center gap-2">
               <span class="text-xs text-[#71717a] w-4">${i+1}.</span>
               <span class="text-white font-medium text-sm">${b.user}</span>
@@ -5306,7 +5411,7 @@
             </div>
             <div class="text-right">
               <span class="text-xs text-white">$${b.bet.toFixed(0)}</span>
-              <span class="text-xs ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(0)}</span>
+              <span class="text-xs ${b.profit >= 0 ? 'text-[#fbbf24]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(0)}</span>
             </div>
           </div>
         `).join('');
@@ -5329,13 +5434,13 @@
         richestContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No players yet</p>';
       } else {
         richestContainer.innerHTML = players.slice(0, 10).map((p, i) => `
-          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${p.isUser ? 'border border-[#00c853]' : ''}">
+          <div class="flex justify-between items-center bg-[#131313] rounded-lg px-3 py-2 ${p.isUser ? 'border border-[#fbbf24]' : ''}">
             <div class="flex items-center gap-2">
               <span class="text-xs text-[#71717a] w-4">${i+1}.</span>
               <span class="${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-amber-600' : 'text-white'} font-medium text-sm">${p.name}</span>
               ${i < 3 ? '<span class="text-xs">👑</span>' : ''}
             </div>
-            <span class="text-[#00c853] font-bold text-sm">$${p.balance.toLocaleString()}</span>
+            <span class="text-[#fbbf24] font-bold text-sm">$${p.balance.toLocaleString()}</span>
           </div>
         `).join('');
       }
@@ -5366,7 +5471,7 @@
       
       document.getElementById('statWagered').textContent = '$' + wagered.toFixed(2);
       document.getElementById('statProfit').textContent = (totalProfit >= 0 ? '+' : '') + '$' + totalProfit.toFixed(2);
-      document.getElementById('statProfit').className = 'text-lg font-bold ' + (totalProfit >= 0 ? 'text-[#00c853]' : 'text-red-500');
+      document.getElementById('statProfit').className = 'text-lg font-bold ' + (totalProfit >= 0 ? 'text-[#fbbf24]' : 'text-red-500');
       document.getElementById('statBets').textContent = bets.length;
       document.getElementById('statWinRate').textContent = winRate + '%';
       document.getElementById('walletBalance').textContent = '$' + balance.toFixed(2);
@@ -5379,7 +5484,7 @@
         txContainer.innerHTML = txns.slice(0, 10).map(t => 
           `<div class="flex justify-between items-center bg-[#131313] rounded-lg p-2 text-sm">
             <span class="text-white">${t.type}</span>
-            <span class="${t.symbol === '+' ? 'text-[#00c853]' : 'text-red-500'}">${t.symbol}$${t.amount.toFixed(2)}</span>
+            <span class="${t.symbol === '+' ? 'text-[#fbbf24]' : 'text-red-500'}">${t.symbol}$${t.amount.toFixed(2)}</span>
           </div>`
         ).join('');
       }
@@ -5393,8 +5498,8 @@
           `<tr class="border-b border-[#2a2a2a]">
             <td class="py-2 px-2 text-white">${b.game}</td>
             <td class="py-2 px-2 text-right text-white">$${b.bet.toFixed(2)}</td>
-            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? 'WON' : 'LOST'}</td>
-            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#00c853]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(2)}</td>
+            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#fbbf24]' : 'text-red-500'}">${b.profit >= 0 ? 'WON' : 'LOST'}</td>
+            <td class="py-2 px-2 text-right ${b.profit >= 0 ? 'text-[#fbbf24]' : 'text-red-500'}">${b.profit >= 0 ? '+' : ''}$${b.profit.toFixed(2)}</td>
             <td class="py-2 px-2 text-right text-[#71717a] text-xs">${b.time}</td>
           </tr>`
         ).join('');
