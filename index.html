@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Eclipse Casino - Updated with Global Chat -->
 <html lang="en" class="bg-[#0a0a0a] text-white">
 <head>
   <meta charset="UTF-8" />
@@ -7,29 +8,39 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/pubnub@7/dist/pubnub.min.js"></script>
   <script>
-    // Using YOUR PubNub keys - GLOBAL CHAT!
+    // YOUR PubNub keys - GLOBAL CHAT!
     const pubnub = new PubNub({
       publishKey: 'pub-c-1be42b47-123f-4dbc-861a-e4f171e3179a',
       subscribeKey: 'sub-c-3ba6b0ff-53ec-4cb4-9359-859e616d3ebc',
-      userId: 'eclipse_user_' + Math.random().toString(36).substr(2, 6)
+      userId: 'eclipse_' + Math.random().toString(36).substr(2, 9)
     });
 
-    pubnub.subscribe({ channels: ['eclipse-global-chat'] });
+    const channel = 'eclipse-chat-room';
+
+    pubnub.subscribe({ channels: [channel] });
+    console.log('PubNub subscribing to:', channel);
 
     pubnub.addListener({
-      message: function(event) {
-        const msg = event.message;
-        if (msg && msg.user && msg.message && !chatMessages.find(m => m.message === msg.message && m.user === msg.user)) {
+      message: function(evt) {
+        console.log('Received:', evt.message);
+        const msg = evt.message;
+        if (msg && msg.user && msg.message) {
           chatMessages.push(msg);
           if (chatMessages.length > 50) chatMessages = chatMessages.slice(-50);
           localStorage.setItem('vantabet_chat', JSON.stringify(chatMessages));
           renderChat();
         }
+      },
+      status: function(s) {
+        console.log('PubNub status:', s.category);
       }
     });
 
     window.sendGlobalChat = (msg) => {
-      pubnub.publish({ channel: 'eclipse-global-chat', message: msg });
+      console.log('Sending:', msg);
+      pubnub.publish({ channel: channel, message: msg }, (status, response) => {
+        console.log('Published:', status, response);
+      });
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
