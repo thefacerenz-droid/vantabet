@@ -8,27 +8,68 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/pubnub@7/dist/pubnub.min.js"></script>
   <script>
-    // YOUR PubNub keys - GLOBAL CHAT!
+    // YOUR PubNub keys - GLOBAL SYNC!
     const pubnub = new PubNub({
       publishKey: 'pub-c-1be42b47-123f-4dbc-861a-e4f171e3179a',
       subscribeKey: 'sub-c-3ba6b0ff-53ec-4cb4-9359-859e616d3ebc',
       userId: 'eclipse_' + Math.random().toString(36).substr(2, 9)
     });
 
-    const channel = 'eclipse-chat-room';
+    const chatChannel = 'eclipse-chat-room';
+    const betsChannel = 'eclipse-bets';
+    const tablesChannel = 'eclipse-tables';
+    const playersChannel = 'eclipse-players';
 
-    pubnub.subscribe({ channels: [channel] });
-    console.log('PubNub subscribing to:', channel);
+    pubnub.subscribe({ channels: [chatChannel, betsChannel, tablesChannel, playersChannel] });
+    console.log('PubNub subscribing to all channels');
+
+    let globalBets = [];
+    let globalTables = [];
+    let globalPlayers = {};
 
     pubnub.addListener({
       message: function(evt) {
-        console.log('Received:', evt.message);
+        const channelName = evt.channel;
         const msg = evt.message;
-        if (msg && msg.user && msg.message) {
+        
+        if (channelName === chatChannel && msg && msg.user && msg.message) {
           chatMessages.push(msg);
           if (chatMessages.length > 50) chatMessages = chatMessages.slice(-50);
           localStorage.setItem('vantabet_chat', JSON.stringify(chatMessages));
           renderChat();
+        }
+        
+        if (channelName === betsChannel && msg && msg.type === 'bet') {
+          globalBets.unshift(msg.data);
+          if (globalBets.length > 50) globalBets = globalBets.slice(0, 50);
+          updateLeaderboards();
+        }
+        
+        if (channelName === tablesChannel && msg) {
+          if (msg.type === 'create') {
+            globalTables.push(msg.data);
+          } else if (msg.type === 'join') {
+            const table = globalTables.find(t => t.id === msg.data.id);
+            if (table && !table.players.includes(msg.data.player)) {
+              table.players.push(msg.data.player);
+            }
+          } else if (msg.type === 'leave') {
+            const table = globalTables.find(t => t.id === msg.data.id);
+            if (table) {
+              table.players = table.players.filter(p => p !== msg.data.player);
+            }
+          } else if (msg.type === 'close') {
+            globalTables = globalTables.filter(t => t.id !== msg.data.id);
+          }
+          localStorage.setItem('vantabet_tables', JSON.stringify(globalTables));
+          if (document.getElementById('opentables') && !document.getElementById('opentables').classList.contains('hidden')) {
+            renderTables();
+          }
+        }
+        
+        if (channelName === playersChannel && msg && msg.type === 'update') {
+          globalPlayers[msg.data.name] = msg.data.balance;
+          updateLeaderboards();
         }
       },
       status: function(s) {
@@ -37,10 +78,31 @@
     });
 
     window.sendGlobalChat = (msg) => {
-      console.log('Sending:', msg);
-      pubnub.publish({ channel: channel, message: msg }, (status, response) => {
-        console.log('Published:', status, response);
-      });
+      pubnub.publish({ channel: chatChannel, message: msg }, (status, response) => {});
+    };
+
+    window.broadcastBet = (betData) => {
+      pubnub.publish({ channel: betsChannel, message: { type: 'bet', data: betData } }, (status, response) => {});
+    };
+
+    window.broadcastTableCreate = (tableData) => {
+      pubnub.publish({ channel: tablesChannel, message: { type: 'create', data: tableData } }, (status, response) => {});
+    };
+
+    window.broadcastTableJoin = (tableId, player) => {
+      pubnub.publish({ channel: tablesChannel, message: { type: 'join', data: { id: tableId, player: player } } }, (status, response) => {});
+    };
+
+    window.broadcastTableLeave = (tableId, player) => {
+      pubnub.publish({ channel: tablesChannel, message: { type: 'leave', data: { id: tableId, player: player } } }, (status, response) => {});
+    };
+
+    window.broadcastTableClose = (tableId) => {
+      pubnub.publish({ channel: tablesChannel, message: { type: 'close', data: { id: tableId } } }, (status, response) => {});
+    };
+
+    window.broadcastBalance = (username, balance) => {
+      pubnub.publish({ channel: playersChannel, message: { type: 'update', data: { name: username, balance: balance } } }, (status, response) => {});
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2112,6 +2174,9 @@
 
     function updateBalance() {
       balanceEl.textContent = balance.toFixed(2);
+      if (currentUser) {
+        broadcastBalance(currentUser, balance);
+      }
     }
 
     function updateAuthUI() {
@@ -2572,7 +2637,9 @@
       };
 
       gameTables.push(table);
+      globalTables.push(table);
       saveTables();
+      broadcastTableCreate(table);
       closeCreateTableModal();
       renderTables();
       showResult('Table Created', `Table "${name}" is now open!`);
@@ -2585,6 +2652,9 @@
       }
 
       const table = gameTables.find(t => t.id === tableId);
+      if (!table) {
+        table = globalTables.find(t => t.id === tableId);
+      }
       if (!table) {
         showResult('Error', 'Table not found');
         return;
@@ -2602,6 +2672,7 @@
 
       table.players.push(currentUser);
       saveTables();
+      broadcastTableJoin(tableId, currentUser);
       renderTables();
       showTab(table.game);
     }
@@ -2610,6 +2681,7 @@
       const table = gameTables.find(t => t.id === tableId);
       if (table) {
         table.players = table.players.filter(p => p !== currentUser);
+        broadcastTableLeave(tableId, currentUser);
         if (table.players.length === 0 || table.host === currentUser) {
           gameTables = gameTables.filter(t => t.id !== tableId);
         }
@@ -2623,7 +2695,8 @@
     }
 
     function loadTables() {
-      gameTables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      const localTables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
+      gameTables = [...globalTables, ...localTables];
     }
 
     function renderTables() {
@@ -2681,7 +2754,9 @@
       const table = gameTables.find(t => t.id === tableId);
       if (table && currentUser === table.host) {
         gameTables = gameTables.filter(t => t.id !== tableId);
+        globalTables = globalTables.filter(t => t.id !== tableId);
         saveTables();
+        broadcastTableClose(tableId);
         renderTables();
         showResult('Table Closed', `Table "${table.name}" has been closed`);
       }
@@ -2696,6 +2771,7 @@
     if (localStorage.getItem('vantabet_theme') === 'light') document.documentElement.classList.add('theme-light');
 
     // Initial load
+    globalTables = JSON.parse(localStorage.getItem('vantabet_tables') || '[]');
     updateAuthUI();
     loadBalance();
     loadAccountSettings();
@@ -2712,6 +2788,7 @@
           renderChat();
         }
       }
+      updateLeaderboards();
     }, 3000);
 
     // Tab switch – main nav: Home, Originals, Settings. Sub-games (crash, dice, etc.) show Originals as active.
@@ -5478,36 +5555,45 @@
       bets.unshift({ game, bet, profit, time: new Date().toLocaleString() });
       if (bets.length > 50) bets = bets.slice(0, 50);
       localStorage.setItem(`vantabet_bets_${username}`, JSON.stringify(bets));
+      
+      const betData = { user: username, game, bet, profit, time: 'Just now', isUser: true };
+      globalBets.unshift(betData);
+      if (globalBets.length > 50) globalBets = globalBets.slice(0, 50);
+      localStorage.setItem('vantabet_allbets', JSON.stringify(globalBets));
+      broadcastBet(betData);
+      updateLeaderboards();
     }
 
     // Leaderboard functions
 
     function updateLeaderboards() {
-      // Recent bets - only real user bets
-      let allBets = JSON.parse(localStorage.getItem('vantabet_allbets') || '[]');
+      // Merge local and global bets
+      let allBets = [...globalBets];
       
-      // Add user's bet if logged in
+      // Add user's bet if logged in (to show immediately)
       if (currentUser) {
         const userBets = JSON.parse(localStorage.getItem(`vantabet_bets_${currentUser}`) || '[]');
         if (userBets.length > 0) {
           const lastBet = userBets[0];
-          allBets.unshift({
-            user: currentUser,
-            game: lastBet.game,
-            bet: lastBet.bet,
-            profit: lastBet.profit,
-            time: 'Just now',
-            isUser: true
-          });
+          if (!allBets.find(b => b.user === currentUser && b.time === 'Just now')) {
+            allBets.unshift({
+              user: currentUser,
+              game: lastBet.game,
+              bet: lastBet.bet,
+              profit: lastBet.profit,
+              time: 'Just now',
+              isUser: true
+            });
+          }
         }
       }
       
       // Keep only last 20 bets
       allBets = allBets.slice(0, 20);
-      localStorage.setItem('vantabet_allbets', JSON.stringify(allBets));
       
       // Render recent bets
       const betsContainer = document.getElementById('recentBetsLeaderboard');
+      if (!betsContainer) return;
       if (allBets.length === 0) {
         betsContainer.innerHTML = '<p class="text-sm text-[#71717a] text-center py-4">No bets yet</p>';
       } else {
@@ -5526,14 +5612,20 @@
         `).join('');
       }
       
-      // Richest players - only real users
+      // Richest players - merge local and global
       let players = [];
       
       // Add current user if logged in
       if (currentUser) {
-        const userBalance = balance;
-        players.push({ name: currentUser, balance: userBalance, isUser: true });
+        players.push({ name: currentUser, balance: balance, isUser: true });
       }
+      
+      // Add global players
+      Object.keys(globalPlayers).forEach(name => {
+        if (name !== currentUser) {
+          players.push({ name: name, balance: globalPlayers[name], isUser: false });
+        }
+      });
       
       // Sort by balance
       players.sort((a, b) => b.balance - a.balance);
