@@ -19,18 +19,37 @@
     const betsChannel = 'eclipse-bets';
     const tablesChannel = 'eclipse-tables';
     const playersChannel = 'eclipse-players';
+    const accountsChannel = 'eclipse-accounts';
 
-    pubnub.subscribe({ channels: [chatChannel, betsChannel, tablesChannel, playersChannel] });
+    pubnub.subscribe({ channels: [chatChannel, betsChannel, tablesChannel, playersChannel, accountsChannel] });
     console.log('PubNub subscribing to all channels');
 
     let globalBets = [];
     let globalTables = [];
     let globalPlayers = {};
+    let globalAccounts = {};
+
+    // Fetch global accounts on load
+    pubnub.fetchMessages({ channels: [accountsChannel], count: 100 }, function(status, response) {
+      if (response && response.messages) {
+        response.messages.forEach(m => {
+          if (m.message && m.message.type === 'account') {
+            globalAccounts[m.message.data.username] = m.message.data;
+          }
+        });
+        console.log('Loaded global accounts:', Object.keys(globalAccounts).length);
+      }
+    });
 
     pubnub.addListener({
       message: function(evt) {
         const channelName = evt.channel;
         const msg = evt.message;
+        
+        if (channelName === accountsChannel && msg && msg.type === 'account') {
+          globalAccounts[msg.data.username] = msg.data;
+          console.log('Account updated:', msg.data.username);
+        }
         
         if (channelName === chatChannel && msg && msg.user && msg.message) {
           chatMessages.push(msg);
@@ -103,6 +122,19 @@
 
     window.broadcastBalance = (username, balance) => {
       pubnub.publish({ channel: playersChannel, message: { type: 'update', data: { name: username, balance: balance } } }, (status, response) => {});
+    };
+
+    window.registerGlobalAccount = (accountData) => {
+      pubnub.publish({ channel: accountsChannel, message: { type: 'account', data: accountData } }, (status, response) => {});
+    };
+
+    window.updateGlobalAccount = (accountData) => {
+      globalAccounts[accountData.username] = accountData;
+      pubnub.publish({ channel: accountsChannel, message: { type: 'account', data: accountData } }, (status, response) => {});
+    };
+
+    window.getGlobalAccount = (username) => {
+      return globalAccounts[username] || null;
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2846,8 +2878,15 @@
 
     function loadBalance() {
       if (currentUser) {
-        const saved = localStorage.getItem(`vantabet_balance_${currentUser}`);
-        balance = saved ? parseFloat(saved) : 500.00;
+        // Try global account first
+        const globalAccount = getGlobalAccount(currentUser);
+        if (globalAccount && globalAccount.balance !== undefined) {
+          balance = globalAccount.balance;
+        } else {
+          // Fallback to local
+          const saved = localStorage.getItem(`vantabet_balance_${currentUser}`);
+          balance = saved ? parseFloat(saved) : 500.00;
+        }
       } else {
         balance = 500.00;
       }
@@ -2857,6 +2896,13 @@
     function saveBalance() {
       if (currentUser) {
         localStorage.setItem(`vantabet_balance_${currentUser}`, balance);
+        
+        // Update global account
+        const account = getGlobalAccount(currentUser);
+        if (account) {
+          account.balance = balance;
+          updateGlobalAccount(account);
+        }
       }
     }
 
@@ -2864,6 +2910,13 @@
       balanceEl.textContent = balance.toFixed(2);
       if (currentUser) {
         broadcastBalance(currentUser, balance);
+        
+        // Also update global account balance
+        const account = getGlobalAccount(currentUser);
+        if (account) {
+          account.balance = balance;
+          // Don't broadcast on every update to avoid spam
+        }
       }
     }
 
@@ -2871,14 +2924,17 @@
       const area = document.getElementById('authArea');
       if (currentUser) {
         area.innerHTML = `
-          <span class="text-sm font-medium text-[#a1a1aa]">${currentUser}</span>
-          <button onclick="logout()" class="px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] hover:border-[#333] rounded-lg text-sm">Logout</button>
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1.5 bg-[#fbbf24] text-black rounded-lg text-sm font-bold">${currentUser}</span>
+            <button onclick="logout()" class="px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] hover:border-red-500 rounded-lg text-sm text-white">Logout</button>
+          </div>
         `;
       } else {
         area.innerHTML = `
-          <button onclick="openAuthModal('login')" class="px-3 py-1.5 text-sm text-[#a1a1aa] hover:text-white">Login</button>
-          <span class="text-[#52525b]">/</span>
-          <button onclick="openAuthModal('register')" class="px-3 py-1.5 text-sm text-[#a1a1aa] hover:text-white">Register</button>
+          <div class="flex items-center gap-2">
+            <button onclick="openAuthModal('login')" class="px-4 py-2 bg-[#222] border border-[#444] hover:border-[#fbbf24] rounded-lg text-sm font-medium text-white transition">Login</button>
+            <button onclick="openAuthModal('register')" class="px-4 py-2 bg-[#fbbf24] hover:bg-[#fcd34d] text-black rounded-lg text-sm font-bold transition">Register</button>
+          </div>
         `;
       }
     }
@@ -2909,18 +2965,31 @@
 
       if (!username || !password) return alert('Please enter username and password');
 
-      const savedPassword = localStorage.getItem(`vantabet_password_${username}`);
-      if (!savedPassword) return alert('Username not found. Please register first.');
+      // Check global accounts first
+      const account = getGlobalAccount(username);
+      
+      if (!account) {
+        return alert('Username not found. Please register first.');
+      }
 
-      if (savedPassword !== password) return alert('Incorrect password.');
+      if (account.password !== password) {
+        return alert('Incorrect password.');
+      }
 
+      // Load global account data
+      localStorage.setItem('vantabet_password', password);
       localStorage.setItem('vantabet_current_user', username);
       currentUser = username;
+      balance = account.balance || 500.00;
+      
+      // Save to local for backup
+      localStorage.setItem(`vantabet_balance_${username}`, balance.toString());
+      
+      updateBalance();
       updateAuthUI();
-      loadBalance();
       loadAccountSettings();
       closeAuthModal();
-      alert(`Welcome back, ${username}!`);
+      showResult('Welcome Back!', `Logged in as ${username}! Balance: $${balance.toFixed(2)}`);
     }
 
     function fakeRegister() {
@@ -2929,31 +2998,48 @@
       const confirm = document.getElementById('regConfirm').value;
 
       if (!username || !pass || pass !== confirm) return alert('Please fill all fields and make sure passwords match');
+      if (username.length < 3) return alert('Username must be at least 3 characters');
 
-      if (localStorage.getItem(`vantabet_password_${username}`)) return alert('Username already taken');
+      // Check if username already exists globally
+      const existingAccount = getGlobalAccount(username);
+      if (existingAccount) return alert('Username already taken');
 
-      localStorage.setItem(`vantabet_password_${username}`, pass);
-      localStorage.setItem(`vantabet_balance_${username}`, '500.00');
-      localStorage.setItem(`vantabet_created_${username}`, new Date().toLocaleDateString());
-      localStorage.setItem(`vantabet_wagered_${username}`, '0');
+      // Create global account
+      const accountData = {
+        username: username,
+        password: pass,
+        balance: 500.00,
+        vip: 'bronze',
+        wagered: 0,
+        bets: [],
+        transactions: [],
+        created: new Date().toISOString()
+      };
+      
+      globalAccounts[username] = accountData;
+      registerGlobalAccount(accountData);
 
+      localStorage.setItem('vantabet_password', pass);
       localStorage.setItem('vantabet_current_user', username);
       currentUser = username;
+      balance = 500.00;
+      updateBalance();
       updateAuthUI();
-      loadBalance();
       loadAccountSettings();
       closeAuthModal();
-      alert(`Account created! Welcome, ${username}!`);
+      showResult('Welcome!', `Account created! You received $500 starting balance!`);
     }
 
     function logout() {
+      saveBalance();
       localStorage.removeItem('vantabet_current_user');
+      localStorage.removeItem('vantabet_password');
       currentUser = null;
-      updateAuthUI();
       balance = 500.00;
       updateBalance();
+      updateAuthUI();
       loadAccountSettings();
-      alert('Logged out');
+      showResult('Logged Out', 'You have been logged out');
     }
 
     function transferCoins() {
